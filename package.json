@@ -1,0 +1,26 @@
+{
+  "name": "modern-stack",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "oxlint .",
+    "typecheck": "tsc -b --noEmit",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "lefthook": "^2.0.15",
+    "oxlint": "^1.41.0",
+    "vite": "^8.0.0-beta.10",
+    "vitest": "^4.0.18"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "types": ["bun-types", "vitest/globals"],
+    "composite": true
+  },
+  "include": ["vite.config.ts", "*.config.ts"]
+}
