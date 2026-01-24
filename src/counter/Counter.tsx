@@ -22,6 +22,7 @@ export const Counter = reatomFactoryComponent<{ initial?: number }>(({ initial =
 				-
 			</button>
 			<span
+				data-testid="counter-value"
 				className={css({
 					fontSize: '2xl',
 					fontWeight: 'semibold',

@@ -39,3 +39,6 @@ styled-system-studio
 *storybook.log
 storybook-static
 docs
+
+# ralphex progress logs
+progress*.txt
