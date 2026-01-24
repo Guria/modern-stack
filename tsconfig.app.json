@@ -8,9 +8,10 @@
 		"composite": true,
 		"baseUrl": ".",
 		"paths": {
+			"#.storybook/*": ["./.storybook/*"],
 			"#styled-system/*": ["./src/shared/styled-system/*"],
 			"#*": ["./src/*"]
 		}
 	},
-	"include": ["src"]
+	"include": ["src", ".storybook/**/*"]
 }

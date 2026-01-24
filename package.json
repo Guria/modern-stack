@@ -4,17 +4,20 @@
 	"type": "module",
 	"module": "index.ts",
 	"imports": {
+		"#.storybook/*": "./.storybook/*",
 		"#styled-system/*": "./src/shared/styled-system/*",
 		"#*": "./src/*"
 	},
 	"scripts": {
 		"build": "vite build",
+		"build-storybook": "storybook build",
 		"dev": "vite",
 		"format": "oxfmt --write .",
 		"format:check": "oxfmt .",
 		"lint": "oxlint .",
 		"prepare": "panda codegen && lefthook install",
 		"preview": "vite preview",
+		"storybook": "storybook dev -p 6006",
 		"test": "vitest",
 		"test:run": "vitest run",
 		"typecheck": "tsc -b --noEmit"
@@ -27,13 +30,22 @@
 	},
 	"devDependencies": {
 		"@pandacss/dev": "^1.8.1",
+		"@storybook/addon-a11y": "^10.2.0",
+		"@storybook/addon-docs": "^10.2.0",
+		"@storybook/addon-onboarding": "^10.2.0",
+		"@storybook/addon-vitest": "^10.2.0",
+		"@storybook/react-vite": "^10.2.0",
 		"@types/bun": "latest",
 		"@types/react": "^19.2.9",
 		"@types/react-dom": "^19.2.3",
 		"@vitejs/plugin-react": "^5.1.2",
+		"@vitest/browser-playwright": "^4.0.18",
+		"@vitest/coverage-v8": "^4.0.18",
 		"lefthook": "^2.0.15",
 		"oxfmt": "^0.26.0",
 		"oxlint": "^1.41.0",
+		"playwright": "^1.58.0",
+		"storybook": "^10.2.0",
 		"vite": "^8.0.0-beta.10",
 		"vitest": "^4.0.18"
 	},
