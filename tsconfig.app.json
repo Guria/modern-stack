@@ -8,6 +8,7 @@
 		"composite": true,
 		"baseUrl": ".",
 		"paths": {
+			"#styled-system/*": ["./src/shared/styled-system/*"],
 			"#*": ["./src/*"]
 		}
 	},

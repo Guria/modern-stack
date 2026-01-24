@@ -4,6 +4,7 @@
 	"type": "module",
 	"module": "index.ts",
 	"imports": {
+		"#styled-system/*": "./src/shared/styled-system/*",
 		"#*": "./src/*"
 	},
 	"scripts": {
@@ -12,7 +13,7 @@
 		"format": "oxfmt --write .",
 		"format:check": "oxfmt .",
 		"lint": "oxlint .",
-		"prepare": "lefthook install",
+		"prepare": "panda codegen && lefthook install",
 		"preview": "vite preview",
 		"test": "vitest",
 		"test:run": "vitest run",
@@ -25,6 +26,7 @@
 		"react-dom": "^19.2.3"
 	},
 	"devDependencies": {
+		"@pandacss/dev": "^1.8.1",
 		"@types/bun": "latest",
 		"@types/react": "^19.2.9",
 		"@types/react-dom": "^19.2.3",

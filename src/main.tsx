@@ -1,3 +1,4 @@
+import './index.css'
 import './reatom.init.ts'
 import { assert, connectLogger, context } from '@reatom/core'
 import { reatomContext } from '@reatom/react'
