@@ -9,4 +9,12 @@ export default defineMain({
 	},
 	stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 	addons: ['@storybook/addon-vitest', '@storybook/addon-a11y', '@storybook/addon-docs'],
+	viteFinal: (config, { configType }) => {
+		if (process.env['CI'] === 'true' && configType === 'PRODUCTION') {
+			config.base = '/modern-stack/storybook/'
+		} else {
+			config.base = '/'
+		}
+		return config
+	},
 })

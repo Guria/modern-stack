@@ -40,6 +40,11 @@ Run the development server:
 bun run dev
 ```
 
+## Live
+
+- App: https://guria.github.io/modern-stack/
+- Storybook: https://guria.github.io/modern-stack/storybook/
+
 Run Storybook for component development:
 
 ```bash
@@ -101,5 +106,39 @@ Pre-commit hooks automatically run:
 - Type checking on entire project
 
 Configuration in lefthook.yml.
+
+## CI/CD
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+### Test Workflow
+
+Runs on every push and pull request to main:
+
+- Type checking with TypeScript
+- Code formatting validation with oxfmt
+- Linting with oxlint
+- Storybook component tests with Vitest and Playwright
+- Coverage report generation and upload
+- Coverage summary in GitHub Actions output
+
+Configuration: .github/workflows/test.yml
+
+### Deployment Workflow
+
+Automatically deploys to GitHub Pages on push to main:
+
+- Builds the React application
+- Builds Storybook documentation
+- Combines both into a single deployment (app at root, Storybook at /storybook)
+- Deploys to GitHub Pages with proper permissions and concurrency controls
+
+Configuration: .github/workflows/storybook-deploy.yml
+
+Both workflows use:
+
+- Bun for fast package management and script execution
+- Playwright with Chromium for browser testing
+- Modern GitHub Actions (v4) with proper timeouts and artifact retention
 
 This project was created using Bun. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
