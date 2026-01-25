@@ -6,6 +6,7 @@
 	"imports": {
 		"#.storybook/*": "./.storybook/*",
 		"#styled-system/*": "./src/shared/styled-system/*",
+		"#theme/*": "./theme/*",
 		"#*": "./src/*"
 	},
 	"scripts": {
@@ -24,8 +25,10 @@
 		"typecheck": "tsc -b --noEmit"
 	},
 	"dependencies": {
+		"@ark-ui/react": "^5.30.0",
 		"@reatom/core": "^1000.10.0",
 		"@reatom/react": "^1000.2.1",
+		"lucide-react": "^0.563.0",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3"
 	},
@@ -51,6 +54,6 @@
 		"vitest": "^4.0.18"
 	},
 	"peerDependencies": {
-		"typescript": "^5"
+		"typescript": "^5.8"
 	}
 }

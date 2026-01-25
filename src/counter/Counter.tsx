@@ -1,6 +1,7 @@
 import { reatomNumber, wrap } from '@reatom/core'
 import { reatomFactoryComponent } from '@reatom/react'
 
+import { Button } from '#shared/components/ui'
 import { css } from '#styled-system/css'
 
 export const Counter = reatomFactoryComponent<{ initial?: number }>(({ initial = 0 }, { name }) => {
@@ -8,19 +9,7 @@ export const Counter = reatomFactoryComponent<{ initial?: number }>(({ initial =
 
 	return () => (
 		<div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
-			<button
-				className={css({
-					px: '4',
-					py: '2',
-					bg: 'gray.200',
-					rounded: 'md',
-					cursor: 'pointer',
-					_hover: { bg: 'gray.300' },
-				})}
-				onClick={wrap(() => countAtom.decrement())}
-			>
-				-
-			</button>
+			<Button onClick={wrap(() => countAtom.decrement())}>-</Button>
 			<span
 				data-testid="counter-value"
 				className={css({
@@ -32,19 +21,7 @@ export const Counter = reatomFactoryComponent<{ initial?: number }>(({ initial =
 			>
 				{countAtom()}
 			</span>
-			<button
-				className={css({
-					px: '4',
-					py: '2',
-					bg: 'gray.200',
-					rounded: 'md',
-					cursor: 'pointer',
-					_hover: { bg: 'gray.300' },
-				})}
-				onClick={wrap(() => countAtom.increment())}
-			>
-				+
-			</button>
+			<Button onClick={wrap(() => countAtom.increment())}>+</Button>
 		</div>
 	)
 })

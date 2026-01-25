@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"lib": ["ESNext"],
 		"types": ["bun-types", "vitest/globals"],
+		"allowImportingTsExtensions": true,
 		"composite": true
 	},
-	"include": ["vite.config.ts", "*.config.ts", ".storybook/main.ts"]
+	"include": ["vite.config.ts", "*.config.ts", ".storybook/main.ts", "panda.config.ts", "theme"]
 }

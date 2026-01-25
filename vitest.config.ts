@@ -21,6 +21,7 @@ export default defineConfig({
 				'src/**/*.stories.tsx',
 				'src/**/*.test.{ts,tsx}',
 				'src/shared/styled-system/**',
+				'src/shared/components/ui/**',
 				'src/main.tsx',
 			],
 			thresholds: {

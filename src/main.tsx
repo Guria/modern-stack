@@ -5,9 +5,11 @@ import { reatomContext } from '@reatom/react'
 import { createRoot } from 'react-dom/client'
 
 import { App } from '#app/App.tsx'
+import { css } from '#styled-system/css'
 
 const root = document.getElementById('root')
 assert(root, 'Root element not found')
+root.className = css({ colorPalette: 'orange' })
 
 const rootFrame = context.start()
 if (import.meta.env['DEV']) {
