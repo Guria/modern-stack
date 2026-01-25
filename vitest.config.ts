@@ -3,8 +3,8 @@ import { playwright } from '@vitest/browser-playwright'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
-const dirname =
-	typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url))
+
+const isCI = process.env['CI'] === 'true'
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
@@ -13,6 +13,23 @@ export default defineConfig({
 	},
 	test: {
 		globals: true,
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'json-summary'],
+			include: ['src/**/*.{ts,tsx}'],
+			exclude: [
+				'src/**/*.stories.tsx',
+				'src/**/*.test.{ts,tsx}',
+				'src/shared/styled-system/**',
+				'src/main.tsx',
+			],
+			thresholds: {
+				lines: 80,
+				functions: 80,
+				branches: 75,
+				statements: 80,
+			},
+		},
 		projects: [
 			{
 				extends: true,
@@ -20,20 +37,30 @@ export default defineConfig({
 					// The plugin will run tests for the stories defined in your Storybook config
 					// See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
 					storybookTest({
-						configDir: path.join(dirname, '.storybook'),
+						configDir: path.join(path.dirname(fileURLToPath(import.meta.url)), '.storybook'),
 					}),
 				],
 				test: {
 					name: 'storybook',
+					testTimeout: isCI ? 60000 : 10000,
+					hookTimeout: isCI ? 60000 : 10000,
 					browser: {
 						enabled: true,
 						headless: true,
-						provider: playwright({}),
-						instances: [
-							{
-								browser: 'chromium',
+						screenshotFailures: false,
+						provider: playwright({
+							launchOptions: {
+								args: isCI
+									? [
+											'--no-sandbox',
+											'--disable-setuid-sandbox',
+											'--disable-dev-shm-usage',
+											'--disable-gpu',
+										]
+									: [],
 							},
-						],
+						}),
+						instances: [{ browser: 'chromium' }],
 					},
 				},
 			},
