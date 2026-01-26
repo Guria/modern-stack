@@ -9,7 +9,7 @@ import { css } from '#styled-system/css'
 
 const root = document.getElementById('root')
 assert(root, 'Root element not found')
-root.className = css({ colorPalette: 'orange' })
+root.classList.add(css({ colorPalette: 'orange' }))
 
 const rootFrame = context.start()
 if (import.meta.env['DEV']) {

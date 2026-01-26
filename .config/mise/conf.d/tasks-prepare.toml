@@ -1,0 +1,30 @@
+[vars]
+panda_outdir = "src/shared/styled-system"
+panda_config = "panda.config.ts"
+
+[env]
+PANDA_OUTDIR = "{{ vars.panda_outdir }}"
+
+[tasks."prepare:panda"]
+description = "Run Panda code generation"
+run = "panda codegen"
+
+sources = ["{{ vars.panda_config }}", "theme/**/*.ts", "components.json"]
+outputs = ["{{ vars.panda_outdir }}/**/*"]
+
+[tasks."prepare:git-hooks"]
+description = "Install Git hooks"
+run = "lefthook install"
+sources = ["lefthook.yml"]
+
+[tasks."prepare:local-overrides"]
+description = "Setup local overrides file if not exists"
+run = "if [ ! -f mise.local.toml ]; then sed '/^##/d' .config/mise/conf.d/local.toml > mise.local.toml; fi"
+
+[tasks.prepare]
+description = "Prepare project"
+run = [
+	{ task = "prepare:panda" },
+	{ task = "prepare:git-hooks" },
+	{ task = "prepare:local-overrides" },
+]

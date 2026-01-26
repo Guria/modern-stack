@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Setup mise
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@6d1e696aa24c1aa1bcc1adea0212707c71ab78a8 # v3.6.1
         with:
           install: true
           cache: true
@@ -29,30 +29,13 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Run prepare script
-        run: bun run prepare
-
-      - name: Build app
-        run: bun run build
-
-      - name: Verify app build
-        run: test -f dist/index.html || exit 1
-
-      - name: Build Storybook
-        run: bun run build-storybook
-
-      - name: Verify Storybook build
-        run: test -f storybook-static/index.html || exit 1
-
-      - name: Combine builds
-        run: |
-          mkdir -p dist/storybook
-          cp -r storybook-static/. dist/storybook/
+      - name: Build artifacts
+        run: mise run build:gh-pages
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
-          path: ./dist
+          path: ${{ env.GH_PAGES_OUT_DIR }}
 
   deploy:
     needs: build
@@ -69,4 +52,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

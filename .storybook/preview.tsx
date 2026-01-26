@@ -1,10 +1,13 @@
+import { context } from '@reatom/core'
+
 import '../src/index.css'
 import '../src/reatom.init.ts'
-import { context } from '@reatom/core'
 import { reatomContext } from '@reatom/react'
 import addonA11y from '@storybook/addon-a11y'
 import { definePreview } from '@storybook/react-vite'
 import { useMemo, type PropsWithChildren } from 'react'
+
+import { css } from '#styled-system/css'
 
 function ReatomDecorator({ children }: PropsWithChildren) {
 	// Create fresh context once per story mount to prevent state pollution
@@ -19,6 +22,11 @@ const preview = definePreview({
 			<ReatomDecorator>
 				<Story />
 			</ReatomDecorator>
+		),
+		(Story) => (
+			<div className={css({ colorPalette: 'orange' })}>
+				<Story />
+			</div>
 		),
 	],
 	parameters: {

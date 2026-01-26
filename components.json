@@ -5,11 +5,9 @@
 		"config": "panda.config.ts"
 	},
 	"aliases": {
-		"components": "#shared/components",
-		"hooks": "#shared/hooks",
-		"lib": "#shared/lib",
-		"recipes": "#theme/recipes",
-		"theme": "#theme",
-		"ui": "#shared/components/ui"
+		"components": "src/shared/components",
+		"recipes": "theme/recipes",
+		"theme": "theme",
+		"ui": "src/shared/components/ui"
 	}
 }

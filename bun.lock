@@ -34,7 +34,7 @@
         "vitest": "^4.0.18",
       },
       "peerDependencies": {
-        "typescript": "^5",
+        "typescript": "^5.8",
       },
     },
   },

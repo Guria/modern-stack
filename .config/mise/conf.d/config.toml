@@ -1,0 +1,5 @@
+[task_config]
+dir = "{{ config_root }}"
+
+[env]
+'_'.path = { path = "./node_modules/.bin" }

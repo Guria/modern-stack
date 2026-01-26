@@ -15,16 +15,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Setup mise
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@6d1e696aa24c1aa1bcc1adea0212707c71ab78a8 # v3.6.1
         with:
           install: true
           cache: true
 
       - name: Cache Bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
         with:
           path: |
             ~/.bun/install/cache
@@ -39,25 +39,13 @@ jobs:
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
 
-      - name: Run prepare script
-        run: bun run prepare
-
-      - name: Type check
-        run: bun run typecheck
-
-      - name: Format check
-        run: bun run format:check
-
-      - name: Lint
-        run: bun run lint
-
-      - name: Run Storybook tests
-        run: xvfb-run --auto-servernum -- bun run test:run --coverage
+      - name: Run CI checks
+        run: mise run ci
         env:
           CI: true
 
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: success()
         with:
           name: coverage-reports

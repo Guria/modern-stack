@@ -1,0 +1,30 @@
+# Testing tasks
+
+[vars]
+test_timeout = "10000"
+coverage_threshold_lines = "80"
+coverage_threshold_functions = "80"
+coverage_threshold_branches = "75"
+coverage_threshold_statements = "80"
+
+[env]
+TEST_TIMEOUT = "{{ vars.test_timeout }}"
+COVERAGE_THRESHOLD_LINES = "{{ vars.coverage_threshold_lines }}"
+COVERAGE_THRESHOLD_FUNCTIONS = "{{ vars.coverage_threshold_functions }}"
+COVERAGE_THRESHOLD_BRANCHES = "{{ vars.coverage_threshold_branches }}"
+COVERAGE_THRESHOLD_STATEMENTS = "{{ vars.coverage_threshold_statements }}"
+
+[tasks.test]
+description = "Run tests in watch mode"
+alias = "t"
+run = "vitest"
+
+[tasks."test:run"]
+description = "Run tests once"
+alias = "tr"
+run = "vitest run"
+
+[tasks."test:coverage"]
+description = "Run tests with coverage"
+alias = "tcov"
+run = "vitest run --coverage"

@@ -23,6 +23,11 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"erasableSyntaxOnly": true,
-		"baseUrl": "."
+		"baseUrl": ".",
+		"paths": {
+			"#styled-system/*": ["./src/shared/styled-system/*"],
+			"#theme/*": ["./theme/*"],
+			"#*": ["./src/*"]
+		}
 	}
 }

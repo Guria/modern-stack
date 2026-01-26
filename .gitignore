@@ -21,10 +21,12 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .env.test.local
 .env.production.local
 .env.local
+mise.local.toml
 
 # caches
 .eslintcache
 .cache
+.var
 *.tsbuildinfo
 
 # IntelliJ based IDEs
@@ -36,9 +38,10 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 ## Panda
 styled-system
 styled-system-studio
+
+# Storybook
 *storybook.log
 storybook-static
-docs
 
 # ralphex progress logs
 progress*.txt

@@ -1,0 +1,30 @@
+# Development tasks
+
+[vars]
+vite_port = "5173"
+storybook_port = "6006"
+
+[tasks.dev]
+description = "Start Vite dev server"
+usage = '''
+flag "-p --port <port>" default="{{ vars.vite_port }}" help="Port for the Vite dev server"
+arg "[rest]" help="Additional arguments to pass to Vite"
+'''
+run = "vite --port ${usage_port?} ${usage_rest}"
+
+[tasks.storybook]
+description = "Start Storybook dev server"
+alias = "sb"
+usage = '''
+flag "-p --port <port>" default="{{ vars.storybook_port }}" help="Port for the Storybook dev server"
+'''
+run = "storybook dev -p ${usage_port?}"
+
+[tasks.preview]
+description = "Preview production build"
+depends = ["build:webapp"]
+run = "vite preview"
+
+[tasks.clean]
+description = "Clean build artifacts and caches"
+run = ["rm -rf .var", "rm -rf node_modules/.vite", "rm -rf coverage"]

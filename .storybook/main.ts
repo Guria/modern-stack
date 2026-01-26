@@ -1,4 +1,8 @@
 import { defineMain } from '@storybook/react-vite/node'
+import assert from 'node:assert'
+
+const base = process.env['STORYBOOK_BASE_URL']
+assert(base, 'STORYBOOK_BASE_URL env var is not set')
 
 export default defineMain({
 	core: { disableTelemetry: true },
@@ -9,12 +13,8 @@ export default defineMain({
 	},
 	stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 	addons: ['@storybook/addon-vitest', '@storybook/addon-a11y', '@storybook/addon-docs'],
-	viteFinal: (config, { configType }) => {
-		if (process.env['CI'] === 'true' && configType === 'PRODUCTION') {
-			config.base = '/modern-stack/storybook/'
-		} else {
-			config.base = '/'
-		}
+	viteFinal: (config) => {
+		config.base = base
 		return config
 	},
 })

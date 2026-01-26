@@ -11,7 +11,8 @@
 			"#.storybook/*": ["./.storybook/*"],
 			"#styled-system/*": ["./src/shared/styled-system/*"],
 			"#*": ["./src/*"]
-		}
+		},
+		"tsBuildInfoFile": ".var/local/ts/app.tsbuildinfo"
 	},
 	"include": ["src", ".storybook/**/*"]
 }

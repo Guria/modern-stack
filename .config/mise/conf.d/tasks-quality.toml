@@ -1,0 +1,39 @@
+# Code quality tasks
+
+[tasks.format]
+description = "Format code with oxfmt"
+alias = "fmt"
+run = "oxfmt --write ."
+
+[tasks."format:check"]
+description = "Check code formatting"
+alias = "fmt:check"
+run = "oxfmt --check ."
+
+[tasks.lint]
+description = "Lint code with oxlint"
+run = "oxlint ."
+
+[tasks.typecheck]
+description = "Type check with TypeScript"
+alias = "tc"
+run = "tsc -b"
+sources = ["src/**/*.{ts,tsx}", "tsconfig*.json"]
+
+[tasks.validate]
+description = "Run all quality checks (format, lint, typecheck, test). Default validation task for LLMs"
+run = [ #
+	{ task = "prepare" },
+	{ task = "format" },
+	{ tasks = ["lint", "typecheck", "test:run"] },
+]
+
+[tasks.ci]
+description = "Run all CI checks. No auto-fixes"
+run = [
+	{ task = "format:check" },
+	{ task = "lint" },
+	{ task = "typecheck" },
+	{ task = "test:coverage" },
+	{ task = "build" },
+]

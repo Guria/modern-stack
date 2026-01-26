@@ -1,4 +1,5 @@
 import { defineConfig } from '@pandacss/dev'
+import assert from 'node:assert'
 
 import { animationStyles } from '#theme/animation-styles.ts'
 import { green } from '#theme/colors/green.ts'
@@ -15,6 +16,9 @@ import { colors } from '#theme/tokens/colors.ts'
 import { durations } from '#theme/tokens/durations.ts'
 import { shadows } from '#theme/tokens/shadows.ts'
 import { zIndex } from '#theme/tokens/z-index.ts'
+
+const outdir = process.env['PANDA_OUTDIR']
+assert(outdir, 'PANDA_OUTDIR env var is not set')
 
 export default defineConfig({
 	jsxFramework: 'react',
@@ -107,8 +111,7 @@ export default defineConfig({
 		},
 	},
 
-	// The output directory for your css system
-	outdir: 'src/shared/styled-system',
+	outdir: outdir,
 
 	globalCss: globalCss,
 	conditions: conditions,

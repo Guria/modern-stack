@@ -1,10 +1,10 @@
 # modern-stack
 
-A modern React application demonstrating best practices with Bun, React 19, Reatom state management, Panda CSS styling, and Storybook with Vitest integration.
+A modern React application demonstrating opinionated setup with Bun, React 19, Reatom state management, Panda CSS styling, and Storybook with Vitest integration.
 
 ## Stack
 
-- Runtime: Bun
+- Package Manager: Bun
 - Framework: React 19
 - State Management: Reatom
 - Styling: Panda CSS
@@ -21,13 +21,7 @@ Install dependencies:
 bun install
 ```
 
-Run the prepare script to generate Panda CSS artifacts and install git hooks:
-
-```bash
-bun run prepare
-```
-
-This will:
+This will also run `prepare` script:
 
 - Generate Panda CSS styled-system
 - Install Lefthook git hooks for pre-commit checks
@@ -42,60 +36,12 @@ bun run dev
 
 ## Live
 
-- App: https://guria.github.io/modern-stack/
-- Storybook: https://guria.github.io/modern-stack/storybook/
+- [App](https://guria.github.io/modern-stack/)
+- [Storybook](https://guria.github.io/modern-stack/storybook/)
 
-Run Storybook for component development:
+## Validation loop
 
-```bash
-bun run storybook
-```
-
-Build Storybook for deployment:
-
-```bash
-bun run build-storybook
-```
-
-## Testing
-
-Run tests in watch mode:
-
-```bash
-bun run test
-```
-
-Run tests once:
-
-```bash
-bun run test:run
-```
-
-## Code Quality
-
-Format code:
-
-```bash
-bun run format
-```
-
-Check formatting without modifications:
-
-```bash
-bun run format:check
-```
-
-Lint code:
-
-```bash
-bun run lint
-```
-
-Type check:
-
-```bash
-bun run typecheck
-```
+- `mise run validate`
 
 ## Git Hooks
 
@@ -133,12 +79,4 @@ Automatically deploys to GitHub Pages on push to main:
 - Combines both into a single deployment (app at root, Storybook at /storybook)
 - Deploys to GitHub Pages with proper permissions and concurrency controls
 
-Configuration: .github/workflows/storybook-deploy.yml
-
-Both workflows use:
-
-- Bun for fast package management and script execution
-- Playwright with Chromium for browser testing
-- Modern GitHub Actions (v4) with proper timeouts and artifact retention
-
-This project was created using Bun. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+Configuration: .github/workflows/deploy.yml

@@ -4,7 +4,13 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 
-const isCI = process.env['CI'] === 'true'
+const testTimeout = Number(process.env['TEST_TIMEOUT'])
+const coverageThresholds = {
+	lines: Number(process.env['COVERAGE_THRESHOLD_LINES']),
+	branches: Number(process.env['COVERAGE_THRESHOLD_BRANCHES']),
+	functions: Number(process.env['COVERAGE_THRESHOLD_FUNCTIONS']),
+	statements: Number(process.env['COVERAGE_THRESHOLD_STATEMENTS']),
+}
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
@@ -24,12 +30,7 @@ export default defineConfig({
 				'src/shared/components/ui/**',
 				'src/main.tsx',
 			],
-			thresholds: {
-				lines: 80,
-				functions: 80,
-				branches: 75,
-				statements: 80,
-			},
+			thresholds: coverageThresholds,
 		},
 		projects: [
 			{
@@ -43,24 +44,13 @@ export default defineConfig({
 				],
 				test: {
 					name: 'storybook',
-					testTimeout: isCI ? 60000 : 10000,
-					hookTimeout: isCI ? 60000 : 10000,
+					testTimeout: testTimeout,
+					hookTimeout: testTimeout,
 					browser: {
 						enabled: true,
 						headless: true,
 						screenshotFailures: false,
-						provider: playwright({
-							launchOptions: {
-								args: isCI
-									? [
-											'--no-sandbox',
-											'--disable-setuid-sandbox',
-											'--disable-dev-shm-usage',
-											'--disable-gpu',
-										]
-									: [],
-							},
-						}),
+						provider: playwright(),
 						instances: [{ browser: 'chromium' }],
 					},
 				},
