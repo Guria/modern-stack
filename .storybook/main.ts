@@ -5,7 +5,6 @@ const base = process.env['STORYBOOK_BASE_URL']
 assert(base, 'STORYBOOK_BASE_URL env var is not set')
 
 export default defineMain({
-	core: { disableTelemetry: true },
 	framework: '@storybook/react-vite',
 	features: {
 		experimentalTestSyntax: true,
