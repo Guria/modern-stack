@@ -46,11 +46,11 @@
 		"@vitest/browser-playwright": "^4.0.18",
 		"@vitest/coverage-v8": "^4.0.18",
 		"lefthook": "^2.0.15",
-		"oxfmt": "^0.27.0",
+		"oxfmt": "^0.28.0",
 		"oxlint": "^1.42.0",
 		"playwright": "^1.58.0",
 		"storybook": "^10.2.0",
-		"vite": "^8.0.0-beta.10",
+		"vite": "^8.0.0-beta.13",
 		"vitest": "^4.0.18"
 	},
 	"peerDependencies": {
