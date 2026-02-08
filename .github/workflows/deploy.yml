@@ -26,6 +26,9 @@ jobs:
           install: true
           cache: true
 
+      - name: Config mise
+        run: mise settings experimental=true
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
