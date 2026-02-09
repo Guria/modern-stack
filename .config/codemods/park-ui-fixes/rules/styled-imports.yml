@@ -10,5 +10,5 @@ rule:
       kind: import_statement
 constraints:
   MODULE:
-    regex: styled-system
+    regex: ^styled-system
 fix: '#$MODULE'
