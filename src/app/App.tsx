@@ -1,11 +1,19 @@
-import { Counter } from '#counter/Counter.tsx'
-import { css } from '#styled-system/css'
+import { reatomNumber } from '@reatom/core'
+import { reatomComponent } from '@reatom/react'
 
-export function App() {
+import { Counter } from '#counter/Counter.tsx'
+import { styled } from '#styled-system/jsx'
+import { container } from '#styled-system/patterns'
+
+const counterAtom = reatomNumber(10, 'counter')
+
+export const App = reatomComponent(function App() {
 	return (
-		<main className={css({ maxW: '4xl', mx: 'auto', p: '8' })}>
-			<h1 className={css({ fontSize: '4xl', fontWeight: 'bold', mb: '6' })}>Modern Stack</h1>
-			<Counter initial={10} />
+		<main className={container({ maxW: '4xl', p: '8' })}>
+			<styled.h1 fontSize="4xl" fontWeight="bold" mb="6">
+				Modern Stack
+			</styled.h1>
+			<Counter countAtom={counterAtom} />
 		</main>
 	)
-}
+})

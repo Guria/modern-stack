@@ -1,27 +1,24 @@
-import { reatomNumber, wrap } from '@reatom/core'
-import { reatomFactoryComponent } from '@reatom/react'
+import { wrap, type NumberAtom } from '@reatom/core'
+import { reatomComponent } from '@reatom/react'
 
 import { Button } from '#shared/components/ui'
-import { css } from '#styled-system/css'
+import { Flex, styled } from '#styled-system/jsx'
 
-export const Counter = reatomFactoryComponent<{ initial?: number }>(({ initial = 0 }, { name }) => {
-	const countAtom = reatomNumber(initial, `${name}.count`)
-
-	return () => (
-		<div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
+export const Counter = reatomComponent(
+	({ countAtom }: { countAtom: NumberAtom }) => (
+		<Flex data-testid={`counter@${countAtom.name}`}>
 			<Button onClick={wrap(() => countAtom.decrement())}>-</Button>
-			<span
-				data-testid="counter-value"
-				className={css({
-					fontSize: '2xl',
-					fontWeight: 'semibold',
-					minW: '12',
-					textAlign: 'center',
-				})}
+			<styled.output
+				data-testid="counter:value"
+				fontSize="2xl"
+				fontWeight="semibold"
+				minW="12"
+				textAlign="center"
 			>
 				{countAtom()}
-			</span>
+			</styled.output>
 			<Button onClick={wrap(() => countAtom.increment())}>+</Button>
-		</div>
-	)
-})
+		</Flex>
+	),
+	'Counter',
+)

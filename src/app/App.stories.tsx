@@ -16,13 +16,13 @@ Default.test('renders the application title', async ({ canvas }) => {
 })
 
 Default.test('renders counter with initial value of 10', async ({ canvas }) => {
-	const counterValue = await canvas.getByTestId('counter-value')
+	const counterValue = await canvas.getByRole('status')
 	expect(counterValue).toHaveTextContent('10')
 })
 
 Default.test('counter is functional in app context', async ({ canvas }) => {
 	const incrementButton = await canvas.getByRole('button', { name: '+' })
-	const counterValue = await canvas.getByTestId('counter-value')
+	const counterValue = await canvas.getByRole('status')
 
 	await incrementButton.click()
 	await waitFor(() => expect(counterValue).toHaveTextContent('11'))
