@@ -1,6 +1,6 @@
 import { assert, wrap } from '@reatom/core'
 import { bindField, reatomComponent } from '@reatom/react'
-import { Fragment, type FormEvent } from 'react'
+import { Fragment } from 'react'
 
 import { Counter } from '#counter/Counter.tsx'
 import { Button } from '#shared/components/ui'
@@ -21,7 +21,7 @@ export const App = reatomComponent(function App() {
 	const error = rootRoute.loader.error()
 
 	if (!ready && pending === 0 && !error) {
-		void rootRoute.loader()
+		void wrap(rootRoute.loader()).catch(() => undefined)
 	}
 
 	if (error) {
@@ -48,10 +48,20 @@ export const App = reatomComponent(function App() {
 
 	const data = rootRoute.loader.data()
 	assert(data, 'Root route data is required')
-	const { counters, createCounterForm, deleteCounter } = data
+	const {
+		counters,
+		createCounterForm,
+		submitCreateCounter,
+		submitCreateCounterForm,
+		deleteCounter,
+	} = data
+	const handleCreateCounterSubmit = wrap(submitCreateCounterForm)
 	const counterItems = counters()
-	const isCreateSubmitting = !createCounterForm.submit.ready()
-	const createSubmitError = createCounterForm.submit.error()?.message
+	const isCreateSubmitting = !submitCreateCounter.ready()
+	const createSubmitError =
+		createCounterForm.validation().errors.length === 0
+			? submitCreateCounter.error()?.message
+			: undefined
 	const { error: ignoredNameFieldError, ...nameFieldProps } = bindField(
 		createCounterForm.fields.name,
 	)
@@ -74,10 +84,10 @@ export const App = reatomComponent(function App() {
 					display="grid"
 					gap="3"
 					maxW="sm"
-					onSubmit={wrap((event: FormEvent<HTMLFormElement>) => {
+					onSubmit={(event) => {
 						event.preventDefault()
-						void createCounterForm.submit().catch(() => undefined)
-					})}
+						handleCreateCounterSubmit(event)
+					}}
 				>
 					<styled.label display="grid" gap="1" fontSize="sm" fontWeight="medium">
 						Counter name
@@ -119,7 +129,13 @@ export const App = reatomComponent(function App() {
 							</styled.p>
 						)}
 
-					<Button type="submit" loading={isCreateSubmitting} variant="surface" colorPalette="gray">
+					<Button
+						type="submit"
+						loading={isCreateSubmitting}
+						loadingText="Adding counter..."
+						variant="surface"
+						colorPalette="gray"
+					>
 						Add counter
 					</Button>
 					{createSubmitError && (
@@ -148,7 +164,7 @@ export const App = reatomComponent(function App() {
 							variant="surface"
 							colorPalette="gray"
 							onClick={wrap(() => {
-								void deleteCounter(counter.id).catch(() => undefined)
+								void wrap(deleteCounter(counter.id)).catch(() => undefined)
 							})}
 						>
 							Delete

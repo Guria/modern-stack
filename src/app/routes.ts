@@ -6,6 +6,7 @@ import {
 	reatomForm,
 	reatomNumber,
 	reatomRoute,
+	withAsyncData,
 	withChangeHook,
 	wrap,
 } from '@reatom/core'
@@ -39,7 +40,7 @@ export const rootRoute = reatomRoute(
 					label: counter.label,
 					countAtom: reatomNumber(counter.value, counterAtomName).extend(
 						withChangeHook((newValue) => {
-							void updateCounterValue(counter.id, newValue).catch(() => undefined)
+							void wrap(updateCounterValue(counter.id, newValue)).catch(() => undefined)
 						}),
 					),
 				}
@@ -68,16 +69,25 @@ export const rootRoute = reatomRoute(
 					name: 'rootRoute.createCounterForm',
 					validateOnBlur: true,
 					keepErrorOnChange: false,
-					resetOnSubmit: true,
-					onSubmit: async ({ name, initialValue }) => {
-						const createdCounter = await wrap(
-							createCounter({ label: name.trim(), value: Number(initialValue) }),
-						)
-						countersAtom.set([...countersAtom(), toCounterItem(createdCounter)])
-						return createdCounter
-					},
 				},
 			)
+
+			const submitCreateCounter = action(async () => {
+				const { name, initialValue } = await wrap(createCounterForm.validation.trigger())
+				const createdCounter = await wrap(
+					createCounter({ label: name.trim(), value: Number(initialValue) }),
+				)
+				countersAtom.set([...countersAtom(), toCounterItem(createdCounter)])
+				createCounterForm.reset()
+				return createdCounter
+			}, 'rootRoute.createCounterForm.submit').extend(withAsyncData({ resetError: 'onFulfill' }))
+
+			const submitCreateCounterForm = action((event?: { preventDefault: () => void }) => {
+				event?.preventDefault()
+				void wrap(submitCreateCounter)().catch(() => undefined)
+			}, 'rootRoute.createCounterForm.handleSubmit')
+
+			createCounterForm.extend(withChangeHook(() => submitCreateCounter.error.set(undefined)))
 
 			const deleteCounterAction = action(async (counterId: string) => {
 				const existingCounter = countersAtom().find((counter) => counter.id === counterId)
@@ -89,6 +99,8 @@ export const rootRoute = reatomRoute(
 			return {
 				counters: countersAtom,
 				createCounterForm,
+				submitCreateCounter,
+				submitCreateCounterForm,
 				deleteCounter: deleteCounterAction,
 			}
 		},
