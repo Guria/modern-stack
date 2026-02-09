@@ -21,7 +21,7 @@ sources = ["lefthook.yml"]
 description = "Setup local overrides file if not exists"
 run = '''
 if [ ! -f mise.local.toml ]; then
-  sed '/^##/d' .config/mise/conf.d/local.toml > mise.local.toml
+  sed '/^##/d' .config/mise/conf.d/local.toml.example > mise.local.toml
 fi
 '''
 
