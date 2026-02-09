@@ -8,11 +8,14 @@ import { definePreview } from '@storybook/react-vite'
 import { initialize, mswLoader } from 'msw-storybook-addon'
 import { useMemo, type PropsWithChildren } from 'react'
 
+import { handlersArray } from '#app/mocks/handlers.ts'
+import { resetCounterStore } from '#counter/mocks/store.ts'
 import { css } from '#styled-system/css'
 
-initialize({ onUnhandledRequest: 'bypass' })
+initialize({ onUnhandledRequest: 'bypass', quiet: true })
 
 function ReatomDecorator({ children }: PropsWithChildren) {
+	resetCounterStore()
 	// Create fresh context once per story mount to prevent state pollution
 	const frame = useMemo(() => context.start(), [])
 	return <reatomContext.Provider value={frame}>{children}</reatomContext.Provider>
@@ -35,7 +38,7 @@ const preview = definePreview({
 	],
 	parameters: {
 		a11y: { test: 'error' },
-		msw: { handlers: [] },
+		msw: { handlers: handlersArray },
 	},
 })
 
