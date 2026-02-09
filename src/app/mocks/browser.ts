@@ -3,11 +3,8 @@ export async function startBrowserMocking(): Promise<void> {
 		return
 	}
 
-	const { resetMockStores, seedMockStoresForDev } = await import('#shared/mocks/stores.ts')
+	const { resetMockStores } = await import('#shared/mocks/stores.ts')
 	resetMockStores()
-	if (import.meta.env['DEV']) {
-		seedMockStoresForDev()
-	}
 
 	const { handlersArray } = await import('./handlers.ts')
 

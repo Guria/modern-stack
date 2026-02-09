@@ -9,11 +9,6 @@ const seedCounters: CounterRecord[] = [
 	{ id: 'counter-2', label: 'Secondary counter', value: 20 },
 ]
 
-const devSeedCounters: CounterRecord[] = [
-	{ id: 'counter-3', label: 'Dev counter #1', value: 100 },
-	{ id: 'counter-4', label: 'Dev counter #2', value: -5 },
-]
-
 const counterStore = new Map<string, CounterRecord>()
 let nextCounterNumber = 1
 
@@ -40,10 +35,6 @@ export function seedCounterStore(counters: CounterRecord[]): void {
 		counterStore.set(counter.id, cloneCounter(counter))
 		updateNextCounterNumber(counter.id)
 	}
-}
-
-export function seedCounterStoreForDev(): void {
-	seedCounterStore(devSeedCounters)
 }
 
 export function listCounters(): CounterRecord[] {
