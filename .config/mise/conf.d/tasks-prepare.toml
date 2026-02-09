@@ -12,6 +12,16 @@ run = "panda codegen"
 sources = ["{{ vars.panda_config }}", "theme/**/*.ts", "components.json"]
 outputs = ["{{ vars.panda_outdir }}/**/*"]
 
+[tasks."prepare:msw"]
+description = "Generate and verify Mock Service Worker"
+run = "bun .config/scripts/verify-msw-worker-version.ts --ensure"
+sources = [
+	"package.json",
+	"public/mockServiceWorker.js",
+	".config/scripts/verify-msw-worker-version.ts",
+]
+outputs = ["public/mockServiceWorker.js"]
+
 [tasks."prepare:git-hooks"]
 description = "Install Git hooks"
 run = "lefthook install"
@@ -29,6 +39,8 @@ fi
 description = "Prepare project"
 run = [
 	{ task = "prepare:panda" },
+	{ task = "prepare:msw" },
 	{ task = "prepare:git-hooks" },
 	{ task = "prepare:local-overrides" },
+	{ task = "format" },
 ]

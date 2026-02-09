@@ -48,6 +48,8 @@
 		"@vitest/browser-playwright": "^4.0.18",
 		"@vitest/coverage-v8": "^4.0.18",
 		"lefthook": "^2.0.15",
+		"msw": "^2.12.9",
+		"msw-storybook-addon": "^2.0.6",
 		"oxfmt": "^0.28.0",
 		"oxlint": "^1.42.0",
 		"playwright": "^1.58.0",
@@ -57,5 +59,10 @@
 	},
 	"peerDependencies": {
 		"typescript": "^5.8"
+	},
+	"msw": {
+		"workerDirectory": [
+			"public"
+		]
 	}
 }

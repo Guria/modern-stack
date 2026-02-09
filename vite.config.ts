@@ -23,6 +23,11 @@ export default defineConfig(() => ({
 							priority: 30,
 						},
 						{
+							name: 'vendor-msw',
+							test: /node_modules[\\/](msw|@mswjs|@open-draft|headers-polyfill|is-node-process|outvariant|strict-event-emitter)([\\/]|$)/,
+							priority: 20,
+						},
+						{
 							name: 'ui-vendor',
 							test: /node_modules[\\/](@ark|@ui|@zag-js)/,
 							priority: 15,

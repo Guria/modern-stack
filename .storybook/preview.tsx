@@ -5,9 +5,12 @@ import '../src/reatom.init.ts'
 import { reatomContext } from '@reatom/react'
 import addonA11y from '@storybook/addon-a11y'
 import { definePreview } from '@storybook/react-vite'
+import { initialize, mswLoader } from 'msw-storybook-addon'
 import { useMemo, type PropsWithChildren } from 'react'
 
 import { css } from '#styled-system/css'
+
+initialize({ onUnhandledRequest: 'bypass' })
 
 function ReatomDecorator({ children }: PropsWithChildren) {
 	// Create fresh context once per story mount to prevent state pollution
@@ -17,6 +20,7 @@ function ReatomDecorator({ children }: PropsWithChildren) {
 
 const preview = definePreview({
 	addons: [addonA11y()],
+	loaders: [mswLoader],
 	decorators: [
 		(Story) => (
 			<ReatomDecorator>
@@ -30,15 +34,8 @@ const preview = definePreview({
 		),
 	],
 	parameters: {
-		controls: {
-			matchers: {
-				color: /(background|color)$/i,
-				date: /Date$/i,
-			},
-		},
-		a11y: {
-			test: 'error',
-		},
+		a11y: { test: 'error' },
+		msw: { handlers: [] },
 	},
 })
 
