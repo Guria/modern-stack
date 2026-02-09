@@ -1,7 +1,7 @@
 'use client'
 import { ark } from '@ark-ui/react/factory'
 import { createContext, mergeProps } from '@ark-ui/react/utils'
-import { type ComponentProps, forwardRef, useMemo } from 'react'
+import { type ComponentProps, useMemo } from 'react'
 
 import { styled } from '#styled-system/jsx'
 import { type ButtonVariantProps, button } from '#styled-system/recipes'
@@ -35,7 +35,7 @@ const BaseButton = styled(ark.button, button)
 
 export interface ButtonProps extends BaseButtonProps, ButtonLoadingProps {}
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props, ref) {
+export const Button = function Button({ ref, ...props }: ButtonProps) {
 	const propsContext = useButtonPropsContext()
 	const buttonProps = useMemo(
 		() => mergeProps<ButtonProps>(propsContext, props),
@@ -60,20 +60,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 			)}
 		</BaseButton>
 	)
-})
+}
 
 export interface ButtonGroupProps extends GroupProps, ButtonVariantProps {}
 
-export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
-	function ButtonGroup(props, ref) {
-		const [variantProps, otherProps] = useMemo(() => button.splitVariantProps(props), [props])
-		return (
-			<ButtonPropsProvider value={variantProps}>
-				<Group ref={ref} {...otherProps} />
-			</ButtonPropsProvider>
-		)
-	},
-)
+export const ButtonGroup = function ButtonGroup({ ref, ...props }: ButtonGroupProps) {
+	const [variantProps, otherProps] = useMemo(() => button.splitVariantProps(props), [props])
+	return (
+		<ButtonPropsProvider value={variantProps}>
+			<Group ref={ref} {...otherProps} />
+		</ButtonPropsProvider>
+	)
+}
 
 const [ButtonPropsProvider, useButtonPropsContext] = createContext<ButtonVariantProps>({
 	name: 'ButtonPropsContext',

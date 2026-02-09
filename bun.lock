@@ -13,6 +13,7 @@
         "react-dom": "^19.2.3",
       },
       "devDependencies": {
+        "@codemod.com/jssg-types": "^1.3.2",
         "@pandacss/dev": "^1.8.1",
         "@storybook/addon-a11y": "^10.2.0",
         "@storybook/addon-docs": "^10.2.0",
@@ -90,6 +91,8 @@
     "@clack/core": ["@clack/core@0.5.0", "", { "dependencies": { "picocolors": "^1.0.0", "sisteransi": "^1.0.5" } }, "sha512-p3y0FIOwaYRUPRcMO7+dlmLh8PSRcrjuTndsiA0WAFbWES0mLZlrjVoBRZ9DzkPFJZG6KGkJmoEAY0ZcVWTkow=="],
 
     "@clack/prompts": ["@clack/prompts@0.11.0", "", { "dependencies": { "@clack/core": "0.5.0", "picocolors": "^1.0.0", "sisteransi": "^1.0.5" } }, "sha512-pMN5FcrEw9hUkZA4f+zLlzivQSeQf5dRGJjSUbvVYDLvpKCdQx5OaknvKzgbtXOizhP+SJJJjqEbOe55uKKfAw=="],
+
+    "@codemod.com/jssg-types": ["@codemod.com/jssg-types@1.3.2", "", {}, "sha512-nE4GfqKHW0YatzRfDMOHaj4qxV6PEk7mwNgvkHtvvktLMQ289hSRbeReTa4BuSs5tDp49MFLOceX7vkXvyMnMg=="],
 
     "@csstools/postcss-cascade-layers": ["@csstools/postcss-cascade-layers@5.0.2", "", { "dependencies": { "@csstools/selector-specificity": "^5.0.0", "postcss-selector-parser": "^7.0.0" }, "peerDependencies": { "postcss": "^8.4" } }, "sha512-nWBE08nhO8uWl6kSAeCx4im7QfVko3zLrtgWZY4/bP87zrSPpSyN/3W3TDqz1jJuH+kbKOHXg5rJnK+ZVYcFFg=="],
 
