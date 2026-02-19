@@ -24,15 +24,13 @@ initialize({
 
 function ReatomDecorator({
 	children,
-	initialPath = '/',
+	initialPath = '',
 }: PropsWithChildren<{ initialPath?: string }>) {
 	const frame = useMemo(() => context.start(), [])
 	frame.run(() => {
 		setupStorybookUrl()
 		// @ts-expect-error - Vite replaces this with the actual value at build time
-		const base = import.meta.env.BASE_URL?.replace(/\/$/, '') ?? ''
-		// @ts-expect-error - Vite replaces this with the actual value at build time
-		console.log({ initialPath, base, BASE_URL: import.meta.env.BASE_URL })
+		const base = import.meta.env.BASE_URL ?? ''
 		urlAtom.go(base + initialPath)
 	})
 	return <reatomContext.Provider value={frame}>{children}</reatomContext.Provider>

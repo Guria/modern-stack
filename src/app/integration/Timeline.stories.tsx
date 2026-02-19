@@ -41,7 +41,7 @@ const I = createMyself((I) => ({
 
 const meta = preview.meta({
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: '/timeline' },
+	parameters: { layout: 'fullscreen', initialPath: 'timeline' },
 	loaders: [(ctx) => void I.init(ctx)],
 })
 

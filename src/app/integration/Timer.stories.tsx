@@ -20,7 +20,7 @@ const I = createMyself((I) => ({
 
 const meta = preview.meta({
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: '/timer' },
+	parameters: { layout: 'fullscreen', initialPath: 'timer' },
 	loaders: [(ctx) => void I.init(ctx)],
 })
 

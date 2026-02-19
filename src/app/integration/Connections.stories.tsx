@@ -64,7 +64,7 @@ const I = createMyself((I) => ({
 
 const meta = preview.meta({
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: '/connections' },
+	parameters: { layout: 'fullscreen', initialPath: 'connections' },
 	loaders: [(ctx) => void I.init(ctx)],
 })
 

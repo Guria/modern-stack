@@ -11,7 +11,7 @@ const I = createMyself(() => ({}))
 
 const meta = preview.meta({
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: '/dashboard' },
+	parameters: { layout: 'fullscreen', initialPath: 'dashboard' },
 	loaders: [(ctx) => void I.init(ctx)],
 })
 
@@ -28,7 +28,7 @@ Default.test('shows upgrade to pro banner in sidebar footer', async () => {
 })
 
 export const ActiveUsageRoute = meta.story({
-	parameters: { initialPath: '/usage' },
+	parameters: { initialPath: 'usage' },
 })
 
 ActiveUsageRoute.test(
@@ -44,7 +44,7 @@ ActiveUsageRoute.test('marks usage card as current page in sidebar', async () =>
 })
 
 export const ActivePricingRoute = meta.story({
-	parameters: { initialPath: '/pricing' },
+	parameters: { initialPath: 'pricing' },
 })
 
 ActivePricingRoute.test(

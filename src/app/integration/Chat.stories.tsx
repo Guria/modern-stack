@@ -57,7 +57,7 @@ const I = createMyself((I) => ({
 
 const meta = preview.meta({
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: '/chat' },
+	parameters: { layout: 'fullscreen', initialPath: 'chat' },
 	loaders: [(ctx) => void I.init(ctx)],
 })
 

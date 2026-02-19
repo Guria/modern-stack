@@ -24,7 +24,7 @@ const I = createMyself((I) => ({
 
 const meta = preview.meta({
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: '/usage' },
+	parameters: { layout: 'fullscreen', initialPath: 'usage' },
 	loaders: [(ctx) => void I.init(ctx)],
 })
 

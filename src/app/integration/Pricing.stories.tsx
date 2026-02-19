@@ -20,7 +20,7 @@ const I = createMyself((I) => ({
 
 const meta = preview.meta({
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: '/pricing' },
+	parameters: { layout: 'fullscreen', initialPath: 'pricing' },
 	loaders: [(ctx) => void I.init(ctx)],
 })
 
