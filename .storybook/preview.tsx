@@ -1,6 +1,5 @@
 import '../src/reatom.init'
 import '../src/index.css'
-import { context, urlAtom } from '@reatom/core'
 import { reatomContext } from '@reatom/react'
 import addonA11y from '@storybook/addon-a11y'
 import { definePreview } from '@storybook/react-vite'
@@ -26,13 +25,7 @@ function ReatomDecorator({
 	children,
 	initialPath = '',
 }: PropsWithChildren<{ initialPath?: string }>) {
-	const frame = useMemo(() => context.start(), [])
-	frame.run(() => {
-		setupStorybookUrl()
-		// @ts-expect-error - Vite replaces this with the actual value at build time
-		const base = import.meta.env.BASE_URL ?? ''
-		urlAtom.go(base + initialPath)
-	})
+	const frame = useMemo(() => setupStorybookUrl(initialPath), [])
 	return <reatomContext.Provider value={frame}>{children}</reatomContext.Provider>
 }
 
