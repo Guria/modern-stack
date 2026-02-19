@@ -18,6 +18,7 @@ export function OrgSwitcher() {
 			border="none"
 			color="inherit"
 			_hover={{ bg: 'gray.3' }}
+			className={css({ '[data-sidebar-collapsed] &': { justifyContent: 'center' } })}
 		>
 			<styled.div
 				w="8"
@@ -34,7 +35,12 @@ export function OrgSwitcher() {
 			>
 				A
 			</styled.div>
-			<styled.div flex="1" minW="0" textAlign="left">
+			<styled.div
+				flex="1"
+				minW="0"
+				textAlign="left"
+				className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
+			>
 				<styled.div fontSize="sm" fontWeight="medium" truncate>
 					Acme Inc
 				</styled.div>
@@ -42,7 +48,15 @@ export function OrgSwitcher() {
 					alex@acme.io
 				</styled.div>
 			</styled.div>
-			<ChevronsUpDown className={css({ w: '4', h: '4', color: 'gray.11', flexShrink: '0' })} />
+			<ChevronsUpDown
+				className={css({
+					w: '4',
+					h: '4',
+					color: 'gray.11',
+					flexShrink: '0',
+					'[data-sidebar-collapsed] &': { display: 'none' },
+				})}
+			/>
 		</styled.button>
 	)
 }

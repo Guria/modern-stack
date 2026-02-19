@@ -1,3 +1,4 @@
+import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
 export function PricingBanner({ active }: { active?: boolean }) {
@@ -10,6 +11,7 @@ export function PricingBanner({ active }: { active?: boolean }) {
 			_hover={{ bg: 'gray.3' }}
 			cursor="pointer"
 			w="full"
+			className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
 		>
 			<styled.div fontWeight="medium" fontSize="sm" color="gray.12" mb="0.5">
 				Upgrade to Pro

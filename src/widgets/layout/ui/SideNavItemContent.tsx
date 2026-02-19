@@ -11,12 +11,28 @@ type Props = {
 
 export function SideNavItemContent({ Icon, label, trailing }: Props) {
 	return (
-		<styled.span display="inline-flex" alignItems="center" gap="2" w="100%" minW="0">
+		<styled.span
+			display="inline-flex"
+			alignItems="center"
+			gap="2"
+			w="full"
+			minW="0"
+			className={css({ '[data-sidebar-collapsed] &': { justifyContent: 'center' } })}
+		>
 			<Icon className={css({ w: '4', h: '4', flexShrink: '0' })} />
-			<styled.span flex="1" minW="0" truncate>
+			<styled.span
+				flex="1"
+				minW="0"
+				truncate
+				className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
+			>
 				{label}
 			</styled.span>
-			{trailing}
+			{trailing && (
+				<styled.span className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}>
+					{trailing}
+				</styled.span>
+			)}
 		</styled.span>
 	)
 }

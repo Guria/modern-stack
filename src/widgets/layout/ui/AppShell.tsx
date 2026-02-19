@@ -1,6 +1,6 @@
 import { reatomBoolean, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
-import { Menu, X } from 'lucide-react'
+import { Menu, PanelLeft } from 'lucide-react'
 import { type ReactNode } from 'react'
 
 import { Drawer, IconButton } from '#shared/components'
@@ -18,25 +18,22 @@ type AppShellProps = {
 }
 
 const sidebarAtom = reatomBoolean(false)
+const desktopSidebarCollapsedAtom = reatomBoolean(false)
 
 export const AppShell = reatomComponent(
 	({ sidebarHeader, sidebarContent, sidebarFooter, mobileHeader, children }: AppShellProps) => {
-		const sidebarPanel = (isMobile: boolean) => (
+		const isCollapsed = desktopSidebarCollapsedAtom()
+
+		const sidebarInner = (
 			<>
-				<styled.div display="flex" alignItems="center" justifyContent="space-between" mb="3">
-					<styled.div flex="1" px="2">
-						{sidebarHeader}
-					</styled.div>
-					{isMobile ? (
-						<IconButton
-							variant="plain"
-							size="sm"
-							display={{ base: 'inline-flex', md: 'none' }}
-							onClick={wrap(sidebarAtom.setFalse)}
-						>
-							<X className={css({ w: '4', h: '4' })} />
-						</IconButton>
-					) : null}
+				<styled.div
+					display="flex"
+					alignItems="center"
+					mb="3"
+					px="2"
+					className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
+				>
+					{sidebarHeader}
 				</styled.div>
 				<styled.div
 					flex="1"
@@ -58,6 +55,7 @@ export const AppShell = reatomComponent(
 
 		return (
 			<styled.div display="flex" minH="100dvh" position="relative">
+				{/* Mobile Drawer */}
 				<Drawer.Root
 					open={sidebarAtom()}
 					onOpenChange={wrap(({ open }) => void sidebarAtom.set(open))}
@@ -66,49 +64,67 @@ export const AppShell = reatomComponent(
 					<Drawer.Backdrop display={{ base: 'block', md: 'none' }} />
 					<Drawer.Positioner display={{ base: 'flex', md: 'none' }}>
 						<Drawer.Content maxW="220px" p="4" gap="1">
-							{sidebarPanel(true)}
+							{sidebarInner}
 						</Drawer.Content>
 					</Drawer.Positioner>
 				</Drawer.Root>
 
+				{/* Desktop Sidebar */}
 				<styled.aside
-					w="240px"
+					w={isCollapsed ? '60px' : '240px'}
+					overflow="hidden"
 					flexShrink={0}
 					bg="gray.2"
 					borderRightWidth="1px"
 					borderColor="gray.4"
 					display={{ base: 'none', md: 'flex' }}
 					flexDirection="column"
-					p="4"
+					p={isCollapsed ? '2' : '4'}
 					gap="1"
 					position={{ md: 'sticky' }}
 					top="0"
 					alignSelf={{ md: 'flex-start' }}
 					h="100dvh"
-					overflowY="auto"
+					className={css({ transition: 'width 0.2s ease, padding 0.2s ease' })}
+					data-sidebar-collapsed={isCollapsed ? '' : undefined}
 				>
-					{sidebarPanel(false)}
+					{sidebarInner}
 				</styled.aside>
 
+				{/* Main content */}
 				<styled.div display="flex" flex="1" flexDirection="column" minW="0">
 					<styled.header
-						display={{ base: 'flex', md: 'none' }}
+						display="flex"
 						alignItems="center"
 						gap="2"
-						p="3"
+						px={{ base: '3', md: '4' }}
+						h="14"
 						borderBottomWidth="1px"
 						borderColor="gray.4"
-						className={css({
-							'&:has(> a)': {
-								'& > button:first-child': {
-									display: 'none',
-								},
-							},
-						})}
+						position="sticky"
+						top="0"
+						zIndex="sticky"
+						bg="gray.1"
 					>
-						<IconButton variant="plain" size="sm" onClick={wrap(sidebarAtom.setTrue)}>
+						{/* Desktop: toggle sidebar */}
+						<IconButton
+							variant="plain"
+							size="sm"
+							display={{ base: 'none', md: 'inline-flex' }}
+							onClick={wrap(desktopSidebarCollapsedAtom.toggle)}
+						>
+							<PanelLeft className={css({ w: '5', h: '5' })} />
+						</IconButton>
+						{/* Mobile: open drawer */}
+						<IconButton
+							variant="plain"
+							size="sm"
+							display={{ base: 'inline-flex', md: 'none' }}
+							onClick={wrap(sidebarAtom.setTrue)}
+						>
 							<Menu className={css({ w: '5', h: '5' })} />
 						</IconButton>
+						<styled.div w="1px" h="5" bg="gray.5" flexShrink={0} />
 						{mobileHeader}
 					</styled.header>
 					{children}
