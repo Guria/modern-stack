@@ -30,7 +30,7 @@ function ReatomDecorator({
 	frame.run(() => {
 		setupStorybookUrl()
 		// @ts-expect-error - Vite replaces this with the actual value at build time
-		const base = import.meta.env.BASE_URL?.replace(/^\//, '') ?? ''
+		const base = import.meta.env.BASE_URL?.replace(/\/$/, '') ?? ''
 		// @ts-expect-error - Vite replaces this with the actual value at build time
 		console.log({ initialPath, base, BASE_URL: import.meta.env.BASE_URL })
 		urlAtom.go(base + initialPath)
