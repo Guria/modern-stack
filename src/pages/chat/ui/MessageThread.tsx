@@ -23,39 +23,41 @@ export function MessageThread({ conversation }: { conversation: Conversation }) 
 				<ConversationHeaderContent conversation={conversation} />
 			</styled.div>
 
-			<styled.div flex="1" overflowY="auto" p="6" display="flex" flexDirection="column" gap="4">
-				{conversation.messages.map((message) => (
-					<styled.div
-						key={message.id}
-						display="flex"
-						flexDirection="column"
-						alignItems={message.isOwn ? 'flex-end' : 'flex-start'}
-						maxW="75%"
-						alignSelf={message.isOwn ? 'flex-end' : 'flex-start'}
-					>
-						{!message.isOwn && (
-							<styled.span fontSize="xs" fontWeight="medium" mb="1" color="gray.11">
-								{message.sender}
-							</styled.span>
-						)}
+			<styled.div flex="1" overflowY="auto" p="6" display="flex" flexDirection="column">
+				<styled.div mt="auto" display="flex" flexDirection="column" gap="4">
+					{conversation.messages.map((message) => (
 						<styled.div
-							px="4"
-							py="2.5"
-							borderRadius="xl"
-							bg={message.isOwn ? 'colorPalette.9' : 'gray.3'}
-							color={message.isOwn ? 'white' : 'inherit'}
-							fontSize="sm"
-							lineHeight="relaxed"
-							borderBottomRightRadius={message.isOwn ? 'sm' : 'xl'}
-							borderBottomLeftRadius={message.isOwn ? 'xl' : 'sm'}
+							key={message.id}
+							display="flex"
+							flexDirection="column"
+							alignItems={message.isOwn ? 'flex-end' : 'flex-start'}
+							maxW="75%"
+							alignSelf={message.isOwn ? 'flex-end' : 'flex-start'}
 						>
-							{message.text}
+							{!message.isOwn && (
+								<styled.span fontSize="xs" fontWeight="medium" mb="1" color="gray.11">
+									{message.sender}
+								</styled.span>
+							)}
+							<styled.div
+								px="4"
+								py="2.5"
+								borderRadius="xl"
+								bg={message.isOwn ? 'colorPalette.9' : 'gray.3'}
+								color={message.isOwn ? 'white' : 'inherit'}
+								fontSize="sm"
+								lineHeight="relaxed"
+								borderBottomRightRadius={message.isOwn ? 'sm' : 'xl'}
+								borderBottomLeftRadius={message.isOwn ? 'xl' : 'sm'}
+							>
+								{message.text}
+							</styled.div>
+							<styled.span fontSize="2xs" color="gray.11" mt="1">
+								{message.time}
+							</styled.span>
 						</styled.div>
-						<styled.span fontSize="2xs" color="gray.11" mt="1">
-							{message.time}
-						</styled.span>
-					</styled.div>
-				))}
+					))}
+				</styled.div>
 			</styled.div>
 
 			<styled.div px="4" py="3" borderTopWidth="1px" borderColor="gray.4" flexShrink={0}>
