@@ -27,7 +27,7 @@ export const TimerPage = reatomComponent(() => {
 	const running = timerRunningAtom()
 
 	return (
-		<styled.div p="8" display="flex" justifyContent="center">
+		<styled.div p="8" display="flex" justifyContent="center" alignItems="center" minH="100dvh">
 			<styled.div w="320px" display="flex" flexDirection="column" alignItems="center" gap="6">
 				<styled.h1 fontSize="2xl" fontWeight="bold">
 					Timer

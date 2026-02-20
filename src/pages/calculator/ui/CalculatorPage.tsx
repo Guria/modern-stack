@@ -139,7 +139,7 @@ export const CalculatorPage = reatomComponent(() => {
 	const handleDigitClick = (digit: string) => wrap(() => inputDigit(digit))
 
 	return (
-		<styled.div p="8" display="flex" justifyContent="center">
+		<styled.div p="8" display="flex" justifyContent="center" alignItems="center" minH="100dvh">
 			<styled.div w="320px">
 				<styled.h1 fontSize="2xl" fontWeight="bold" mb="6">
 					Calculator
