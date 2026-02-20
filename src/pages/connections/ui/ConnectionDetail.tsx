@@ -1,5 +1,6 @@
 import type { Connection } from '#entities/connection'
 
+import { Button } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { ConnectionStatusBadge } from './components/ConnectionStatusBadge'
@@ -24,6 +25,12 @@ export function ConnectionDetail({ connection }: { connection: Connection }) {
 						{paragraph}
 					</styled.p>
 				))}
+			</styled.div>
+			<styled.div display="flex" gap="2" mt="8">
+				{connection.status === 'error' && <Button size="sm">Reconnect</Button>}
+				<Button size="sm" variant="outline">
+					Test connection
+				</Button>
 			</styled.div>
 		</styled.div>
 	)

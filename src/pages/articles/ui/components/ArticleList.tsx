@@ -1,5 +1,6 @@
 import type { Article } from '#entities/article'
 
+import { Button } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { ArticleListItem } from './ArticleListItem'
@@ -13,9 +14,22 @@ type ArticleListProps = {
 export function ArticleList({ articles, selectedId, getArticleHref }: ArticleListProps) {
 	return (
 		<>
-			<styled.h3 fontSize="sm" fontWeight="semibold" p="4" color="gray.11">
-				Articles
-			</styled.h3>
+			<styled.div
+				display="flex"
+				alignItems="center"
+				justifyContent="space-between"
+				px="4"
+				py="3"
+				borderBottomWidth="1px"
+				borderColor="gray.4"
+			>
+				<styled.h3 fontSize="sm" fontWeight="semibold" color="gray.11">
+					Articles
+				</styled.h3>
+				<Button size="xs" variant="plain">
+					+ New
+				</Button>
+			</styled.div>
 			{articles.map((article) => (
 				<ArticleListItem
 					key={article.id}

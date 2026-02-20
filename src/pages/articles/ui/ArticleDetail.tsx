@@ -1,5 +1,6 @@
 import type { Article } from '#entities/article'
 
+import { Button } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { ArticleStatusBadge } from './components/ArticleStatusBadge'
@@ -7,11 +8,14 @@ import { ArticleStatusBadge } from './components/ArticleStatusBadge'
 export function ArticleDetail({ article }: { article: Article }) {
 	return (
 		<styled.div p="8">
-			<styled.div display="flex" alignItems="center" gap="3" mb="6">
-				<styled.h1 fontSize="2xl" fontWeight="bold">
+			<styled.div display="flex" alignItems="center" gap="3" mb="6" flexWrap="wrap">
+				<styled.h1 fontSize="2xl" fontWeight="bold" flex="1">
 					{article.title}
 				</styled.h1>
 				<ArticleStatusBadge status={article.status} />
+				<Button size="sm" variant="outline">
+					Edit
+				</Button>
 			</styled.div>
 			<styled.p color="gray.11" fontSize="sm" lineHeight="relaxed">
 				{article.description}

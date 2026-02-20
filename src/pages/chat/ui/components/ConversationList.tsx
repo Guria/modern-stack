@@ -1,6 +1,9 @@
+import { SquarePen } from 'lucide-react'
+
 import type { Conversation } from '#entities/conversation'
 
-import { Avatar, Badge, Input } from '#shared/components'
+import { Avatar, Badge, Button, Input } from '#shared/components'
+import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
 type ConversationListProps = {
@@ -16,8 +19,18 @@ export function ConversationList({
 }: ConversationListProps) {
 	return (
 		<styled.div>
-			<styled.div p="4" borderBottomWidth="1px" borderColor="gray.4">
-				<Input placeholder="Search conversations..." size="sm" />
+			<styled.div
+				p="3"
+				borderBottomWidth="1px"
+				borderColor="gray.4"
+				display="flex"
+				gap="2"
+				alignItems="center"
+			>
+				<Input placeholder="Search conversations..." size="sm" flex="1" />
+				<Button size="sm" variant="plain" aria-label="New conversation">
+					<SquarePen className={css({ w: '4', h: '4' })} />
+				</Button>
 			</styled.div>
 			{conversations.map((conversation) => (
 				<styled.a
