@@ -1,10 +1,29 @@
-import { createListCollection } from '@ark-ui/react/select'
+import type { ChangeEvent } from 'react'
 
-import { Input, Select } from '#shared/components'
+import { createListCollection } from '@ark-ui/react/select'
+import { atom, wrap } from '@reatom/core'
+import { reatomComponent } from '@reatom/react'
+
+import { Button, Input, Select } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { FieldRow } from './components/FieldRow'
 import { Section } from './components/Section'
+
+// Profile atoms
+const displayNameAtom = atom('Alex Johnson', 'settings.displayName')
+const emailAtom = atom('alex@example.com', 'settings.email')
+const profileDirtyAtom = atom(false, 'settings.profileDirty')
+
+// Notifications atoms
+const emailNotifAtom = atom('important', 'settings.emailNotif')
+const desktopNotifAtom = atom('enabled', 'settings.desktopNotif')
+const notifDirtyAtom = atom(false, 'settings.notifDirty')
+
+// Appearance atoms
+const themeAtom = atom('system', 'settings.theme')
+const densityAtom = atom('comfortable', 'settings.density')
+const appearanceDirtyAtom = atom(false, 'settings.appearanceDirty')
 
 const emailNotificationsCollection = createListCollection({
 	items: [
@@ -45,19 +64,54 @@ const densityCollection = createListCollection({
 	itemToValue: (item) => item.value,
 })
 
-export function SettingsPage() {
+export const SettingsPage = reatomComponent(() => {
+	const displayName = displayNameAtom()
+	const email = emailAtom()
+	const profileDirty = profileDirtyAtom()
+
+	const emailNotif = emailNotifAtom()
+	const desktopNotif = desktopNotifAtom()
+	const notifDirty = notifDirtyAtom()
+
+	const theme = themeAtom()
+	const density = densityAtom()
+	const appearanceDirty = appearanceDirtyAtom()
+
 	return (
 		<styled.div p="8" maxW="800px">
 			<styled.h1 fontSize="2xl" fontWeight="bold" mb="8">
 				Settings
 			</styled.h1>
 
-			<Section title="Profile">
+			<Section
+				title="Profile"
+				footer={
+					profileDirty ? (
+						<Button size="sm" onClick={wrap(() => profileDirtyAtom.set(false))}>
+							Save changes
+						</Button>
+					) : null
+				}
+			>
 				<FieldRow label="Display name" description="Your name as shown to other users.">
-					<Input defaultValue="Alex Johnson" size="sm" />
+					<Input
+						value={displayName}
+						size="sm"
+						onChange={wrap((e: ChangeEvent<HTMLInputElement>) => {
+							displayNameAtom.set(e.target.value)
+							profileDirtyAtom.set(true)
+						})}
+					/>
 				</FieldRow>
 				<FieldRow label="Email" description="Used for notifications and account recovery.">
-					<Input defaultValue="alex@example.com" size="sm" />
+					<Input
+						value={email}
+						size="sm"
+						onChange={wrap((e: ChangeEvent<HTMLInputElement>) => {
+							emailAtom.set(e.target.value)
+							profileDirtyAtom.set(true)
+						})}
+					/>
 				</FieldRow>
 				<FieldRow label="Role">
 					<styled.span fontSize="sm" color="gray.11">
@@ -66,7 +120,16 @@ export function SettingsPage() {
 				</FieldRow>
 			</Section>
 
-			<Section title="Notifications">
+			<Section
+				title="Notifications"
+				footer={
+					notifDirty ? (
+						<Button size="sm" onClick={wrap(() => notifDirtyAtom.set(false))}>
+							Save changes
+						</Button>
+					) : null
+				}
+			>
 				<FieldRow
 					label="Email notifications"
 					description="Receive updates about activity in your projects."
@@ -75,7 +138,16 @@ export function SettingsPage() {
 						collection={emailNotificationsCollection}
 						size="sm"
 						w="100%"
-						defaultValue={['important']}
+						value={[emailNotif]}
+						onValueChange={wrap(
+							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
+								const val = details.value[0]
+								if (val !== undefined) {
+									emailNotifAtom.set(val)
+									notifDirtyAtom.set(true)
+								}
+							},
+						)}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -107,7 +179,16 @@ export function SettingsPage() {
 						collection={desktopNotificationsCollection}
 						size="sm"
 						w="100%"
-						defaultValue={['enabled']}
+						value={[desktopNotif]}
+						onValueChange={wrap(
+							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
+								const val = details.value[0]
+								if (val !== undefined) {
+									desktopNotifAtom.set(val)
+									notifDirtyAtom.set(true)
+								}
+							},
+						)}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -133,13 +214,31 @@ export function SettingsPage() {
 				</FieldRow>
 			</Section>
 
-			<Section title="Appearance">
+			<Section
+				title="Appearance"
+				footer={
+					appearanceDirty ? (
+						<Button size="sm" onClick={wrap(() => appearanceDirtyAtom.set(false))}>
+							Save changes
+						</Button>
+					) : null
+				}
+			>
 				<FieldRow label="Theme" description="Choose your preferred color scheme.">
 					<Select.Root
 						collection={themeCollection}
 						size="sm"
 						w="100%"
-						defaultValue={['system']}
+						value={[theme]}
+						onValueChange={wrap(
+							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
+								const val = details.value[0]
+								if (val !== undefined) {
+									themeAtom.set(val)
+									appearanceDirtyAtom.set(true)
+								}
+							},
+						)}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -168,7 +267,16 @@ export function SettingsPage() {
 						collection={densityCollection}
 						size="sm"
 						w="100%"
-						defaultValue={['comfortable']}
+						value={[density]}
+						onValueChange={wrap(
+							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
+								const val = details.value[0]
+								if (val !== undefined) {
+									densityAtom.set(val)
+									appearanceDirtyAtom.set(true)
+								}
+							},
+						)}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -195,4 +303,4 @@ export function SettingsPage() {
 			</Section>
 		</styled.div>
 	)
-}
+}, 'SettingsPage')

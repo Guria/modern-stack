@@ -5,9 +5,10 @@ import { styled } from '#styled-system/jsx'
 type SectionProps = {
 	title: string
 	children: ReactNode
+	footer?: ReactNode
 }
 
-export function Section({ title, children }: SectionProps) {
+export function Section({ title, children, footer }: SectionProps) {
 	return (
 		<styled.section mb="8">
 			<styled.h2
@@ -23,6 +24,7 @@ export function Section({ title, children }: SectionProps) {
 			<styled.div display="grid" gap="4">
 				{children}
 			</styled.div>
+			{footer && <styled.div mt="4">{footer}</styled.div>}
 		</styled.section>
 	)
 }
