@@ -9,6 +9,7 @@ import { field } from './field'
 import { group } from './group'
 import { icon } from './icon'
 import { input } from './input'
+import { kbd } from './kbd'
 import { menu } from './menu'
 import { progress } from './progress'
 import { scrollArea } from './scroll-area'
@@ -39,5 +40,6 @@ export const recipes = {
 	breadcrumb,
 	toast,
 	icon,
+	kbd,
 }
 export const slotRecipes = {}
