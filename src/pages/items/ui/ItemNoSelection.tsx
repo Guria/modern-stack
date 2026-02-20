@@ -16,7 +16,7 @@ export function ItemNoSelection() {
 			p="8"
 			textAlign="center"
 		>
-			<Package className={css({ w: '10', h: '10', color: 'gray.8' })} />
+			<Package className={css({ w: '10', h: '10', color: 'gray.subtle.fg' })} />
 			<styled.p fontWeight="medium" fontSize="sm">
 				No item selected
 			</styled.p>
