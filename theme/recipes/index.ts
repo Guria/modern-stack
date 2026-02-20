@@ -1,11 +1,13 @@
 import { absoluteCenter } from './absolute-center'
 import { avatar } from './avatar'
 import { badge } from './badge'
+import { breadcrumb } from './breadcrumb'
 import { button } from './button'
 import { card } from './card'
 import { drawer } from './drawer'
 import { field } from './field'
 import { group } from './group'
+import { icon } from './icon'
 import { input } from './input'
 import { menu } from './menu'
 import { progress } from './progress'
@@ -15,6 +17,7 @@ import { skeleton } from './skeleton'
 import { spinner } from './spinner'
 import { splitter } from './splitter'
 import { table } from './table'
+import { toast } from './toast'
 export const recipes = {
 	button,
 	group,
@@ -33,5 +36,8 @@ export const recipes = {
 	splitter,
 	table,
 	field,
+	breadcrumb,
+	toast,
+	icon,
 }
 export const slotRecipes = {}

@@ -15,6 +15,7 @@ export const GlobalLoader = reatomComponent(() => {
 			left="0"
 			right="0"
 			pointerEvents="none"
+			zIndex="banner"
 			hidden={!isSomeLoaderPending()}
 		>
 			<Progress.Track>
