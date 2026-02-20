@@ -27,8 +27,9 @@ export const AppShell = reatomComponent(
 		const preference = themePreferenceAtom()
 		const resolved = resolvedThemeAtom()
 		const cycleTheme = wrap(() => {
+			const current = themePreferenceAtom()
 			const next = { system: 'light', light: 'dark', dark: 'system' } as const
-			themePreferenceAtom.set(next[preference])
+			themePreferenceAtom.set(next[current])
 		})
 
 		const sidebarInner = (

@@ -20,8 +20,10 @@ if (import.meta.env['DEV']) {
 	rootFrame.run(connectLogger)
 }
 
-resolvedThemeAtom.subscribe((theme) => {
-	document.documentElement.classList.toggle('dark', theme === 'dark')
+rootFrame.run(() => {
+	resolvedThemeAtom.subscribe((theme) => {
+		document.documentElement.classList.toggle('dark', theme === 'dark')
+	})
 })
 
 createRoot(root).render(
