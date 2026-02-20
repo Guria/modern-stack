@@ -1,6 +1,9 @@
+import { Plus } from 'lucide-react'
+
 import type { Article } from '#entities/article'
 
-import { Button } from '#shared/components'
+import { IconButton } from '#shared/components'
+import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
 import { ArticleListItem } from './ArticleListItem'
@@ -26,9 +29,9 @@ export function ArticleList({ articles, selectedId, getArticleHref }: ArticleLis
 				<styled.h3 fontSize="sm" fontWeight="semibold" color="gray.11">
 					Articles
 				</styled.h3>
-				<Button size="xs" variant="plain">
-					+ New
-				</Button>
+				<IconButton size="xs" variant="plain" aria-label="New article">
+					<Plus className={css({ w: '4', h: '4' })} />
+				</IconButton>
 			</styled.div>
 			{articles.map((article) => (
 				<ArticleListItem
