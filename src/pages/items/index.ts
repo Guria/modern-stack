@@ -1,2 +1,2 @@
-export { itemsRoute } from './model/routes'
+export { itemsRoute, itemDetailRoute } from './model/routes'
 export { ItemsNavItem } from './ui/ItemsNavItem'
