@@ -1,14 +1,24 @@
+import { Badge } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
+const currentPlan = 'free'
+
 const plans = [
-	{ name: 'Free', price: '$0/mo', features: ['1 GB storage', '3 users', 'Community support'] },
 	{
+		id: 'free',
+		name: 'Free',
+		price: '$0/mo',
+		features: ['1 GB storage', '3 users', 'Community support'],
+	},
+	{
+		id: 'pro',
 		name: 'Pro',
 		price: '$12/mo',
 		features: ['10 GB storage', '10 users', 'Priority support'],
 		highlighted: true,
 	},
 	{
+		id: 'team',
 		name: 'Team',
 		price: '$29/mo',
 		features: ['100 GB storage', 'Unlimited users', 'Dedicated support'],
@@ -20,12 +30,23 @@ function PlanCard({
 	price,
 	features,
 	highlighted,
+	isCurrent,
 }: {
 	name: string
 	price: string
 	features: string[]
 	highlighted?: boolean
+	isCurrent?: boolean
 }) {
+	let buttonLabel: string
+	if (isCurrent) {
+		buttonLabel = 'Current plan'
+	} else if (highlighted) {
+		buttonLabel = 'Upgrade to Pro'
+	} else {
+		buttonLabel = `Get ${name}`
+	}
+
 	return (
 		<styled.div
 			p="6"
@@ -38,8 +59,21 @@ function PlanCard({
 			gap="4"
 		>
 			<styled.div>
-				<styled.div fontSize="lg" fontWeight="semibold" mb="1">
-					{name}
+				<styled.div display="flex" alignItems="center" gap="2" mb="1">
+					<styled.span fontSize="lg" fontWeight="semibold">
+						{name}
+					</styled.span>
+					{isCurrent && (
+						<Badge
+							bg="green.subtle.bg"
+							color="green.subtle.fg"
+							borderWidth="1px"
+							borderColor="green.subtle.fg"
+							size="sm"
+						>
+							Current plan
+						</Badge>
+					)}
 				</styled.div>
 				<styled.div fontSize="2xl" fontWeight="bold">
 					{price}
@@ -68,13 +102,15 @@ function PlanCard({
 				borderRadius="md"
 				fontSize="sm"
 				fontWeight="medium"
-				cursor="pointer"
-				bg={highlighted ? 'blue.9' : 'gray.4'}
-				color={highlighted ? 'white' : 'gray.12'}
-				_hover={{ bg: highlighted ? 'blue.10' : 'gray.5' }}
+				cursor={isCurrent ? 'default' : 'pointer'}
+				bg={isCurrent ? 'gray.3' : highlighted ? 'blue.9' : 'gray.4'}
+				color={isCurrent ? 'gray.9' : highlighted ? 'white' : 'gray.12'}
+				_hover={{ bg: isCurrent ? 'gray.3' : highlighted ? 'blue.10' : 'gray.5' }}
 				border="none"
+				disabled={isCurrent}
+				aria-disabled={isCurrent}
 			>
-				{highlighted ? 'Upgrade to Pro' : `Get ${name}`}
+				{buttonLabel}
 			</styled.button>
 		</styled.div>
 	)
@@ -96,7 +132,7 @@ export function PricingPage() {
 				gap="4"
 			>
 				{plans.map((plan) => (
-					<PlanCard key={plan.name} {...plan} />
+					<PlanCard key={plan.name} {...plan} isCurrent={plan.id === currentPlan} />
 				))}
 			</styled.div>
 		</styled.div>
