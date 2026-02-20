@@ -1,4 +1,4 @@
-import { Badge } from '#shared/components'
+import { Badge, Button } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 const currentPlan = 'free'
@@ -94,24 +94,15 @@ function PlanCard({
 					</styled.li>
 				))}
 			</styled.ul>
-			<styled.button
-				type="button"
+			<Button
 				mt="auto"
-				px="4"
-				py="2"
-				borderRadius="md"
-				fontSize="sm"
-				fontWeight="medium"
-				cursor={isCurrent ? 'default' : 'pointer'}
-				bg={isCurrent ? 'gray.3' : highlighted ? 'blue.9' : 'gray.4'}
-				color={isCurrent ? 'gray.9' : highlighted ? 'white' : 'gray.12'}
-				_hover={{ bg: isCurrent ? 'gray.3' : highlighted ? 'blue.10' : 'gray.5' }}
-				border="none"
+				w="full"
+				{...(highlighted && { colorPalette: 'blue' })}
+				variant={isCurrent ? 'subtle' : highlighted ? 'solid' : 'outline'}
 				disabled={isCurrent}
-				aria-disabled={isCurrent}
 			>
 				{buttonLabel}
-			</styled.button>
+			</Button>
 		</styled.div>
 	)
 }
