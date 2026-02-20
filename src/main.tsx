@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client'
 
 import { App } from '#app/App.tsx'
 import { startBrowserMocking } from '#app/mocks/browser'
+import { resolvedThemeAtom } from '#shared/model/theme'
 import { css } from '#styled-system/css'
 
 await startBrowserMocking()
@@ -18,6 +19,10 @@ const rootFrame = context.start()
 if (import.meta.env['DEV']) {
 	rootFrame.run(connectLogger)
 }
+
+resolvedThemeAtom.subscribe((theme) => {
+	document.documentElement.classList.toggle('dark', theme === 'dark')
+})
 
 createRoot(root).render(
 	<reatomContext.Provider value={rootFrame}>

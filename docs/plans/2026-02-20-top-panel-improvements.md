@@ -109,12 +109,12 @@ rootFrame.run((ctx) => {
 
 **Steps:**
 
-- [ ] Create `src/shared/model/theme.ts` with `isDarkModeMedia`, `themePreferenceAtom`, `resolvedThemeAtom`
+- [x] Create `src/shared/model/theme.ts` with `isDarkModeMedia`, `themePreferenceAtom`, `resolvedThemeAtom`
   - `themePreferenceAtom`: `reatomEnum(['system','light','dark'] as const, 'themePreference').extend(withLocalStorage('theme'))`
   - `resolvedThemeAtom`: `computed(ctx => ...)` — resolves 'system' via `isDarkModeMedia`
-- [ ] Wire DOM side effect in `src/main.tsx`: `rootFrame.run(ctx => ctx.subscribe(resolvedThemeAtom, theme => document.documentElement.classList.toggle('dark', theme === 'dark')))`
+- [x] Wire DOM side effect in `src/main.tsx`: `rootFrame.run(ctx => ctx.subscribe(resolvedThemeAtom, theme => document.documentElement.classList.toggle('dark', theme === 'dark')))`
   - Import `resolvedThemeAtom` from `'./shared/model/theme'` (or the shared alias if one exists)
-- [ ] Run `npm run typecheck` — no errors
+- [x] Run `npm run typecheck` — no errors
 
 ---
 
