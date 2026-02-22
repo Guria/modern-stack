@@ -7,7 +7,7 @@ import { timelineRoute } from '../model/routes'
 
 export const TimelineNavItem = reatomComponent(
 	() => (
-		<a href={timelineRoute.path({})}>
+		<a href={timelineRoute.path()}>
 			<SideNavButton active={timelineRoute.match()}>
 				<SideNavItemContent Icon={Clock} label="Timeline" />
 			</SideNavButton>

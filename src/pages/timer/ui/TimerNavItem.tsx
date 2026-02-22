@@ -18,7 +18,7 @@ const TimerTrailing = reatomComponent(() => {
 
 export const TimerNavItem = reatomComponent(
 	() => (
-		<a href={timerRoute.path({})}>
+		<a href={timerRoute.path()}>
 			<SideNavButton active={timerRoute.match()}>
 				<SideNavItemContent Icon={() => <TimerRing />} label="Timer" trailing={<TimerTrailing />} />
 			</SideNavButton>

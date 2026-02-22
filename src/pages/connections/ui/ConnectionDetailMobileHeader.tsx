@@ -11,7 +11,7 @@ export const ConnectionDetailMobileHeader = reatomComponent(() => {
 	const isLoading = connectionDetailRoute.loader.pending() > 0
 	return (
 		<>
-			<BackButton href={connectionsRoute.path({})} label="Back to connections" />
+			<BackButton href={connectionsRoute.path()} label="Back to connections" />
 			{isLoading ? (
 				<Skeleton h="5" w="28" borderRadius="sm" />
 			) : (

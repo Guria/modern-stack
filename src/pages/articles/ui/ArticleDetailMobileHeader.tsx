@@ -11,7 +11,7 @@ export const ArticleDetailMobileHeader = reatomComponent(() => {
 	const isLoading = articleDetailRoute.loader.pending() > 0
 	return (
 		<>
-			<BackButton href={articlesRoute.path({})} label="Back to articles" />
+			<BackButton href={articlesRoute.path()} label="Back to articles" />
 			{isLoading ? (
 				<Skeleton h="5" w="28" borderRadius="sm" />
 			) : (

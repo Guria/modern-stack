@@ -7,7 +7,7 @@ import { settingsRoute } from '../model/routes'
 
 export const SettingsNavItem = reatomComponent(
 	() => (
-		<a href={settingsRoute.path({})}>
+		<a href={settingsRoute.path()}>
 			<SideNavButton active={settingsRoute.match()}>
 				<SideNavItemContent Icon={Settings} label="Settings" />
 			</SideNavButton>
