@@ -18,8 +18,8 @@ type AppShellProps = {
 	children: ReactNode
 }
 
-const sidebarAtom = reatomBoolean(false)
-const desktopSidebarCollapsedAtom = reatomBoolean(false)
+const sidebarAtom = reatomBoolean(false, 'sidebar.open')
+const desktopSidebarCollapsedAtom = reatomBoolean(false, 'desktopSidebar.collapsed')
 
 export const AppShell = reatomComponent(
 	({ sidebarHeader, sidebarContent, sidebarFooter, mobileHeader, children }: AppShellProps) => {

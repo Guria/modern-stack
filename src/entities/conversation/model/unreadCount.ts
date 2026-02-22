@@ -4,7 +4,7 @@ import { fetchConversationsUnreadCount } from '#entities/conversation/api/conver
 
 export const conversationUnreadCountAtom = computed(
 	() => fetchConversationsUnreadCount(),
-	'conversationUnreadCountAtom',
+	'conversationUnreadCount',
 ).extend(
 	withAsyncData(),
 	withConnectHook((target) => {
