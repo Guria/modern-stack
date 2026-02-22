@@ -1,4 +1,4 @@
-import { action, atom, withChangeHook, wrap } from '@reatom/core'
+import { action, atom, computed, withChangeHook, wrap } from '@reatom/core'
 
 export const timerDurationAtom = atom(300, 'timer.duration')
 export const timerRemainingAtom = atom(300, 'timer.remaining')
@@ -27,7 +27,7 @@ export const timerRunningAtom = atom(false, 'timer.running').extend(
 	}),
 )
 
-export const timerProgressAtom = atom(
+export const timerProgressAtom = computed(
 	() => (timerDurationAtom() === 0 ? 0 : timerRemainingAtom() / timerDurationAtom()),
 	'timer.progress',
 )
