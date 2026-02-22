@@ -1,4 +1,4 @@
-import '../src/reatom.init'
+import '../src/setup'
 import '../src/index.css'
 import { reatomContext } from '@reatom/react'
 import addonA11y from '@storybook/addon-a11y'

@@ -12,7 +12,7 @@ export const ChatNavItem = reatomComponent(() => {
 		chatRoute.loader
 			.data()
 			?.reduce((totalUnread, conversation) => totalUnread + conversation.unread, 0) ?? null
-	const unreadCount = routeUnreadCount ?? conversationUnreadCountAtom() ?? 0
+	const unreadCount = routeUnreadCount ?? conversationUnreadCountAtom.data() ?? 0
 	const unreadBadge =
 		unreadCount > 0 ? (
 			<Badge

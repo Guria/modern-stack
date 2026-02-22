@@ -1,5 +1,5 @@
 import { createListCollection } from '@ark-ui/react/select'
-import { atom, withSearchParams, wrap } from '@reatom/core'
+import { reatomEnum, withSearchParams, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import type { Category, Item } from '#entities/item'
@@ -9,14 +9,11 @@ import { styled } from '#styled-system/jsx'
 
 import { CategoryBadge } from './components/CategoryBadge'
 
-type SortField = 'name' | 'price'
-type SortDir = 'asc' | 'desc'
-
 const sortFieldCollection = createListCollection({
 	items: [
 		{ label: 'Name', value: 'name' },
 		{ label: 'Price', value: 'price' },
-	] as const satisfies ReadonlyArray<{ label: string; value: SortField }>,
+	] as const satisfies ReadonlyArray<{ label: string; value: 'name' | 'price' }>,
 	itemToString: (item) => item.label,
 	itemToValue: (item) => item.value,
 })
@@ -46,15 +43,20 @@ const stockCollection = createListCollection({
 	itemToValue: (item) => item.value,
 })
 
-const sortFieldAtom = atom<SortField>('name', 'items.sortField').extend(withSearchParams('sort'))
-const sortDirAtom = atom<SortDir>('asc', 'items.sortDir').extend(withSearchParams('dir'))
-const categoryFilterAtom = atom<Category | 'all'>('all', 'items.categoryFilter').extend(
-	withSearchParams('category'),
+const sortFieldAtom = reatomEnum(['name', 'price'], 'items.sortField').extend(
+	withSearchParams('sort'),
 )
-const stockFilterAtom = atom<'all' | 'in-stock' | 'out-of-stock'>(
-	'all',
-	'items.stockFilter',
-).extend(withSearchParams('stock'))
+
+const sortDirAtom = reatomEnum(['asc', 'desc'], 'items.sortDir').extend(withSearchParams('dir'))
+
+const categoryFilterAtom = reatomEnum(
+	['all', 'electronics', 'furniture', 'clothing', 'food'],
+	'items.categoryFilter',
+).extend(withSearchParams('category'))
+
+const stockFilterAtom = reatomEnum(['all', 'in-stock', 'out-of-stock'], 'items.stockFilter').extend(
+	withSearchParams('stock'),
+)
 
 type ItemsPageProps = {
 	items: Item[]
@@ -69,7 +71,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 	const handleSortFieldChange = wrap((details: Select.ValueChangeDetails) => {
 		const value = details.value[0]
 		if (value) {
-			sortFieldAtom.set(value as SortField)
+			sortFieldAtom.set(value as keyof typeof sortFieldAtom.enum)
 		}
 	})
 	const handleSortDirectionClick = wrap(() => {
@@ -78,13 +80,13 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 	const handleCategoryFilterChange = wrap((details: Select.ValueChangeDetails) => {
 		const value = details.value[0]
 		if (value) {
-			categoryFilterAtom.set(value as Category | 'all')
+			categoryFilterAtom.set(value as keyof typeof categoryFilterAtom.enum)
 		}
 	})
 	const handleStockFilterChange = wrap((details: Select.ValueChangeDetails) => {
 		const value = details.value[0]
 		if (value) {
-			stockFilterAtom.set(value as 'all' | 'in-stock' | 'out-of-stock')
+			stockFilterAtom.set(value as keyof typeof stockFilterAtom.enum)
 		}
 	})
 

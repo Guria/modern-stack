@@ -1,6 +1,6 @@
 import './index.css'
-import './reatom.init'
-import { assert, connectLogger, context } from '@reatom/core'
+import './setup' // import before any other reatom code!
+import { assert } from '@reatom/core'
 import { reatomContext } from '@reatom/react'
 import { createRoot } from 'react-dom/client'
 
@@ -9,16 +9,13 @@ import { startBrowserMocking } from '#app/mocks/browser'
 import { resolvedThemeAtom } from '#shared/model'
 import { css } from '#styled-system/css'
 
+import { rootFrame } from './setup'
+
 await startBrowserMocking()
 
 const root = document.getElementById('root')
 assert(root, 'Root element not found')
 root.classList.add(css({ colorPalette: 'indigo' }))
-
-const rootFrame = context.start()
-if (import.meta.env['DEV']) {
-	rootFrame.run(connectLogger)
-}
 
 rootFrame.run(() => {
 	resolvedThemeAtom.subscribe((theme) => {

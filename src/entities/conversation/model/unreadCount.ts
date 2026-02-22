@@ -1,13 +1,13 @@
-import { atom, withConnectHook, wrap } from '@reatom/core'
+import { computed, withAsyncData, withConnectHook } from '@reatom/core'
 
 import { fetchConversationsUnreadCount } from '#entities/conversation/api/conversationsApi'
 
-export const conversationUnreadCountAtom = atom<number | null>(
-	null,
-	'conversationUnreadCountAtom',
+export const conversationUnreadCountAtom = computed(
+	() => fetchConversationsUnreadCount(),
+	'conversationUnreadCount',
 ).extend(
-	withConnectHook(async () => {
-		const unreadCount = await wrap(fetchConversationsUnreadCount())
-		conversationUnreadCountAtom.set(unreadCount)
+	withAsyncData(),
+	withConnectHook((target) => {
+		if (!target.ready()) target.retry()
 	}),
 )

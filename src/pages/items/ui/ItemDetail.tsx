@@ -5,13 +5,13 @@ import { styled } from '#styled-system/jsx'
 
 import { CategoryBadge } from './components/CategoryBadge'
 
-export function ItemDetail({ item }: { item: Item }) {
+export function ItemDetail({ item, itemsHref }: { item: Item; itemsHref: string }) {
 	return (
 		<styled.div p="8" maxW="600px">
 			<Breadcrumb.Root mb="6">
 				<Breadcrumb.List>
 					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/items">Items</Breadcrumb.Link>
+						<Breadcrumb.Link href={itemsHref}>Items</Breadcrumb.Link>
 					</Breadcrumb.Item>
 					<Breadcrumb.Separator />
 					<Breadcrumb.Item aria-current="page">{item.name}</Breadcrumb.Item>

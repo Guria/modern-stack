@@ -7,7 +7,7 @@ import { calculatorRoute } from '../model/routes'
 
 export const CalculatorNavItem = reatomComponent(
 	() => (
-		<a href={calculatorRoute.path({})}>
+		<a href={calculatorRoute.path()}>
 			<SideNavButton active={calculatorRoute.match()}>
 				<SideNavItemContent Icon={Calculator} label="Calculator" />
 			</SideNavButton>

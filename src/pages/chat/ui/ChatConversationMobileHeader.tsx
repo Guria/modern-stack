@@ -12,7 +12,7 @@ export const ChatConversationMobileHeader = reatomComponent(() => {
 	const isLoadingConversation = chatConversationRoute.loader.pending() > 0
 	return (
 		<>
-			<BackButton href={chatRoute.path({})} label="Back to conversations" />
+			<BackButton href={chatRoute.path()} label="Back to conversations" />
 			{isLoadingConversation ? (
 				<ConversationHeaderContentLoading />
 			) : conversation ? (

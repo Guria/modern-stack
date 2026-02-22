@@ -1,4 +1,3 @@
-import { withConnectHook } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import { Toaster } from '#shared/components'
@@ -7,19 +6,9 @@ import { AppShell } from '#widgets/layout'
 
 import { MobileHeader } from './MobileHeader'
 import { OrgSwitcher } from './OrgSwitcher'
-import { dashboardRoute, rootRoute } from './routes'
+import { rootRoute } from './routes'
 import { SidebarFooterNavigation } from './SidebarFooterNavigation'
 import { SidebarNavigation } from './SidebarNavigation'
-
-rootRoute.extend(
-	withConnectHook((target) => {
-		return target.exact.subscribe((isExact) => {
-			if (isExact) {
-				dashboardRoute.go(undefined, true)
-			}
-		})
-	}),
-)
 
 export const App = reatomComponent(() => {
 	return (

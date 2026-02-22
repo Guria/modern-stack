@@ -7,7 +7,7 @@ import { connectionsRoute } from '../model/routes'
 
 export const ConnectionsNavItem = reatomComponent(
 	() => (
-		<a href={connectionsRoute.path({})}>
+		<a href={connectionsRoute.path()}>
 			<SideNavButton active={connectionsRoute.match()}>
 				<SideNavItemContent Icon={Link2} label="Connections" />
 			</SideNavButton>

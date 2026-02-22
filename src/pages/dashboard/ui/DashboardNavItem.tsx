@@ -7,7 +7,7 @@ import { dashboardRoute } from '../model/routes'
 
 export const DashboardNavItem = reatomComponent(
 	() => (
-		<a href={dashboardRoute.path({})}>
+		<a href={dashboardRoute.path()}>
 			<SideNavButton active={dashboardRoute.match()}>
 				<SideNavItemContent Icon={LayoutDashboard} label="Dashboard" />
 			</SideNavButton>
