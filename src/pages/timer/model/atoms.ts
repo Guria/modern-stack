@@ -1,28 +1,27 @@
-import { action, atom, computed, withChangeHook, wrap } from '@reatom/core'
+import { action, atom, computed, sleep, withAbort, withChangeHook, wrap } from '@reatom/core'
 
 export const timerDurationAtom = atom(300, 'timer.duration')
 export const timerRemainingAtom = atom(300, 'timer.remaining')
 
-const tick = action(() => {
-	const remaining = timerRemainingAtom() - 1
-	if (remaining <= 0) {
-		timerRemainingAtom.set(0)
-		timerRunningAtom.set(false)
-	} else {
-		timerRemainingAtom.set(remaining)
+const tick = action(async () => {
+	while (true) {
+		await wrap(sleep(1000))
+		const remaining = timerRemainingAtom() - 1
+		if (remaining <= 0) {
+			timerRemainingAtom.set(0)
+			timerRunningAtom.set(false)
+		} else {
+			timerRemainingAtom.set(remaining)
+		}
 	}
-}, 'timer.tick')
-
-let intervalId: ReturnType<typeof setInterval> | null = null
+}, 'timer.tick').extend(withAbort())
 
 export const timerRunningAtom = atom(false, 'timer.running').extend(
 	withChangeHook((isRunning) => {
-		if (intervalId !== null) {
-			clearInterval(intervalId)
-			intervalId = null
-		}
 		if (isRunning) {
-			intervalId = setInterval(wrap(tick), 1000)
+			tick()
+		} else {
+			tick.abort()
 		}
 	}),
 )
