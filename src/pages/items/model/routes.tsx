@@ -43,7 +43,11 @@ export const itemDetailRoute = itemsRoute.reatomRoute(
 		render: (self) => {
 			if (self.loader.pending() > 0) return <ItemDetailLoadingState />
 			const item = self.loader.data()
-			return item ? <ItemDetail item={item} /> : <ItemNotFound itemId={self().itemId} />
+			return item ? (
+				<ItemDetail item={item} itemsHref={itemsRoute.path()} />
+			) : (
+				<ItemNotFound itemId={self().itemId} />
+			)
 		},
 	},
 	'itemDetail',
