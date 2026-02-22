@@ -17,6 +17,7 @@ import { select } from './select'
 import { skeleton } from './skeleton'
 import { spinner } from './spinner'
 import { splitter } from './splitter'
+import { switchRecipe } from './switch'
 import { table } from './table'
 import { toast } from './toast'
 export const recipes = {
@@ -41,5 +42,6 @@ export const recipes = {
 	toast,
 	icon,
 	kbd,
+	switchRecipe,
 }
 export const slotRecipes = {}

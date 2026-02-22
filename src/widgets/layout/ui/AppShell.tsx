@@ -1,10 +1,28 @@
 import { reatomBoolean, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
-import { Github, Menu, Monitor, Moon, PanelLeft, Search, Sun } from 'lucide-react'
+import {
+	Github,
+	Languages,
+	Menu as MenuIcon,
+	Monitor,
+	Moon,
+	PanelLeft,
+	Search,
+	Sun,
+} from 'lucide-react'
 import { type ReactNode } from 'react'
 
-import { Drawer, IconButton, Input } from '#shared/components'
-import { resolvedThemeAtom, themePreferenceAtom } from '#shared/model'
+import { m } from '#paraglide/messages.js'
+import { isLocale } from '#paraglide/runtime.js'
+import { Drawer, IconButton, Input, Menu } from '#shared/components'
+import {
+	localeAtom,
+	resolvedThemeAtom,
+	showGithubLinkInTopBarAtom,
+	showLanguageSwitcherInTopBarAtom,
+	showThemeSwitcherInTopBarAtom,
+	themePreferenceAtom,
+} from '#shared/model'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
@@ -26,6 +44,15 @@ export const AppShell = reatomComponent(
 		const isCollapsed = desktopSidebarCollapsedAtom()
 		const preference = themePreferenceAtom()
 		const resolved = resolvedThemeAtom()
+		const showLanguageSwitcher = showLanguageSwitcherInTopBarAtom()
+		const showGithubLink = showGithubLinkInTopBarAtom()
+		const showThemeSwitcher = showThemeSwitcherInTopBarAtom()
+		const locale = localeAtom()
+		const handleLocaleChange = wrap(({ value }: { value: string }) => {
+			if (isLocale(value)) {
+				localeAtom.set(value)
+			}
+		})
 		const cycleTheme = wrap(() => {
 			const current = themePreferenceAtom()
 			const next = { system: 'light', light: 'dark', dark: 'system' } as const
@@ -130,7 +157,7 @@ export const AppShell = reatomComponent(
 							display={{ base: 'inline-flex', md: 'none' }}
 							onClick={wrap(sidebarAtom.setTrue)}
 						>
-							<Menu className={css({ w: '5', h: '5' })} />
+							<MenuIcon className={css({ w: '5', h: '5' })} />
 						</IconButton>
 						<styled.div w="1px" h="5" bg="gray.5" flexShrink={0} />
 						<styled.div display={{ base: 'flex', md: 'none' }} alignItems="center">
@@ -157,36 +184,72 @@ export const AppShell = reatomComponent(
 							</styled.kbd>
 						</styled.div>
 						<styled.div ml="auto" />
-						<IconButton
-							variant="plain"
-							size="sm"
-							display={{ base: 'none', md: 'inline-flex' }}
-							asChild
-							aria-label="View source on GitHub"
-						>
-							<a
-								href="https://github.com/guria/modern-stack"
-								target="_blank"
-								rel="noopener noreferrer"
+						{showGithubLink && (
+							<IconButton
+								variant="plain"
+								size="sm"
+								display={{ base: 'none', md: 'inline-flex' }}
+								asChild
+								aria-label="View source on GitHub"
 							>
-								<Github className={css({ w: '4', h: '4' })} />
-							</a>
-						</IconButton>
-						<IconButton
-							variant="plain"
-							size="sm"
-							display={{ base: 'none', md: 'inline-flex' }}
-							onClick={cycleTheme}
-							aria-label="Toggle theme"
-						>
-							{preference === 'system' ? (
-								<Monitor className={css({ w: '4', h: '4' })} />
-							) : resolved === 'dark' ? (
-								<Moon className={css({ w: '4', h: '4' })} />
-							) : (
-								<Sun className={css({ w: '4', h: '4' })} />
-							)}
-						</IconButton>
+								<a
+									href="https://github.com/guria/modern-stack"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<Github className={css({ w: '4', h: '4' })} />
+								</a>
+							</IconButton>
+						)}
+						{showLanguageSwitcher && (
+							<Menu.Root positioning={{ placement: 'bottom-end' }}>
+								<Menu.Trigger asChild>
+									<IconButton
+										variant="plain"
+										size="sm"
+										display={{ base: 'none', md: 'inline-flex' }}
+										aria-label={m.topbar_language_switcher_label()}
+									>
+										<Languages className={css({ w: '4', h: '4' })} />
+									</IconButton>
+								</Menu.Trigger>
+								<Menu.Positioner>
+									<Menu.Content>
+										<Menu.RadioItemGroup
+											id="locale"
+											value={locale}
+											onValueChange={handleLocaleChange}
+										>
+											<Menu.RadioItem value="en">
+												<Menu.ItemText>{m.language_en()}</Menu.ItemText>
+												<Menu.ItemIndicator />
+											</Menu.RadioItem>
+											<Menu.RadioItem value="es">
+												<Menu.ItemText>{m.language_es()}</Menu.ItemText>
+												<Menu.ItemIndicator />
+											</Menu.RadioItem>
+										</Menu.RadioItemGroup>
+									</Menu.Content>
+								</Menu.Positioner>
+							</Menu.Root>
+						)}
+						{showThemeSwitcher && (
+							<IconButton
+								variant="plain"
+								size="sm"
+								display={{ base: 'none', md: 'inline-flex' }}
+								onClick={cycleTheme}
+								aria-label="Toggle theme"
+							>
+								{preference === 'system' ? (
+									<Monitor className={css({ w: '4', h: '4' })} />
+								) : resolved === 'dark' ? (
+									<Moon className={css({ w: '4', h: '4' })} />
+								) : (
+									<Sun className={css({ w: '4', h: '4' })} />
+								)}
+							</IconButton>
+						)}
 					</styled.header>
 					{children}
 				</styled.div>

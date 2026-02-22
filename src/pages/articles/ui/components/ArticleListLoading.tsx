@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import { Skeleton } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -7,7 +8,7 @@ export function ArticleListLoading() {
 	return (
 		<>
 			<styled.h3 fontSize="sm" fontWeight="semibold" p="4" color="gray.11">
-				Articles
+				{m.nav_articles()}
 			</styled.h3>
 			{loadingItems.map((item) => (
 				<styled.div key={item} px="4" py="3" borderBottomWidth="1px" borderColor="gray.4">

@@ -27,6 +27,12 @@ description = "Install Git hooks"
 run = "lefthook install"
 sources = ["lefthook.yml"]
 
+[tasks."prepare:paraglide"]
+description = "Compile ParaglideJS message catalogs"
+run = "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide"
+sources = ["messages/**/*.json", "project.inlang/settings.json"]
+outputs = ["src/paraglide/**/*"]
+
 [tasks."prepare:local-overrides"]
 description = "Setup local overrides file if not exists"
 run = '''
@@ -39,6 +45,7 @@ fi
 description = "Prepare project"
 run = [
 	{ task = "prepare:panda" },
+	{ task = "prepare:paraglide" },
 	{ task = "prepare:msw" },
 	{ task = "prepare:git-hooks" },
 	{ task = "prepare:local-overrides" },
