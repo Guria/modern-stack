@@ -1,5 +1,5 @@
 import './index.css'
-import './reatom.init' // import before any other reatom code!
+import './setup' // import before any other reatom code!
 import { assert } from '@reatom/core'
 import { reatomContext } from '@reatom/react'
 import { createRoot } from 'react-dom/client'
@@ -9,7 +9,7 @@ import { startBrowserMocking } from '#app/mocks/browser'
 import { resolvedThemeAtom } from '#shared/model'
 import { css } from '#styled-system/css'
 
-import { rootFrame } from './reatom.init'
+import { rootFrame } from './setup'
 
 await startBrowserMocking()
 
