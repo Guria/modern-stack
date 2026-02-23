@@ -4,15 +4,15 @@ This project uses **ParaglideJS** for compile-time i18n, wired into the Reatom s
 
 ## Stack
 
-| Piece                                   | Role                                                                 |
-| --------------------------------------- | -------------------------------------------------------------------- |
-| `messages/<lang>.json`                  | Source of truth for all UI strings                                   |
-| `src/paraglide/`                        | Generated output — do not edit manually                              |
-| `localeAtom` in `#shared/model`         | Reactive atom holding the active locale, persisted to `localStorage` |
-| `localeAtom.locales`                    | Readonly array of all configured locales (`["en", "es"]`)            |
+| Piece                                   | Role                                                                                                 |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `messages/<lang>.json`                  | Source of truth for all UI strings                                                                   |
+| `src/paraglide/`                        | Generated output — do not edit manually                                                              |
+| `localeAtom` in `#shared/model`         | Reactive atom holding the active locale, persisted to `localStorage`                                 |
+| `localeAtom.locales`                    | Readonly array of all configured locales (`["en", "es"]`)                                            |
 | `localeAtom.label(locale)`              | Returns a computed — call as `localeAtom.label(locale)()` to get the display label for a locale code |
-| `reatomLoc` in `#shared/model`          | Factory for locale-aware computed values (shorthand for `localeAtom.reatomLoc`) |
-| `isLocale` from `#paraglide/runtime.js` | Runtime type guard for locale strings                                |
+| `reatomLoc` in `#shared/model`          | Factory for locale-aware computed values (shorthand for `localeAtom.reatomLoc`)                      |
+| `isLocale` from `#paraglide/runtime.js` | Runtime type guard for locale strings                                                                |
 
 ## Adding message keys
 

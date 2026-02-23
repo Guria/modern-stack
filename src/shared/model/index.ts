@@ -1,5 +1,5 @@
 export { localeAtom, reatomLoc } from './locale'
-export { resolvedThemeAtom, themePreferenceAtom } from './theme'
+export { themePreferenceAtom } from './theme'
 export {
 	showGithubLinkInTopBarAtom,
 	showLanguageSwitcherInTopBarAtom,

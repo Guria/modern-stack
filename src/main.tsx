@@ -6,10 +6,10 @@ import { createRoot } from 'react-dom/client'
 
 import { App } from '#app/App.tsx'
 import { startBrowserMocking } from '#app/mocks/browser'
-import { resolvedThemeAtom } from '#shared/model'
 import { css } from '#styled-system/css'
 
 import { rootFrame } from './setup'
+import { themePreferenceAtom } from './shared/model'
 
 await startBrowserMocking()
 
@@ -18,7 +18,7 @@ assert(root, 'Root element not found')
 root.classList.add(css({ colorPalette: 'indigo' }))
 
 rootFrame.run(() => {
-	resolvedThemeAtom.subscribe((theme) => {
+	themePreferenceAtom.resolved.subscribe((theme) => {
 		document.documentElement.classList.toggle('dark', theme === 'dark')
 	})
 })

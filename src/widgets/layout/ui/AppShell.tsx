@@ -16,7 +16,6 @@ import { m } from '#paraglide/messages.js'
 import { Drawer, IconButton, Input, Menu } from '#shared/components'
 import {
 	localeAtom,
-	resolvedThemeAtom,
 	showGithubLinkInTopBarAtom,
 	showLanguageSwitcherInTopBarAtom,
 	showThemeSwitcherInTopBarAtom,
@@ -227,7 +226,7 @@ export const AppShell = reatomComponent(
 							>
 								{themePreferenceAtom() === 'system' ? (
 									<Monitor className={css({ w: '4', h: '4' })} />
-								) : resolvedThemeAtom() === 'dark' ? (
+								) : themePreferenceAtom() === 'dark' ? (
 									<Moon className={css({ w: '4', h: '4' })} />
 								) : (
 									<Sun className={css({ w: '4', h: '4' })} />
