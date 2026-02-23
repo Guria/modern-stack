@@ -2,6 +2,7 @@ import { SquarePen } from 'lucide-react'
 
 import type { Conversation } from '#entities/conversation'
 
+import { m } from '#paraglide/messages.js'
 import { Avatar, Badge, IconButton, Input } from '#shared/components'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
@@ -27,8 +28,8 @@ export function ConversationList({
 				gap="2"
 				alignItems="center"
 			>
-				<Input placeholder="Search conversations..." size="sm" flex="1" />
-				<IconButton size="sm" variant="plain" aria-label="New conversation">
+				<Input placeholder={m.chat_search_placeholder()} size="sm" flex="1" />
+				<IconButton size="sm" variant="plain" aria-label={m.chat_new_conversation()}>
 					<SquarePen className={css({ w: '4', h: '4' })} />
 				</IconButton>
 			</styled.div>

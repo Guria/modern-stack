@@ -1,5 +1,6 @@
 import { Package } from 'lucide-react'
 
+import { m } from '#paraglide/messages.js'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
@@ -18,9 +19,9 @@ export function ItemNoSelection() {
 		>
 			<Package className={css({ w: '10', h: '10', color: 'gray.subtle.fg' })} />
 			<styled.p fontWeight="medium" fontSize="sm">
-				No item selected
+				{m.item_no_selection()}
 			</styled.p>
-			<styled.p fontSize="xs">Choose an item from the list to view its details.</styled.p>
+			<styled.p fontSize="xs">{m.item_no_selection_desc()}</styled.p>
 		</styled.div>
 	)
 }

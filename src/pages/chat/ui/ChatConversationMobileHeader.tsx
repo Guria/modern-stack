@@ -1,5 +1,6 @@
 import { reatomComponent } from '@reatom/react'
 
+import { m } from '#paraglide/messages.js'
 import { BackButton, MobileHeaderTitle } from '#widgets/layout'
 
 import { chatConversationRoute, chatRoute } from '../model/routes'
@@ -12,13 +13,13 @@ export const ChatConversationMobileHeader = reatomComponent(() => {
 	const isLoadingConversation = chatConversationRoute.loader.pending() > 0
 	return (
 		<>
-			<BackButton href={chatRoute.path()} label="Back to conversations" />
+			<BackButton href={chatRoute.path()} label={m.chat_back_to_conversations()} />
 			{isLoadingConversation ? (
 				<ConversationHeaderContentLoading />
 			) : conversation ? (
 				<ConversationHeaderContent conversation={conversation} />
 			) : (
-				<MobileHeaderTitle label="Conversation not found" />
+				<MobileHeaderTitle label={m.chat_not_found()} />
 			)}
 		</>
 	)

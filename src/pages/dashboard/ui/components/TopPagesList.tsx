@@ -1,5 +1,6 @@
 import type { TopPage } from '#entities/dashboard'
 
+import { m } from '#paraglide/messages.js'
 import { Card, Progress, Table } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -7,7 +8,7 @@ export function TopPagesList({ topPages }: { topPages: TopPage[] }) {
 	return (
 		<Card.Root p="5" borderWidth="1px" borderColor="gray.4" borderRadius="xl" bg="gray.1">
 			<styled.div fontSize="sm" fontWeight="semibold" mb="4">
-				Top Pages
+				{m.dashboard_top_pages()}
 			</styled.div>
 			<styled.div overflowX="auto">
 				<Table.Root
@@ -21,9 +22,9 @@ export function TopPagesList({ topPages }: { topPages: TopPage[] }) {
 				>
 					<Table.Head>
 						<Table.Row>
-							<Table.Header>Page</Table.Header>
-							<Table.Header textAlign="right">Views</Table.Header>
-							<Table.Header>Traffic Share</Table.Header>
+							<Table.Header>{m.dashboard_col_page()}</Table.Header>
+							<Table.Header textAlign="right">{m.dashboard_col_views()}</Table.Header>
+							<Table.Header>{m.dashboard_col_traffic_share()}</Table.Header>
 						</Table.Row>
 					</Table.Head>
 					<Table.Body>

@@ -1,5 +1,6 @@
 import type { Connection } from '#entities/connection'
 
+import { m } from '#paraglide/messages.js'
 import { styled } from '#styled-system/jsx'
 
 import { ConnectionStatusBadge } from './ConnectionStatusBadge'
@@ -19,7 +20,7 @@ export function ConnectionList({
 	return (
 		<>
 			<styled.h3 fontSize="sm" fontWeight="semibold" p="4" color="gray.11">
-				Connections
+				{m.nav_connections()}
 			</styled.h3>
 			{connections.map((connection) => (
 				<styled.a

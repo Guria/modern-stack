@@ -1,5 +1,6 @@
 import type { ActivityItem } from '#entities/dashboard'
 
+import { m } from '#paraglide/messages.js'
 import { Avatar, Card, Table } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -7,14 +8,14 @@ export function RecentActivityList({ recentActivity }: { recentActivity: Activit
 	return (
 		<Card.Root p="5" borderWidth="1px" borderColor="gray.4" borderRadius="xl" bg="gray.1">
 			<styled.div fontSize="sm" fontWeight="semibold" mb="4">
-				Recent Activity
+				{m.dashboard_recent_activity()}
 			</styled.div>
 			<styled.div overflowX="auto">
 				<Table.Root variant="surface" interactive size="md" borderRadius="md" overflow="hidden">
 					<Table.Head>
 						<Table.Row>
-							<Table.Header>Activity</Table.Header>
-							<Table.Header textAlign="right">Time</Table.Header>
+							<Table.Header>{m.dashboard_col_activity()}</Table.Header>
+							<Table.Header textAlign="right">{m.dashboard_col_time()}</Table.Header>
 						</Table.Row>
 					</Table.Head>
 					<Table.Body>

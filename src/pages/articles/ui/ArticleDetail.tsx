@@ -1,5 +1,6 @@
 import type { Article } from '#entities/article'
 
+import { m } from '#paraglide/messages.js'
 import { Button } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -14,7 +15,7 @@ export function ArticleDetail({ article }: { article: Article }) {
 				</styled.h1>
 				<ArticleStatusBadge status={article.status} />
 				<Button size="sm" variant="outline">
-					Edit
+					{m.article_edit()}
 				</Button>
 			</styled.div>
 			<styled.p color="gray.11" fontSize="sm" lineHeight="relaxed">

@@ -2,6 +2,7 @@ import { reatomComponent } from '@reatom/react'
 
 import type { TimelineEvent } from '#entities/timeline-event'
 
+import { m } from '#paraglide/messages.js'
 import { styled } from '#styled-system/jsx'
 
 import { TimelineEventCard } from './components/TimelineEventCard'
@@ -18,7 +19,7 @@ export const TimelinePage = reatomComponent(({ events }: { events: TimelineEvent
 	return (
 		<styled.div p="6" maxW="700px">
 			<styled.h1 fontSize="2xl" fontWeight="bold" mb="6">
-				Timeline
+				{m.timeline_title()}
 			</styled.h1>
 
 			{Array.from(grouped.entries()).map(([date, dateEvents]) => (

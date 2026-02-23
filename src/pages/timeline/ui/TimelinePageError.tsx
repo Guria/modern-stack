@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import { Button, Card } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -17,10 +18,10 @@ export function TimelinePageError({ onRetry }: TimelinePageErrorProps) {
 			m="8"
 		>
 			<styled.h2 fontSize="lg" fontWeight="semibold" color="red.subtle.fg" mb="2">
-				Could not load timeline
+				{m.timeline_error_title()}
 			</styled.h2>
 			<styled.p color="red.subtle.fg" mb="4">
-				We couldn&apos;t load the timeline data. Try again in a moment.
+				{m.timeline_error_description()}
 			</styled.p>
 			{onRetry && (
 				<Button
@@ -31,7 +32,7 @@ export function TimelinePageError({ onRetry }: TimelinePageErrorProps) {
 					w="fit-content"
 					onClick={onRetry}
 				>
-					Try again
+					{m.timeline_error_retry()}
 				</Button>
 			)}
 		</Card.Root>

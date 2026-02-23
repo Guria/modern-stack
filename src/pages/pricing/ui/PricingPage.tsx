@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import { Badge, Button } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -40,11 +41,11 @@ function PlanCard({
 }) {
 	let buttonLabel: string
 	if (isCurrent) {
-		buttonLabel = 'Current plan'
+		buttonLabel = m.pricing_current_plan()
 	} else if (highlighted) {
-		buttonLabel = 'Upgrade to Pro'
+		buttonLabel = m.pricing_upgrade_pro()
 	} else {
-		buttonLabel = `Get ${name}`
+		buttonLabel = m.pricing_get_plan({ name })
 	}
 
 	return (
@@ -71,7 +72,7 @@ function PlanCard({
 							borderColor="green.subtle.fg"
 							size="sm"
 						>
-							Current plan
+							{m.pricing_current_plan()}
 						</Badge>
 					)}
 				</styled.div>
@@ -111,10 +112,10 @@ export function PricingPage() {
 	return (
 		<styled.div p="8" maxW="800px">
 			<styled.h1 fontSize="2xl" fontWeight="bold" mb="2">
-				Pricing
+				{m.pricing_title()}
 			</styled.h1>
 			<styled.p fontSize="sm" color="gray.11" mb="8">
-				Choose the plan that works best for you.
+				{m.pricing_desc()}
 			</styled.p>
 
 			<styled.div

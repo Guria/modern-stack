@@ -2,6 +2,7 @@ import { Send } from 'lucide-react'
 
 import type { Conversation } from '#entities/conversation'
 
+import { m } from '#paraglide/messages.js'
 import { Button, Input } from '#shared/components'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
@@ -62,7 +63,7 @@ export function MessageThread({ conversation }: { conversation: Conversation }) 
 
 			<styled.div px="4" py="3" borderTopWidth="1px" borderColor="gray.4" flexShrink={0}>
 				<styled.div display="flex" gap="2" alignItems="center">
-					<Input placeholder="Type a message..." size="sm" flex="1" />
+					<Input placeholder={m.chat_message_placeholder()} size="sm" flex="1" />
 					<Button size="sm" variant="solid">
 						<Send className={css({ w: '4', h: '4' })} />
 					</Button>

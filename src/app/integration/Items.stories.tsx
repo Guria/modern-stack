@@ -93,9 +93,7 @@ export const HandlesItemsLoadServerError = meta.story({
 
 HandlesItemsLoadServerError.test('shows error state when items request fails', async () => {
 	await I.seeItemsError()
-	await I.see((canvas) =>
-		canvas.findByText("We couldn't load the items data. Try again in a moment."),
-	)
+	await I.see((canvas) => canvas.findByText("We couldn't load the items. Try again in a moment."))
 })
 
 HandlesItemsLoadServerError.test('renders as an alert region', async () => {
@@ -120,9 +118,7 @@ HandlesItemsLoadServerErrorMobile.test(
 	'[mobile] shows error state when items request fails',
 	async () => {
 		await I.seeItemsError()
-		await I.see((canvas) =>
-			canvas.findByText("We couldn't load the items data. Try again in a moment."),
-		)
+		await I.see((canvas) => canvas.findByText("We couldn't load the items. Try again in a moment."))
 	},
 )
 

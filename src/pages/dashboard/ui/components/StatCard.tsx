@@ -2,6 +2,7 @@ import { TrendingDown, TrendingUp } from 'lucide-react'
 
 import type { StatCard } from '#entities/dashboard'
 
+import { m } from '#paraglide/messages.js'
 import { Badge, Card } from '#shared/components'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
@@ -32,7 +33,7 @@ export function StatCard({ stat }: { stat: StatCard }) {
 					{stat.change}
 				</Badge>
 				<styled.span fontSize="xs" color="gray.11">
-					vs last week
+					{m.dashboard_stat_vs_last_week()}
 				</styled.span>
 			</styled.div>
 		</Card.Root>

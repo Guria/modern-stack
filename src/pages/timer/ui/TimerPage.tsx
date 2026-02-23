@@ -1,6 +1,7 @@
 import { wrap } from '@reatom/core'
 import { reatomComponent, useAtom } from '@reatom/react'
 
+import { m } from '#paraglide/messages.js'
 import { Button, Input } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -42,7 +43,7 @@ export const TimerPage = reatomComponent(() => {
 		<styled.div p="8" display="flex" justifyContent="center" alignItems="center" minH="100dvh">
 			<styled.div w="320px" display="flex" flexDirection="column" alignItems="center" gap="6">
 				<styled.h1 fontSize="2xl" fontWeight="bold">
-					Timer
+					{m.nav_timer()}
 				</styled.h1>
 
 				<styled.div
@@ -84,15 +85,15 @@ export const TimerPage = reatomComponent(() => {
 				<styled.div display="flex" gap="2">
 					{running ? (
 						<Button variant="outline" onClick={wrap(() => pauseTimer())}>
-							Pause
+							{m.timer_pause()}
 						</Button>
 					) : (
 						<Button onClick={wrap(() => startTimer())} disabled={remaining <= 0}>
-							Start
+							{m.timer_start()}
 						</Button>
 					)}
 					<Button variant="outline" onClick={wrap(() => resetTimer())}>
-						Reset
+						{m.timer_reset()}
 					</Button>
 				</styled.div>
 			</styled.div>

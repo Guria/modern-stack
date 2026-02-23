@@ -4,6 +4,7 @@ import { reatomComponent } from '@reatom/react'
 
 import type { Category, Item } from '#entities/item'
 
+import { m } from '#paraglide/messages.js'
 import { Badge, Button, Select } from '#shared/components'
 import { reatomT } from '#shared/model'
 import { styled } from '#styled-system/jsx'
@@ -119,12 +120,12 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 	return (
 		<styled.div p="6">
 			<styled.h1 fontSize="2xl" fontWeight="bold" mb="6">
-				Items
+				{m.items_title()}
 			</styled.h1>
 
 			<styled.div display="flex" flexWrap="wrap" gap="3" mb="6" alignItems="center">
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
-					Sort by
+					{m.items_sort_by()}
 					<Select.Root
 						collection={sortFieldCollection()}
 						size="sm"
@@ -155,11 +156,11 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 				</styled.label>
 
 				<Button variant="outline" size="sm" onClick={handleSortDirectionClick}>
-					{sortDir === 'asc' ? 'Asc' : 'Desc'}
+					{sortDir === 'asc' ? m.items_sort_asc() : m.items_sort_desc()}
 				</Button>
 
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
-					Category
+					{m.items_label_category()}
 					<Select.Root
 						collection={categoryCollection()}
 						size="sm"
@@ -190,7 +191,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 				</styled.label>
 
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
-					Stock
+					{m.items_label_stock()}
 					<Select.Root
 						collection={stockCollection()}
 						size="sm"
@@ -220,6 +221,10 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 					</Select.Root>
 				</styled.label>
 			</styled.div>
+
+			<styled.p fontSize="sm" color="gray.11" mb="3">
+				{m.items_found({ count: filtered.length })}
+			</styled.p>
 
 			<styled.div display="grid" gap="3">
 				{filtered.map((item) => (
@@ -251,7 +256,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 									borderWidth="1px"
 									borderColor="red.6"
 								>
-									Out of Stock
+									{m.items_stock_out_of_stock()}
 								</Badge>
 							)}
 						</styled.div>
@@ -262,7 +267,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 				))}
 				{filtered.length === 0 && (
 					<styled.p color="gray.11" fontSize="sm" py="8" textAlign="center">
-						No items match the current filters.
+						{m.items_no_results()}
 					</styled.p>
 				)}
 			</styled.div>

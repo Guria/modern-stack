@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import { Button } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -24,18 +25,18 @@ export function UsagePage() {
 	return (
 		<styled.div p="8" maxW="600px">
 			<styled.h1 fontSize="2xl" fontWeight="bold" mb="8">
-				Usage
+				{m.usage_title()}
 			</styled.h1>
 
 			<styled.div mb="8">
 				<styled.div display="flex" alignItems="center" justifyContent="space-between" mb="2">
-					<styled.span fontWeight="medium">Storage</styled.span>
+					<styled.span fontWeight="medium">{m.usage_storage()}</styled.span>
 					<styled.div display="flex" alignItems="center" gap="3">
 						<styled.span fontSize="sm" color="gray.11">
-							{usedGB} GB of {totalGB} GB used
+							{m.usage_storage_desc({ usedGB, totalGB })}
 						</styled.span>
 						<Button size="xs" variant="outline" asChild>
-							<styled.a href="/pricing">Manage plan</styled.a>
+							<styled.a href="/pricing">{m.usage_manage_plan()}</styled.a>
 						</Button>
 					</styled.div>
 				</styled.div>
@@ -48,23 +49,23 @@ export function UsagePage() {
 					/>
 				</styled.div>
 				<styled.div fontSize="sm" color="gray.11">
-					{percentage}% used
+					{m.usage_percentage_used({ percentage })}
 				</styled.div>
 			</styled.div>
 
 			<styled.div mb="8">
 				<styled.h2 fontSize="lg" fontWeight="semibold" mb="3">
-					Breakdown
+					{m.usage_breakdown()}
 				</styled.h2>
 				<styled.div borderWidth="1px" borderColor="gray.4" borderRadius="lg" px="4" divideY="1px">
-					<BreakdownRow label="Documents" gb={breakdown.documents} total={totalGB} />
-					<BreakdownRow label="Media" gb={breakdown.media} total={totalGB} />
-					<BreakdownRow label="Other" gb={breakdown.other} total={totalGB} />
+					<BreakdownRow label={m.usage_documents()} gb={breakdown.documents} total={totalGB} />
+					<BreakdownRow label={m.usage_media()} gb={breakdown.media} total={totalGB} />
+					<BreakdownRow label={m.usage_other()} gb={breakdown.other} total={totalGB} />
 				</styled.div>
 			</styled.div>
 
 			<styled.p fontSize="sm" color="gray.11">
-				Storage usage resets on the 1st of each month.
+				{m.usage_reset_info()}
 			</styled.p>
 		</styled.div>
 	)

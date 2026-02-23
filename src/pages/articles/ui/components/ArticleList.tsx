@@ -30,7 +30,7 @@ export function ArticleList({ articles, selectedId, getArticleHref }: ArticleLis
 				<styled.h3 fontSize="sm" fontWeight="semibold" color="gray.11">
 					{m.nav_articles()}
 				</styled.h3>
-				<IconButton size="xs" variant="plain" aria-label="New article">
+				<IconButton size="xs" variant="plain" aria-label={m.article_new()}>
 					<Plus className={css({ w: '4', h: '4' })} />
 				</IconButton>
 			</styled.div>

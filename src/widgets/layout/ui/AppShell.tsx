@@ -172,7 +172,7 @@ export const AppShell = reatomComponent(
 						>
 							<Search className={css({ w: '4', h: '4', color: 'gray.10', flexShrink: 0 })} />
 							<Input
-								placeholder="Search..."
+								placeholder={m.topbar_search_placeholder()}
 								size="sm"
 								variant="outline"
 								bg="transparent"
@@ -237,7 +237,7 @@ export const AppShell = reatomComponent(
 								size="sm"
 								display={{ base: 'none', md: 'inline-flex' }}
 								onClick={cycleTheme}
-								aria-label="Toggle theme"
+								aria-label={m.topbar_toggle_theme_label()}
 							>
 								{preference === 'system' ? (
 									<Monitor className={css({ w: '4', h: '4' })} />

@@ -1,5 +1,6 @@
 import type { ChartPoint } from '#entities/dashboard'
 
+import { m } from '#paraglide/messages.js'
 import { Card } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -10,7 +11,7 @@ export function BarChart({ chartData }: { chartData: ChartPoint[] }) {
 	return (
 		<Card.Root p="5" borderWidth="1px" borderColor="gray.4" borderRadius="xl" bg="gray.1">
 			<styled.div fontSize="sm" fontWeight="semibold" mb="4">
-				Weekly Traffic
+				{m.dashboard_weekly_traffic()}
 			</styled.div>
 			<styled.div display="flex" gap="2">
 				{/* Y-axis labels */}
