@@ -63,10 +63,12 @@ export const localeAtom = atom(getLocale(), 'locale').extend(
 		 *   value: l,
 		 * })), 'myFeature.localeItems')
 		 */
-		label: (localeName?: string) =>
+		label: (localeName: string) =>
 			computed(() => {
-				const name = localeName ?? target()
-				return name in localeLabels ? localeLabels[name as keyof typeof localeLabels]() : name
+				target()
+				return localeName in localeLabels
+					? localeLabels[localeName as keyof typeof localeLabels]()
+					: localeName
 			}, 'localeLabel'),
 		/**
 		 * Creates a locale-aware computed value that re-evaluates whenever the

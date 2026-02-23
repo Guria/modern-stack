@@ -31,9 +31,23 @@ const sentinels = [
 	'reatomLoc árbol canario — no debe aparecer en el bundle',
 ]
 
+import { existsSync } from 'node:fs'
+
+if (!existsSync(distDir)) {
+	console.error(`✗ Build output not found: ${distDir}\n  Run \`mise run build:webapp\` first.`)
+	process.exit(1)
+}
+
+const files = await Array.fromAsync(new Glob('*.js').scan({ cwd: distDir }))
+
+if (files.length === 0) {
+	console.error(`✗ No JS files found in ${distDir}\n  The build output may be empty or corrupted.`)
+	process.exit(1)
+}
+
 let failed = false
 
-for await (const file of new Glob('*.js').scan({ cwd: distDir })) {
+for (const file of files) {
 	const content = await Bun.file(join(distDir, file)).text()
 	for (const sentinel of sentinels) {
 		if (content.includes(sentinel)) {
