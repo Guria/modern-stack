@@ -42,22 +42,6 @@ const desktopSidebarCollapsedAtom = reatomBoolean(false, 'desktopSidebar.collaps
 export const AppShell = reatomComponent(
 	({ sidebarHeader, sidebarContent, sidebarFooter, mobileHeader, children }: AppShellProps) => {
 		const isCollapsed = desktopSidebarCollapsedAtom()
-		const preference = themePreferenceAtom()
-		const resolved = resolvedThemeAtom()
-		const showLanguageSwitcher = showLanguageSwitcherInTopBarAtom()
-		const showGithubLink = showGithubLinkInTopBarAtom()
-		const showThemeSwitcher = showThemeSwitcherInTopBarAtom()
-		const locale = localeAtom()
-		const handleLocaleChange = wrap(({ value }: { value: string }) => {
-			if (isLocale(value)) {
-				localeAtom.set(value)
-			}
-		})
-		const cycleTheme = wrap(() => {
-			const current = themePreferenceAtom()
-			const next = { system: 'light', light: 'dark', dark: 'system' } as const
-			themePreferenceAtom.set(next[current])
-		})
 
 		const sidebarInner = (
 			<>
@@ -184,7 +168,7 @@ export const AppShell = reatomComponent(
 							</styled.kbd>
 						</styled.div>
 						<styled.div ml="auto" />
-						{showGithubLink && (
+						{showGithubLinkInTopBarAtom() && (
 							<IconButton
 								variant="plain"
 								size="sm"
@@ -201,7 +185,7 @@ export const AppShell = reatomComponent(
 								</a>
 							</IconButton>
 						)}
-						{showLanguageSwitcher && (
+						{showLanguageSwitcherInTopBarAtom() && (
 							<Menu.Root positioning={{ placement: 'bottom-end' }}>
 								<Menu.Trigger asChild>
 									<IconButton
@@ -217,8 +201,10 @@ export const AppShell = reatomComponent(
 									<Menu.Content>
 										<Menu.RadioItemGroup
 											id="locale"
-											value={locale}
-											onValueChange={handleLocaleChange}
+											value={localeAtom()}
+											onValueChange={wrap(({ value }: { value: string }) => {
+												if (isLocale(value)) localeAtom.set(value)
+											})}
 										>
 											{locales.map((locale) => (
 												<Menu.RadioItem key={locale} value={locale}>
@@ -231,17 +217,20 @@ export const AppShell = reatomComponent(
 								</Menu.Positioner>
 							</Menu.Root>
 						)}
-						{showThemeSwitcher && (
+						{showThemeSwitcherInTopBarAtom() && (
 							<IconButton
 								variant="plain"
 								size="sm"
 								display={{ base: 'none', md: 'inline-flex' }}
-								onClick={cycleTheme}
+								onClick={wrap(() => {
+									const next = { system: 'light', light: 'dark', dark: 'system' } as const
+									themePreferenceAtom.set(next[themePreferenceAtom()])
+								})}
 								aria-label={m.topbar_toggle_theme_label()}
 							>
-								{preference === 'system' ? (
+								{themePreferenceAtom() === 'system' ? (
 									<Monitor className={css({ w: '4', h: '4' })} />
-								) : resolved === 'dark' ? (
+								) : resolvedThemeAtom() === 'dark' ? (
 									<Moon className={css({ w: '4', h: '4' })} />
 								) : (
 									<Sun className={css({ w: '4', h: '4' })} />

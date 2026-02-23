@@ -12,24 +12,20 @@ const operatorAtom = atom<string | null>(null, 'calculator.operator')
 const resetNextAtom = atom(false, 'calculator.resetNext')
 
 const inputDigit = action((digit: string) => {
-	const display = displayAtom()
-	const resetNext = resetNextAtom()
-	if (resetNext) {
+	if (resetNextAtom()) {
 		displayAtom.set(digit)
 		resetNextAtom.set(false)
 	} else {
-		displayAtom.set(display === '0' ? digit : display + digit)
+		displayAtom.set(displayAtom() === '0' ? digit : displayAtom() + digit)
 	}
 }, 'calculator.inputDigit')
 
 const inputDot = action(() => {
-	const display = displayAtom()
-	const resetNext = resetNextAtom()
-	if (resetNext) {
+	if (resetNextAtom()) {
 		displayAtom.set('0.')
 		resetNextAtom.set(false)
-	} else if (!display.includes('.')) {
-		displayAtom.set(display + '.')
+	} else if (!displayAtom().includes('.')) {
+		displayAtom.set(displayAtom() + '.')
 	}
 }, 'calculator.inputDot')
 
@@ -49,13 +45,10 @@ function calculate(left: number, op: string, right: number): number {
 }
 
 const handleOperator = action((nextOp: string) => {
-	const display = displayAtom()
-	const prevValue = prevValueAtom()
-	const operator = operatorAtom()
-	const current = parseFloat(display)
+	const current = parseFloat(displayAtom())
 
-	if (prevValue !== null && operator) {
-		const result = calculate(prevValue, operator, current)
+	if (prevValueAtom() !== null && operatorAtom()) {
+		const result = calculate(prevValueAtom()!, operatorAtom()!, current)
 		displayAtom.set(String(result))
 		prevValueAtom.set(result)
 	} else {
@@ -67,13 +60,8 @@ const handleOperator = action((nextOp: string) => {
 }, 'calculator.handleOperator')
 
 const handleEquals = action(() => {
-	const display = displayAtom()
-	const prevValue = prevValueAtom()
-	const operator = operatorAtom()
-	const current = parseFloat(display)
-
-	if (prevValue !== null && operator) {
-		const result = calculate(prevValue, operator, current)
+	if (prevValueAtom() !== null && operatorAtom()) {
+		const result = calculate(prevValueAtom()!, operatorAtom()!, parseFloat(displayAtom()))
 		displayAtom.set(String(result))
 		prevValueAtom.set(null)
 		operatorAtom.set(null)
@@ -89,13 +77,11 @@ const handleClear = action(() => {
 }, 'calculator.handleClear')
 
 const handlePercent = action(() => {
-	const display = displayAtom()
-	displayAtom.set(String(parseFloat(display) / 100))
+	displayAtom.set(String(parseFloat(displayAtom()) / 100))
 }, 'calculator.handlePercent')
 
 const handleToggleSign = action(() => {
-	const display = displayAtom()
-	displayAtom.set(String(-parseFloat(display)))
+	displayAtom.set(String(-parseFloat(displayAtom())))
 }, 'calculator.handleToggleSign')
 
 const buttonStyle = css({
@@ -130,15 +116,6 @@ const functionStyle = css({
 })
 
 export const CalculatorPage = reatomComponent(() => {
-	const display = displayAtom()
-	const handleClearClick = wrap(() => handleClear())
-	const handleToggleSignClick = wrap(() => handleToggleSign())
-	const handlePercentClick = wrap(() => handlePercent())
-	const handleInputDotClick = wrap(() => inputDot())
-	const handleEqualsClick = wrap(() => handleEquals())
-	const handleOperatorClick = (operator: string) => wrap(() => handleOperator(operator))
-	const handleDigitClick = (digit: string) => wrap(() => inputDigit(digit))
-
 	return (
 		<styled.div p="8" display="flex" justifyContent="center" alignItems="center" minH="100dvh">
 			<styled.div w="320px">
@@ -162,85 +139,124 @@ export const CalculatorPage = reatomComponent(() => {
 						justifyContent="flex-end"
 						overflow="hidden"
 					>
-						<styled.span truncate>{display}</styled.span>
+						<styled.span truncate>{displayAtom()}</styled.span>
 					</styled.div>
 
 					<styled.div display="grid" gridTemplateColumns="repeat(4, 1fr)" gap="2">
-						<Button className={`${buttonStyle} ${functionStyle}`} onClick={handleClearClick}>
+						<Button
+							className={`${buttonStyle} ${functionStyle}`}
+							onClick={wrap(() => handleClear())}
+						>
 							AC
 						</Button>
-						<Button className={`${buttonStyle} ${functionStyle}`} onClick={handleToggleSignClick}>
+						<Button
+							className={`${buttonStyle} ${functionStyle}`}
+							onClick={wrap(() => handleToggleSign())}
+						>
 							+/−
 						</Button>
-						<Button className={`${buttonStyle} ${functionStyle}`} onClick={handlePercentClick}>
+						<Button
+							className={`${buttonStyle} ${functionStyle}`}
+							onClick={wrap(() => handlePercent())}
+						>
 							%
 						</Button>
 						<Button
 							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={handleOperatorClick('/')}
+							onClick={wrap(() => handleOperator('/'))}
 						>
 							÷
 						</Button>
 
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('7')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('7'))}
+						>
 							7
 						</Button>
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('8')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('8'))}
+						>
 							8
 						</Button>
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('9')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('9'))}
+						>
 							9
 						</Button>
 						<Button
 							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={handleOperatorClick('*')}
+							onClick={wrap(() => handleOperator('*'))}
 						>
 							×
 						</Button>
 
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('4')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('4'))}
+						>
 							4
 						</Button>
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('5')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('5'))}
+						>
 							5
 						</Button>
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('6')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('6'))}
+						>
 							6
 						</Button>
 						<Button
 							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={handleOperatorClick('-')}
+							onClick={wrap(() => handleOperator('-'))}
 						>
 							−
 						</Button>
 
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('1')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('1'))}
+						>
 							1
 						</Button>
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('2')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('2'))}
+						>
 							2
 						</Button>
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleDigitClick('3')}>
+						<Button
+							className={`${buttonStyle} ${digitStyle}`}
+							onClick={wrap(() => inputDigit('3'))}
+						>
 							3
 						</Button>
 						<Button
 							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={handleOperatorClick('+')}
+							onClick={wrap(() => handleOperator('+'))}
 						>
 							+
 						</Button>
 
 						<Button
 							className={`${buttonStyle} ${digitStyle}`}
-							style={{ gridColumn: 'span 2' }}
-							onClick={handleDigitClick('0')}
+							gridColumn="span 2"
+							onClick={wrap(() => inputDigit('0'))}
 						>
 							0
 						</Button>
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={handleInputDotClick}>
+						<Button className={`${buttonStyle} ${digitStyle}`} onClick={wrap(() => inputDot())}>
 							.
 						</Button>
-						<Button className={`${buttonStyle} ${operatorStyle}`} onClick={handleEqualsClick}>
+						<Button
+							className={`${buttonStyle} ${operatorStyle}`}
+							onClick={wrap(() => handleEquals())}
+						>
 							=
 						</Button>
 					</styled.div>

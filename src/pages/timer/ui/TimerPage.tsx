@@ -24,9 +24,6 @@ const PRESETS = [
 ] as const
 
 export const TimerPage = reatomComponent(() => {
-	const remaining = timerRemainingAtom()
-	const running = timerRunningAtom()
-
 	const [customInput, setCustomInput] = useAtom('')
 
 	const handleCustomTimeCommit = wrap(() => {
@@ -52,7 +49,7 @@ export const TimerPage = reatomComponent(() => {
 					fontVariantNumeric="tabular-nums"
 					lineHeight="1"
 				>
-					{formatTime(remaining)}
+					{formatTime(timerRemainingAtom())}
 				</styled.div>
 
 				<styled.div display="flex" gap="2">
@@ -61,7 +58,7 @@ export const TimerPage = reatomComponent(() => {
 							key={label}
 							variant="outline"
 							size="sm"
-							disabled={running}
+							disabled={timerRunningAtom()}
 							onClick={wrap(() => setDuration(seconds))}
 						>
 							{label}
@@ -74,7 +71,7 @@ export const TimerPage = reatomComponent(() => {
 					size="sm"
 					w="20"
 					value={customInput}
-					disabled={running}
+					disabled={timerRunningAtom()}
 					onChange={(e) => setCustomInput(e.target.value)}
 					onKeyDown={(e) => {
 						if (e.key === 'Enter') handleCustomTimeCommit()
@@ -83,12 +80,12 @@ export const TimerPage = reatomComponent(() => {
 				/>
 
 				<styled.div display="flex" gap="2">
-					{running ? (
+					{timerRunningAtom() ? (
 						<Button variant="outline" onClick={wrap(() => pauseTimer())}>
 							{m.timer_pause()}
 						</Button>
 					) : (
-						<Button onClick={wrap(() => startTimer())} disabled={remaining <= 0}>
+						<Button onClick={wrap(() => startTimer())} disabled={timerRemainingAtom() <= 0}>
 							{m.timer_start()}
 						</Button>
 					)}

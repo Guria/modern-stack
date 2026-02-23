@@ -102,21 +102,6 @@ const languageCollection = reatomM(
 )
 
 export const SettingsPage = reatomComponent(() => {
-	const displayName = displayNameAtom()
-	const email = emailAtom()
-	const profileDirty = profileDirtyAtom()
-
-	const emailNotif = emailNotifAtom()
-	const desktopNotif = desktopNotifAtom()
-	const notifDirty = notifDirtyAtom()
-
-	const theme = themePreferenceAtom()
-	const density = densityAtom()
-	const locale = localeAtom()
-	const showLanguageSwitcher = showLanguageSwitcherInTopBarAtom()
-	const showGithubLink = showGithubLinkInTopBarAtom()
-	const showThemeSwitcher = showThemeSwitcherInTopBarAtom()
-
 	return (
 		<styled.div p="8" maxW="800px">
 			<styled.h1 fontSize="2xl" fontWeight="bold" mb="8">
@@ -126,7 +111,7 @@ export const SettingsPage = reatomComponent(() => {
 			<Section
 				title={m.settings_profile()}
 				footer={
-					profileDirty ? (
+					profileDirtyAtom() ? (
 						<Button size="sm" onClick={wrap(() => profileDirtyAtom.set(false))}>
 							{m.settings_save_changes()}
 						</Button>
@@ -135,7 +120,7 @@ export const SettingsPage = reatomComponent(() => {
 			>
 				<FieldRow label={m.settings_display_name()} description={m.settings_display_name_desc()}>
 					<Input
-						value={displayName}
+						value={displayNameAtom()}
 						size="sm"
 						onChange={wrap((e: ChangeEvent<HTMLInputElement>) => {
 							displayNameAtom.set(e.target.value)
@@ -145,7 +130,7 @@ export const SettingsPage = reatomComponent(() => {
 				</FieldRow>
 				<FieldRow label={m.settings_email()} description={m.settings_email_desc()}>
 					<Input
-						value={email}
+						value={emailAtom()}
 						size="sm"
 						onChange={wrap((e: ChangeEvent<HTMLInputElement>) => {
 							emailAtom.set(e.target.value)
@@ -163,7 +148,7 @@ export const SettingsPage = reatomComponent(() => {
 			<Section
 				title={m.settings_notifications()}
 				footer={
-					notifDirty ? (
+					notifDirtyAtom() ? (
 						<Button size="sm" onClick={wrap(() => notifDirtyAtom.set(false))}>
 							{m.settings_save_changes()}
 						</Button>
@@ -178,7 +163,7 @@ export const SettingsPage = reatomComponent(() => {
 						collection={emailNotificationsCollection()}
 						size="sm"
 						w="100%"
-						value={[emailNotif]}
+						value={[emailNotifAtom()]}
 						onValueChange={wrap(
 							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
 								const val = details.value[0]
@@ -219,7 +204,7 @@ export const SettingsPage = reatomComponent(() => {
 						collection={desktopNotificationsCollection()}
 						size="sm"
 						w="100%"
-						value={[desktopNotif]}
+						value={[desktopNotifAtom()]}
 						onValueChange={wrap(
 							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
 								const val = details.value[0]
@@ -260,7 +245,7 @@ export const SettingsPage = reatomComponent(() => {
 					description={m.settings_show_language_switcher_desc()}
 				>
 					<Switch.Root
-						checked={showLanguageSwitcher}
+						checked={showLanguageSwitcherInTopBarAtom()}
 						onCheckedChange={wrap(({ checked }: { checked: boolean }) =>
 							showLanguageSwitcherInTopBarAtom.set(checked),
 						)}
@@ -274,7 +259,7 @@ export const SettingsPage = reatomComponent(() => {
 					description={m.settings_show_github_link_desc()}
 				>
 					<Switch.Root
-						checked={showGithubLink}
+						checked={showGithubLinkInTopBarAtom()}
 						onCheckedChange={wrap(({ checked }: { checked: boolean }) =>
 							showGithubLinkInTopBarAtom.set(checked),
 						)}
@@ -288,7 +273,7 @@ export const SettingsPage = reatomComponent(() => {
 					description={m.settings_show_theme_switcher_desc()}
 				>
 					<Switch.Root
-						checked={showThemeSwitcher}
+						checked={showThemeSwitcherInTopBarAtom()}
 						onCheckedChange={wrap(({ checked }: { checked: boolean }) =>
 							showThemeSwitcherInTopBarAtom.set(checked),
 						)}
@@ -305,7 +290,7 @@ export const SettingsPage = reatomComponent(() => {
 						collection={themeCollection()}
 						size="sm"
 						w="100%"
-						value={[theme]}
+						value={[themePreferenceAtom()]}
 						onValueChange={wrap(
 							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
 								const val = details.value[0]
@@ -342,7 +327,7 @@ export const SettingsPage = reatomComponent(() => {
 						collection={densityCollection()}
 						size="sm"
 						w="100%"
-						value={[density]}
+						value={[densityAtom()]}
 						onValueChange={wrap(
 							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
 								const val = details.value[0]
@@ -379,7 +364,7 @@ export const SettingsPage = reatomComponent(() => {
 						collection={languageCollection()}
 						size="sm"
 						w="100%"
-						value={[locale]}
+						value={[localeAtom()]}
 						onValueChange={wrap(
 							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
 								const val = details.value[0]
