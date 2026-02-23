@@ -5,11 +5,10 @@ import { atom, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { isLocale } from '#paraglide/runtime.js'
 import { Button, Input, Select, Switch } from '#shared/components'
 import {
 	localeAtom,
-	reatomM,
+	reatomLoc,
 	showGithubLinkInTopBarAtom,
 	showLanguageSwitcherInTopBarAtom,
 	showThemeSwitcherInTopBarAtom,
@@ -33,7 +32,7 @@ const notifDirtyAtom = atom(false, 'settings.notifDirty')
 // Appearance atoms
 const densityAtom = atom('comfortable', 'settings.density')
 
-const emailNotificationsCollection = reatomM(
+const emailNotificationsCollection = reatomLoc(
 	(m) =>
 		createListCollection({
 			items: [
@@ -47,7 +46,7 @@ const emailNotificationsCollection = reatomM(
 	'settings.emailNotificationsCollection',
 )
 
-const desktopNotificationsCollection = reatomM(
+const desktopNotificationsCollection = reatomLoc(
 	(m) =>
 		createListCollection({
 			items: [
@@ -60,7 +59,7 @@ const desktopNotificationsCollection = reatomM(
 	'settings.desktopNotificationsCollection',
 )
 
-const themeCollection = reatomM(
+const themeCollection = reatomLoc(
 	(m) =>
 		createListCollection({
 			items: [
@@ -74,7 +73,7 @@ const themeCollection = reatomM(
 	'settings.themeCollection',
 )
 
-const densityCollection = reatomM(
+const densityCollection = reatomLoc(
 	(m) =>
 		createListCollection({
 			items: [
@@ -88,7 +87,7 @@ const densityCollection = reatomM(
 	'settings.densityCollection',
 )
 
-const languageCollection = reatomM(
+const languageCollection = reatomLoc(
 	(m) =>
 		createListCollection({
 			items: [
@@ -365,12 +364,7 @@ export const SettingsPage = reatomComponent(() => {
 						size="sm"
 						w="100%"
 						value={[localeAtom()]}
-						onValueChange={wrap(
-							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
-								const val = details.value[0]
-								if (isLocale(val)) localeAtom.set(val)
-							},
-						)}
+						onValueChange={wrap((details) => void localeAtom.set(details.value[0]))}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>

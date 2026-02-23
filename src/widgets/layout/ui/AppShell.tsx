@@ -13,7 +13,6 @@ import {
 import { type ReactNode } from 'react'
 
 import { m } from '#paraglide/messages.js'
-import { isLocale, locales } from '#paraglide/runtime.js'
 import { Drawer, IconButton, Input, Menu } from '#shared/components'
 import {
 	localeAtom,
@@ -202,13 +201,11 @@ export const AppShell = reatomComponent(
 										<Menu.RadioItemGroup
 											id="locale"
 											value={localeAtom()}
-											onValueChange={wrap(({ value }: { value: string }) => {
-												if (isLocale(value)) localeAtom.set(value)
-											})}
+											onValueChange={wrap(({ value }) => void localeAtom.set(value))}
 										>
-											{locales.map((locale) => (
+											{localeAtom.locales.map((locale) => (
 												<Menu.RadioItem key={locale} value={locale}>
-													<Menu.ItemText>{m[`language_${locale}`]?.() ?? locale}</Menu.ItemText>
+													<Menu.ItemText>{m[`language_${locale}`]()}</Menu.ItemText>
 													<Menu.ItemIndicator />
 												</Menu.RadioItem>
 											))}
