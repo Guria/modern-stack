@@ -9,7 +9,7 @@ import { isLocale } from '#paraglide/runtime.js'
 import { Button, Input, Select, Switch } from '#shared/components'
 import {
 	localeAtom,
-	reatomT,
+	reatomM,
 	showGithubLinkInTopBarAtom,
 	showLanguageSwitcherInTopBarAtom,
 	showThemeSwitcherInTopBarAtom,
@@ -33,7 +33,7 @@ const notifDirtyAtom = atom(false, 'settings.notifDirty')
 // Appearance atoms
 const densityAtom = atom('comfortable', 'settings.density')
 
-const emailNotificationsCollection = reatomT(
+const emailNotificationsCollection = reatomM(
 	(m) =>
 		createListCollection({
 			items: [
@@ -47,7 +47,7 @@ const emailNotificationsCollection = reatomT(
 	'settings.emailNotificationsCollection',
 )
 
-const desktopNotificationsCollection = reatomT(
+const desktopNotificationsCollection = reatomM(
 	(m) =>
 		createListCollection({
 			items: [
@@ -60,7 +60,7 @@ const desktopNotificationsCollection = reatomT(
 	'settings.desktopNotificationsCollection',
 )
 
-const themeCollection = reatomT(
+const themeCollection = reatomM(
 	(m) =>
 		createListCollection({
 			items: [
@@ -74,7 +74,7 @@ const themeCollection = reatomT(
 	'settings.themeCollection',
 )
 
-const densityCollection = reatomT(
+const densityCollection = reatomM(
 	(m) =>
 		createListCollection({
 			items: [
@@ -88,7 +88,7 @@ const densityCollection = reatomT(
 	'settings.densityCollection',
 )
 
-const languageCollection = reatomT(
+const languageCollection = reatomM(
 	(m) =>
 		createListCollection({
 			items: [

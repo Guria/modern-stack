@@ -1,4 +1,4 @@
-export { localeAtom, reatomT } from './locale'
+export { localeAtom, reatomM } from './locale'
 export { resolvedThemeAtom, themePreferenceAtom } from './theme'
 export {
 	showGithubLinkInTopBarAtom,

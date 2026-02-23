@@ -9,7 +9,7 @@ This project uses **ParaglideJS** for compile-time i18n, wired into the Reatom s
 | `messages/<lang>.json`                  | Source of truth for all UI strings                                   |
 | `src/paraglide/`                        | Generated output — do not edit manually                              |
 | `localeAtom` in `#shared/model`         | Reactive atom holding the active locale, persisted to `localStorage` |
-| `reatomT` in `#shared/model`            | Factory for locale-aware computed values                             |
+| `reatomM` in `#shared/model`            | Factory for locale-aware computed values                             |
 | `isLocale` from `#paraglide/runtime.js` | Runtime type guard for locale strings                                |
 | `locales` from `#paraglide/runtime.js`  | Readonly array of all configured locales (`["en", "es"]`)            |
 

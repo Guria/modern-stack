@@ -6,12 +6,12 @@ import type { Category, Item } from '#entities/item'
 
 import { m } from '#paraglide/messages.js'
 import { Badge, Button, Select } from '#shared/components'
-import { reatomT } from '#shared/model'
+import { reatomM } from '#shared/model'
 import { styled } from '#styled-system/jsx'
 
 import { CategoryBadge } from './components/CategoryBadge'
 
-const sortFieldCollection = reatomT(
+const sortFieldCollection = reatomM(
 	(m) =>
 		createListCollection({
 			items: [
@@ -24,7 +24,7 @@ const sortFieldCollection = reatomT(
 	'items.sortFieldCollection',
 )
 
-const categoryCollection = reatomT(
+const categoryCollection = reatomM(
 	(m) =>
 		createListCollection({
 			items: [
@@ -40,7 +40,7 @@ const categoryCollection = reatomT(
 	'items.categoryCollection',
 )
 
-const stockCollection = reatomT(
+const stockCollection = reatomM(
 	(m) =>
 		createListCollection({
 			items: [
