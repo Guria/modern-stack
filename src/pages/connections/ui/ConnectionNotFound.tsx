@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import { Card } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -13,9 +14,11 @@ export function ConnectionNotFound({ connectionId }: { connectionId: string }) {
 			m="8"
 		>
 			<styled.h2 fontSize="xl" fontWeight="semibold" color="red.subtle.fg" mb="2">
-				Connection not found
+				{m.connection_not_found()}
 			</styled.h2>
-			<styled.p color="red.subtle.fg">No connection exists for id "{connectionId}".</styled.p>
+			<styled.p color="red.subtle.fg">
+				{m.connection_not_found_description({ connectionId })}
+			</styled.p>
 		</Card.Root>
 	)
 }

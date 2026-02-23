@@ -1,5 +1,6 @@
 import type { Connection } from '#entities/connection'
 
+import { m } from '#paraglide/messages.js'
 import { Button, toaster } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -8,10 +9,10 @@ import { ConnectionTypeBadge } from './components/ConnectionTypeBadge'
 
 export function ConnectionDetail({ connection }: { connection: Connection }) {
 	const handleTest = () => {
-		const id = toaster.create({ title: 'Testing connection…', type: 'loading', closable: false })
+		const id = toaster.create({ title: m.connection_testing(), type: 'loading', closable: false })
 		setTimeout(() => {
 			toaster.update(id, {
-				title: 'Connection successful',
+				title: m.connection_successful(),
 				description: connection.name,
 				type: 'success',
 			})
@@ -19,10 +20,14 @@ export function ConnectionDetail({ connection }: { connection: Connection }) {
 	}
 
 	const handleReconnect = () => {
-		const id = toaster.create({ title: 'Reconnecting…', type: 'loading', closable: false })
+		const id = toaster.create({
+			title: m.connection_reconnecting(),
+			type: 'loading',
+			closable: false,
+		})
 		setTimeout(() => {
 			toaster.update(id, {
-				title: 'Reconnected successfully',
+				title: m.connection_reconnected_successfully(),
 				description: connection.name,
 				type: 'success',
 			})
@@ -39,11 +44,11 @@ export function ConnectionDetail({ connection }: { connection: Connection }) {
 				<ConnectionStatusBadge status={connection.status} />
 				{connection.status === 'error' && (
 					<Button size="sm" onClick={handleReconnect}>
-						Reconnect
+						{m.connection_reconnect()}
 					</Button>
 				)}
 				<Button size="sm" variant="outline" onClick={handleTest}>
-					Test connection
+					{m.connection_test()}
 				</Button>
 			</styled.div>
 			<styled.p color="gray.11" fontSize="sm" lineHeight="relaxed">

@@ -2,6 +2,7 @@ import { Plus } from 'lucide-react'
 
 import type { Article } from '#entities/article'
 
+import { m } from '#paraglide/messages.js'
 import { IconButton } from '#shared/components'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
@@ -27,7 +28,7 @@ export function ArticleList({ articles, selectedId, getArticleHref }: ArticleLis
 				borderColor="gray.4"
 			>
 				<styled.h3 fontSize="sm" fontWeight="semibold" color="gray.11">
-					Articles
+					{m.nav_articles()}
 				</styled.h3>
 				<IconButton size="xs" variant="plain" aria-label="New article">
 					<Plus className={css({ w: '4', h: '4' })} />

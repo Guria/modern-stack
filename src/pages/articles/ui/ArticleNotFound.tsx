@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import { Card } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -13,9 +14,9 @@ export function ArticleNotFound({ articleId }: { articleId: string }) {
 			m="8"
 		>
 			<styled.h2 fontSize="lg" fontWeight="semibold" color="red.subtle.fg" mb="2">
-				Article not found
+				{m.article_not_found()}
 			</styled.h2>
-			<styled.p color="red.subtle.fg">No article exists for id "{articleId}".</styled.p>
+			<styled.p color="red.subtle.fg">{m.article_not_found_description({ articleId })}</styled.p>
 		</Card.Root>
 	)
 }

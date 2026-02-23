@@ -41,6 +41,10 @@ run = [ #
 [tasks.ci]
 description = "Run all CI checks. No auto-fixes"
 run = [
+	{ tasks = [
+		"prepare:panda",
+		"prepare:paraglide",
+	] },
 	{ task = "format:check" },
 	{ task = "lint" },
 	{ tasks = [

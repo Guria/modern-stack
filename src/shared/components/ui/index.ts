@@ -28,5 +28,6 @@ export {
 export { Span, type SpanProps } from './span'
 export { Spinner, type SpinnerProps } from './spinner'
 export * as Splitter from './splitter'
+export * as Switch from './switch'
 export * as Table from './table'
 export { Toaster, toaster } from './toast'

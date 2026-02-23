@@ -2,6 +2,7 @@ import { reatomComponent } from '@reatom/react'
 import { MessageCircle } from 'lucide-react'
 
 import { conversationUnreadCountAtom } from '#entities/conversation'
+import { m } from '#paraglide/messages.js'
 import { Badge } from '#shared/components'
 import { SideNavButton, SideNavItemContent } from '#widgets/layout'
 
@@ -30,7 +31,7 @@ export const ChatNavItem = reatomComponent(() => {
 	return (
 		<a href={chatRoute.path({})}>
 			<SideNavButton active={chatRoute.match()}>
-				<SideNavItemContent Icon={MessageCircle} label="Chat" trailing={unreadBadge} />
+				<SideNavItemContent Icon={MessageCircle} label={m.nav_chat()} trailing={unreadBadge} />
 			</SideNavButton>
 		</a>
 	)

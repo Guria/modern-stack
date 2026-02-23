@@ -1,5 +1,6 @@
 import { reatomComponent } from '@reatom/react'
 
+import { m } from '#paraglide/messages.js'
 import { Skeleton } from '#shared/components'
 import { BackButton, MobileHeaderTitle } from '#widgets/layout'
 
@@ -11,11 +12,11 @@ export const ConnectionDetailMobileHeader = reatomComponent(() => {
 	const isLoading = connectionDetailRoute.loader.pending() > 0
 	return (
 		<>
-			<BackButton href={connectionsRoute.path()} label="Back to connections" />
+			<BackButton href={connectionsRoute.path()} label={m.connection_back_to_connections()} />
 			{isLoading ? (
 				<Skeleton h="5" w="28" borderRadius="sm" />
 			) : (
-				<MobileHeaderTitle label={item?.name ?? 'Connection not found'} />
+				<MobileHeaderTitle label={item?.name ?? m.connection_not_found()} />
 			)}
 		</>
 	)

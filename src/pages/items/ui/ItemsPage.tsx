@@ -5,43 +5,56 @@ import { reatomComponent } from '@reatom/react'
 import type { Category, Item } from '#entities/item'
 
 import { Badge, Button, Select } from '#shared/components'
+import { reatomT } from '#shared/model'
 import { styled } from '#styled-system/jsx'
 
 import { CategoryBadge } from './components/CategoryBadge'
 
-const sortFieldCollection = createListCollection({
-	items: [
-		{ label: 'Name', value: 'name' },
-		{ label: 'Price', value: 'price' },
-	] as const satisfies ReadonlyArray<{ label: string; value: 'name' | 'price' }>,
-	itemToString: (item) => item.label,
-	itemToValue: (item) => item.value,
-})
+const sortFieldCollection = reatomT(
+	(m) =>
+		createListCollection({
+			items: [
+				{ label: m.items_sort_name(), value: 'name' },
+				{ label: m.items_sort_price(), value: 'price' },
+			] as const satisfies ReadonlyArray<{ label: string; value: 'name' | 'price' }>,
+			itemToString: (item) => item.label,
+			itemToValue: (item) => item.value,
+		}),
+	'items.sortFieldCollection',
+)
 
-const categoryCollection = createListCollection({
-	items: [
-		{ label: 'All', value: 'all' },
-		{ label: 'Electronics', value: 'electronics' },
-		{ label: 'Furniture', value: 'furniture' },
-		{ label: 'Clothing', value: 'clothing' },
-		{ label: 'Food', value: 'food' },
-	] as const satisfies ReadonlyArray<{ label: string; value: Category | 'all' }>,
-	itemToString: (item) => item.label,
-	itemToValue: (item) => item.value,
-})
+const categoryCollection = reatomT(
+	(m) =>
+		createListCollection({
+			items: [
+				{ label: m.items_filter_all(), value: 'all' },
+				{ label: m.items_category_electronics(), value: 'electronics' },
+				{ label: m.items_category_furniture(), value: 'furniture' },
+				{ label: m.items_category_clothing(), value: 'clothing' },
+				{ label: m.items_category_food(), value: 'food' },
+			] as const satisfies ReadonlyArray<{ label: string; value: Category | 'all' }>,
+			itemToString: (item) => item.label,
+			itemToValue: (item) => item.value,
+		}),
+	'items.categoryCollection',
+)
 
-const stockCollection = createListCollection({
-	items: [
-		{ label: 'All', value: 'all' },
-		{ label: 'In Stock', value: 'in-stock' },
-		{ label: 'Out of Stock', value: 'out-of-stock' },
-	] as const satisfies ReadonlyArray<{
-		label: string
-		value: 'all' | 'in-stock' | 'out-of-stock'
-	}>,
-	itemToString: (item) => item.label,
-	itemToValue: (item) => item.value,
-})
+const stockCollection = reatomT(
+	(m) =>
+		createListCollection({
+			items: [
+				{ label: m.items_filter_all(), value: 'all' },
+				{ label: m.items_stock_in_stock(), value: 'in-stock' },
+				{ label: m.items_stock_out_of_stock(), value: 'out-of-stock' },
+			] as const satisfies ReadonlyArray<{
+				label: string
+				value: 'all' | 'in-stock' | 'out-of-stock'
+			}>,
+			itemToString: (item) => item.label,
+			itemToValue: (item) => item.value,
+		}),
+	'items.stockCollection',
+)
 
 const sortFieldAtom = reatomEnum(['name', 'price'], 'items.sortField').extend(
 	withSearchParams('sort'),
@@ -113,7 +126,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
 					Sort by
 					<Select.Root
-						collection={sortFieldCollection}
+						collection={sortFieldCollection()}
 						size="sm"
 						value={[sortField]}
 						onValueChange={handleSortFieldChange}
@@ -129,7 +142,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						</Select.Control>
 						<Select.Positioner>
 							<Select.Content>
-								{sortFieldCollection.items.map((item) => (
+								{sortFieldCollection().items.map((item) => (
 									<Select.Item key={item.value} item={item}>
 										<Select.ItemText>{item.label}</Select.ItemText>
 										<Select.ItemIndicator />
@@ -148,7 +161,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
 					Category
 					<Select.Root
-						collection={categoryCollection}
+						collection={categoryCollection()}
 						size="sm"
 						value={[categoryFilter]}
 						onValueChange={handleCategoryFilterChange}
@@ -164,7 +177,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						</Select.Control>
 						<Select.Positioner>
 							<Select.Content>
-								{categoryCollection.items.map((item) => (
+								{categoryCollection().items.map((item) => (
 									<Select.Item key={item.value} item={item}>
 										<Select.ItemText>{item.label}</Select.ItemText>
 										<Select.ItemIndicator />
@@ -179,7 +192,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
 					Stock
 					<Select.Root
-						collection={stockCollection}
+						collection={stockCollection()}
 						size="sm"
 						value={[stockFilter]}
 						onValueChange={handleStockFilterChange}
@@ -195,7 +208,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						</Select.Control>
 						<Select.Positioner>
 							<Select.Content>
-								{stockCollection.items.map((item) => (
+								{stockCollection().items.map((item) => (
 									<Select.Item key={item.value} item={item}>
 										<Select.ItemText>{item.label}</Select.ItemText>
 										<Select.ItemIndicator />

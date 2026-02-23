@@ -1,5 +1,6 @@
 import { reatomComponent } from '@reatom/react'
 
+import { m } from '#paraglide/messages.js'
 import { SideNavButton, SideNavItemContent } from '#widgets/layout'
 
 import { formatTime, timerRemainingAtom, timerRunningAtom } from '../model/atoms'
@@ -20,7 +21,11 @@ export const TimerNavItem = reatomComponent(
 	() => (
 		<a href={timerRoute.path()}>
 			<SideNavButton active={timerRoute.match()}>
-				<SideNavItemContent Icon={() => <TimerRing />} label="Timer" trailing={<TimerTrailing />} />
+				<SideNavItemContent
+					Icon={() => <TimerRing />}
+					label={m.nav_timer()}
+					trailing={<TimerTrailing />}
+				/>
 			</SideNavButton>
 		</a>
 	),

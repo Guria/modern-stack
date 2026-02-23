@@ -16,7 +16,8 @@
 							"useContext",
 							"useReducer",
 							"useImperativeHandle",
-							"useDebugValue"
+							"useDebugValue",
+							"memo"
 						],
 						"message": "Find appropriate solution with reatom or ask user for guidance."
 					}
