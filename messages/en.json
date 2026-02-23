@@ -152,6 +152,7 @@
 	"timer_reset": "Reset",
 	"topbar_search_placeholder": "Search...",
 	"topbar_toggle_theme_label": "Toggle theme",
+	"reatomloc_tree_shake_canary": "reatomLoc tree-shake canary — must not appear in bundle",
 	"items_found": [
 		{
 			"declarations": ["input count", "local n = count: plural"],

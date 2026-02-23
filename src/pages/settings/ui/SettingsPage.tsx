@@ -33,7 +33,7 @@ const notifDirtyAtom = atom(false, 'settings.notifDirty')
 const densityAtom = atom('comfortable', 'settings.density')
 
 const emailNotificationsCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
 			items: [
 				{ label: m.settings_notif_all(), value: 'all' },
@@ -47,7 +47,7 @@ const emailNotificationsCollection = reatomLoc(
 )
 
 const desktopNotificationsCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
 			items: [
 				{ label: m.settings_notif_enabled(), value: 'enabled' },
@@ -60,7 +60,7 @@ const desktopNotificationsCollection = reatomLoc(
 )
 
 const themeCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
 			items: [
 				{ label: m.settings_theme_light(), value: 'light' },
@@ -74,7 +74,7 @@ const themeCollection = reatomLoc(
 )
 
 const densityCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
 			items: [
 				{ label: m.settings_density_compact(), value: 'compact' },
@@ -88,12 +88,12 @@ const densityCollection = reatomLoc(
 )
 
 const languageCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
-			items: [
-				{ label: m.language_en(), value: 'en' },
-				{ label: m.language_es(), value: 'es' },
-			],
+			items: localeAtom.locales.map((locale) => ({
+				label: localeAtom.label(locale)(),
+				value: locale,
+			})),
 			itemToString: (item) => item.label,
 			itemToValue: (item) => item.value,
 		}),

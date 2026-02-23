@@ -10,7 +10,8 @@ This project uses **ParaglideJS** for compile-time i18n, wired into the Reatom s
 | `src/paraglide/`                        | Generated output — do not edit manually                              |
 | `localeAtom` in `#shared/model`         | Reactive atom holding the active locale, persisted to `localStorage` |
 | `localeAtom.locales`                    | Readonly array of all configured locales (`["en", "es"]`)            |
-| `reatomLoc` in `#shared/model`          | Factory for locale-aware computed values                             |
+| `localeAtom.label(locale)`              | Returns a computed — call as `localeAtom.label(locale)()` to get the display label for a locale code |
+| `reatomLoc` in `#shared/model`          | Factory for locale-aware computed values (shorthand for `localeAtom.reatomLoc`) |
 | `isLocale` from `#paraglide/runtime.js` | Runtime type guard for locale strings                                |
 
 ## Adding message keys
@@ -60,7 +61,7 @@ import { createListCollection } from '@ark-ui/react/select'
 import { m } from '#paraglide/messages.js'
 
 const statusCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
 			items: [
 				{ label: m.items_filter_all(), value: 'all' },
@@ -74,7 +75,9 @@ const statusCollection = reatomLoc(
 )
 ```
 
-`reatomLoc` is a thin wrapper around Reatom's `computed` — it subscribes to `localeAtom` and passes the message namespace `m` to the callback. The collection is only recreated when the locale actually changes, not on every render.
+`reatomLoc` is a thin wrapper around Reatom's `computed` — it subscribes to `localeAtom` and re-runs the callback on every locale change. The callback takes no arguments; call `m.*()` directly inside it. The collection is only recreated when the locale actually changes, not on every render.
+
+> **Tree-shaking:** because message references are static (`m.items_filter_all`, not `m[\`...\`]`), and `m` is never passed as an argument, the bundler can eliminate any message that is not referenced anywhere in the app.
 
 **In JSX, call it inline — no need for an intermediate variable:**
 
@@ -122,20 +125,39 @@ localeAtom.set(val)
 
 ### Dynamic locale menu
 
-Use `localeAtom.locales` instead of importing from the runtime. This means adding a new locale to `project.inlang/settings.json` automatically adds it to the UI:
+Use `localeAtom.locales` (not the runtime import) so adding a locale to `project.inlang/settings.json` automatically adds it to every menu.
+
+Use `localeAtom.label(locale)()` to get the display name — it reads from a private static mapping in `locale.ts` that keeps message references analyzable by the bundler:
 
 ```tsx
 {
 	localeAtom.locales.map((locale) => (
 		<Menu.RadioItem key={locale} value={locale}>
-			<Menu.ItemText>{m[`language_${locale}`]()}</Menu.ItemText>
+			<Menu.ItemText>{localeAtom.label(locale)()}</Menu.ItemText>
 			<Menu.ItemIndicator />
 		</Menu.RadioItem>
 	))
 }
 ```
 
-For each locale `xx` add a `language_xx` message key to both message files.
+For use inside a `reatomLoc` callback (e.g. a `Select` collection), call it the same way — the outer computed already tracks locale changes:
+
+```ts
+const languageCollection = reatomLoc(
+	() =>
+		createListCollection({
+			items: localeAtom.locales.map((locale) => ({
+				label: localeAtom.label(locale)(),
+				value: locale,
+			})),
+			itemToString: (item) => item.label,
+			itemToValue: (item) => item.value,
+		}),
+	'myFeature.languageCollection',
+)
+```
+
+For each locale `xx`: add a `language_xx` message key to both message files **and** register it in the `localeLabels` map inside `src/shared/model/locale.ts`.
 
 ## What NOT to do
 
