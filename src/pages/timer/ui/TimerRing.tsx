@@ -11,14 +11,11 @@ const RADIUS = 6
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
 export const TimerRing = reatomComponent(() => {
-	const running = timerRunningAtom()
-	const progress = timerProgressAtom()
-
-	if (!running) {
+	if (!timerRunningAtom()) {
 		return <Timer className={iconClass} />
 	}
 
-	const offset = CIRCUMFERENCE * (1 - progress)
+	const offset = CIRCUMFERENCE * (1 - timerProgressAtom())
 
 	return (
 		<svg width="16" height="16" viewBox="0 0 16 16" className={iconClass}>

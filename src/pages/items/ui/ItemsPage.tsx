@@ -82,27 +82,6 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 	const sortDir = sortDirAtom()
 	const categoryFilter = categoryFilterAtom()
 	const stockFilter = stockFilterAtom()
-	const handleSortFieldChange = wrap((details: Select.ValueChangeDetails) => {
-		const value = details.value[0]
-		if (value) {
-			sortFieldAtom.set(value as keyof typeof sortFieldAtom.enum)
-		}
-	})
-	const handleSortDirectionClick = wrap(() => {
-		sortDirAtom.set(sortDir === 'asc' ? 'desc' : 'asc')
-	})
-	const handleCategoryFilterChange = wrap((details: Select.ValueChangeDetails) => {
-		const value = details.value[0]
-		if (value) {
-			categoryFilterAtom.set(value as keyof typeof categoryFilterAtom.enum)
-		}
-	})
-	const handleStockFilterChange = wrap((details: Select.ValueChangeDetails) => {
-		const value = details.value[0]
-		if (value) {
-			stockFilterAtom.set(value as keyof typeof stockFilterAtom.enum)
-		}
-	})
 
 	let filtered = items.filter((item) => {
 		if (categoryFilter !== 'all' && item.category !== categoryFilter) return false
@@ -130,7 +109,10 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						collection={sortFieldCollection()}
 						size="sm"
 						value={[sortField]}
-						onValueChange={handleSortFieldChange}
+						onValueChange={wrap((details: Select.ValueChangeDetails) => {
+							const value = details.value[0]
+							if (value) sortFieldAtom.set(value as keyof typeof sortFieldAtom.enum)
+						})}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -155,7 +137,11 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 					</Select.Root>
 				</styled.label>
 
-				<Button variant="outline" size="sm" onClick={handleSortDirectionClick}>
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={wrap(() => sortDirAtom.set(sortDirAtom() === 'asc' ? 'desc' : 'asc'))}
+				>
 					{sortDir === 'asc' ? m.items_sort_asc() : m.items_sort_desc()}
 				</Button>
 
@@ -165,7 +151,10 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						collection={categoryCollection()}
 						size="sm"
 						value={[categoryFilter]}
-						onValueChange={handleCategoryFilterChange}
+						onValueChange={wrap((details: Select.ValueChangeDetails) => {
+							const value = details.value[0]
+							if (value) categoryFilterAtom.set(value as keyof typeof categoryFilterAtom.enum)
+						})}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -196,7 +185,10 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						collection={stockCollection()}
 						size="sm"
 						value={[stockFilter]}
-						onValueChange={handleStockFilterChange}
+						onValueChange={wrap((details: Select.ValueChangeDetails) => {
+							const value = details.value[0]
+							if (value) stockFilterAtom.set(value as keyof typeof stockFilterAtom.enum)
+						})}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
