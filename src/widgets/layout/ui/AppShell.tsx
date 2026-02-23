@@ -205,7 +205,7 @@ export const AppShell = reatomComponent(
 										>
 											{localeAtom.locales.map((locale) => (
 												<Menu.RadioItem key={locale} value={locale}>
-													<Menu.ItemText>{m[`language_${locale}`]()}</Menu.ItemText>
+													<Menu.ItemText>{localeAtom.label(locale)()}</Menu.ItemText>
 													<Menu.ItemIndicator />
 												</Menu.RadioItem>
 											))}

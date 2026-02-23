@@ -29,6 +29,11 @@ run = "madge -c ./src/main.tsx --ts-config ./tsconfig.app.json --exclude styled-
 description = "Check FSD architecture with steiger"
 run = "bun scripts/steiger.ts"
 
+[tasks."lint:paraglide-tree-shaking"]
+description = "Verify unused translations are tree-shaken from the production bundle"
+depends = ["build:webapp"]
+run = "bun scripts/check-tree-shaking.ts"
+
 [tasks.validate]
 description = "Run all quality checks (format, lint, typecheck, test). Default validation task for LLMs"
 run = [ #
@@ -36,6 +41,7 @@ run = [ #
 	{ task = "format" },
 	{ task = "lint:fix" },
 	{ tasks = ["typecheck", "test:run", "lint:circular", "lint:steiger"] },
+	{ task = "lint:paraglide-tree-shaking" },
 ]
 
 [tasks.ci]
@@ -54,4 +60,5 @@ run = [
 	] },
 	{ task = "test:coverage" },
 	{ task = "build" },
+	{ task = "lint:paraglide-tree-shaking" },
 ]

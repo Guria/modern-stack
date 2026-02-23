@@ -12,7 +12,7 @@ import { styled } from '#styled-system/jsx'
 import { CategoryBadge } from './components/CategoryBadge'
 
 const sortFieldCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
 			items: [
 				{ label: m.items_sort_name(), value: 'name' },
@@ -25,7 +25,7 @@ const sortFieldCollection = reatomLoc(
 )
 
 const categoryCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
 			items: [
 				{ label: m.items_filter_all(), value: 'all' },
@@ -41,7 +41,7 @@ const categoryCollection = reatomLoc(
 )
 
 const stockCollection = reatomLoc(
-	(m) =>
+	() =>
 		createListCollection({
 			items: [
 				{ label: m.items_filter_all(), value: 'all' },
