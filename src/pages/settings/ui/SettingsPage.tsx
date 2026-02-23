@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react'
 
 import { createListCollection } from '@ark-ui/react/select'
-import { atom, wrap } from '@reatom/core'
+import { atom, reatomEnum, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
@@ -14,6 +14,7 @@ import {
 	showThemeSwitcherInTopBarAtom,
 	themePreferenceAtom,
 } from '#shared/model'
+import { withCoerce } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
 import { FieldRow } from './components/FieldRow'
@@ -25,12 +26,18 @@ const emailAtom = atom('alex@example.com', 'settings.email')
 const profileDirtyAtom = atom(false, 'settings.profileDirty')
 
 // Notifications atoms
-const emailNotifAtom = atom('important', 'settings.emailNotif')
-const desktopNotifAtom = atom('enabled', 'settings.desktopNotif')
+const emailNotifAtom = reatomEnum(['all', 'important', 'none'], 'settings.emailNotif').extend(
+	withCoerce('all'),
+)
+const desktopNotifAtom = reatomEnum(['enabled', 'disabled'], 'settings.desktopNotif').extend(
+	withCoerce('enabled'),
+)
 const notifDirtyAtom = atom(false, 'settings.notifDirty')
 
 // Appearance atoms
-const densityAtom = atom('comfortable', 'settings.density')
+const densityAtom = reatomEnum(['compact', 'comfortable', 'spacious'], 'settings.density').extend(
+	withCoerce('compact'),
+)
 
 const emailNotificationsCollection = reatomLoc(
 	() =>
@@ -163,15 +170,10 @@ export const SettingsPage = reatomComponent(() => {
 						size="sm"
 						w="100%"
 						value={[emailNotifAtom()]}
-						onValueChange={wrap(
-							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
-								const val = details.value[0]
-								if (val !== undefined) {
-									emailNotifAtom.set(val)
-									notifDirtyAtom.set(true)
-								}
-							},
-						)}
+						onValueChange={wrap(({ value }) => {
+							emailNotifAtom.set(value[0])
+							notifDirtyAtom.set(true)
+						})}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -204,15 +206,10 @@ export const SettingsPage = reatomComponent(() => {
 						size="sm"
 						w="100%"
 						value={[desktopNotifAtom()]}
-						onValueChange={wrap(
-							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
-								const val = details.value[0]
-								if (val !== undefined) {
-									desktopNotifAtom.set(val)
-									notifDirtyAtom.set(true)
-								}
-							},
-						)}
+						onValueChange={wrap(({ value }) => {
+							desktopNotifAtom.set(value[0])
+							notifDirtyAtom.set(true)
+						})}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -245,9 +242,7 @@ export const SettingsPage = reatomComponent(() => {
 				>
 					<Switch.Root
 						checked={showLanguageSwitcherInTopBarAtom()}
-						onCheckedChange={wrap(({ checked }: { checked: boolean }) =>
-							showLanguageSwitcherInTopBarAtom.set(checked),
-						)}
+						onCheckedChange={wrap(({ checked }) => showLanguageSwitcherInTopBarAtom.set(checked))}
 					>
 						<Switch.HiddenInput />
 						<Switch.Control />
@@ -259,9 +254,7 @@ export const SettingsPage = reatomComponent(() => {
 				>
 					<Switch.Root
 						checked={showGithubLinkInTopBarAtom()}
-						onCheckedChange={wrap(({ checked }: { checked: boolean }) =>
-							showGithubLinkInTopBarAtom.set(checked),
-						)}
+						onCheckedChange={wrap(({ checked }) => showGithubLinkInTopBarAtom.set(checked))}
 					>
 						<Switch.HiddenInput />
 						<Switch.Control />
@@ -273,9 +266,7 @@ export const SettingsPage = reatomComponent(() => {
 				>
 					<Switch.Root
 						checked={showThemeSwitcherInTopBarAtom()}
-						onCheckedChange={wrap(({ checked }: { checked: boolean }) =>
-							showThemeSwitcherInTopBarAtom.set(checked),
-						)}
+						onCheckedChange={wrap(({ checked }) => showThemeSwitcherInTopBarAtom.set(checked))}
 					>
 						<Switch.HiddenInput />
 						<Switch.Control />
@@ -290,14 +281,7 @@ export const SettingsPage = reatomComponent(() => {
 						size="sm"
 						w="100%"
 						value={[themePreferenceAtom()]}
-						onValueChange={wrap(
-							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
-								const val = details.value[0]
-								if (val !== undefined) {
-									themePreferenceAtom.set(val as 'system' | 'light' | 'dark')
-								}
-							},
-						)}
+						onValueChange={wrap(({ value }) => void themePreferenceAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -327,14 +311,7 @@ export const SettingsPage = reatomComponent(() => {
 						size="sm"
 						w="100%"
 						value={[densityAtom()]}
-						onValueChange={wrap(
-							(details: Select.ValueChangeDetails<{ label: string; value: string }>) => {
-								const val = details.value[0]
-								if (val !== undefined) {
-									densityAtom.set(val)
-								}
-							},
-						)}
+						onValueChange={wrap(({ value }) => void densityAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>

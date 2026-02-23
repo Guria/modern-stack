@@ -7,6 +7,7 @@ import type { Category, Item } from '#entities/item'
 import { m } from '#paraglide/messages.js'
 import { Badge, Button, Select } from '#shared/components'
 import { reatomLoc } from '#shared/model'
+import { withCoerce } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
 import { CategoryBadge } from './components/CategoryBadge'
@@ -58,17 +59,22 @@ const stockCollection = reatomLoc(
 )
 
 const sortFieldAtom = reatomEnum(['name', 'price'], 'items.sortField').extend(
+	withCoerce('name'),
 	withSearchParams('sort'),
 )
 
-const sortDirAtom = reatomEnum(['asc', 'desc'], 'items.sortDir').extend(withSearchParams('dir'))
+const sortDirAtom = reatomEnum(['asc', 'desc'], 'items.sortDir').extend(
+	withCoerce('asc'),
+	withSearchParams('dir'),
+)
 
 const categoryFilterAtom = reatomEnum(
 	['all', 'electronics', 'furniture', 'clothing', 'food'],
 	'items.categoryFilter',
-).extend(withSearchParams('category'))
+).extend(withCoerce('all'), withSearchParams('category'))
 
 const stockFilterAtom = reatomEnum(['all', 'in-stock', 'out-of-stock'], 'items.stockFilter').extend(
+	withCoerce('all'),
 	withSearchParams('stock'),
 )
 
@@ -109,10 +115,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						collection={sortFieldCollection()}
 						size="sm"
 						value={[sortField]}
-						onValueChange={wrap((details: Select.ValueChangeDetails) => {
-							const value = details.value[0]
-							if (value) sortFieldAtom.set(value as keyof typeof sortFieldAtom.enum)
-						})}
+						onValueChange={wrap(({ value }) => sortFieldAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -151,10 +154,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						collection={categoryCollection()}
 						size="sm"
 						value={[categoryFilter]}
-						onValueChange={wrap((details: Select.ValueChangeDetails) => {
-							const value = details.value[0]
-							if (value) categoryFilterAtom.set(value as keyof typeof categoryFilterAtom.enum)
-						})}
+						onValueChange={wrap(({ value }) => categoryFilterAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
@@ -185,10 +185,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						collection={stockCollection()}
 						size="sm"
 						value={[stockFilter]}
-						onValueChange={wrap((details: Select.ValueChangeDetails) => {
-							const value = details.value[0]
-							if (value) stockFilterAtom.set(value as keyof typeof stockFilterAtom.enum)
-						})}
+						onValueChange={wrap(({ value }) => stockFilterAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>
