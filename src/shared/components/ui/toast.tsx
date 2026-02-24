@@ -1,6 +1,6 @@
 'use client'
 import { Portal } from '@ark-ui/react/portal'
-import { Toaster as ArkToaster, createToaster, Toast, useToastContext } from '@ark-ui/react/toast'
+import { Toaster as ArkToaster, Toast as ArkToast, useToastContext } from '@ark-ui/react/toast'
 import { CheckCircleIcon, CircleAlertIcon, CircleXIcon } from 'lucide-react'
 
 import { createStyleContext, Stack, styled } from '#styled-system/jsx'
@@ -9,14 +9,15 @@ import { toast } from '#styled-system/recipes'
 import { CloseButton } from './close-button'
 import { Icon, type IconProps } from './icon'
 import { Spinner } from './spinner'
+import { toaster } from './toaster'
 
 const { withProvider, withContext } = createStyleContext(toast)
 
-const Root = withProvider(Toast.Root, 'root')
-const Title = withContext(Toast.Title, 'title')
-const Description = withContext(Toast.Description, 'description')
-const ActionTrigger = withContext(Toast.ActionTrigger, 'actionTrigger')
-const CloseTrigger = withContext(Toast.CloseTrigger, 'closeTrigger')
+const Root = withProvider(ArkToast.Root, 'root')
+const Title = withContext(ArkToast.Title, 'title')
+const Description = withContext(ArkToast.Description, 'description')
+const ActionTrigger = withContext(ArkToast.ActionTrigger, 'actionTrigger')
+const CloseTrigger = withContext(ArkToast.CloseTrigger, 'closeTrigger')
 const StyledToaster = styled(ArkToaster)
 
 const iconMap: Record<string, React.ElementType> = {
@@ -38,34 +39,41 @@ const Indicator = ({ ref, ...props }: IconProps) => {
 	)
 }
 
-export const toaster = createToaster({
-	placement: 'bottom-end',
-	pauseOnPageIdle: true,
-	overlap: true,
-	max: 5,
-})
+const Toast = {
+	Root,
+	Title,
+	Description,
+	ActionTrigger,
+	CloseTrigger,
+	StyledToaster,
+	Indicator,
+}
 
 export const Toaster = () => {
 	return (
 		<Portal>
 			<StyledToaster toaster={toaster} insetInline={{ mdDown: '4' }}>
 				{(toast) => (
-					<Root>
-						{toast.type === 'loading' ? <Spinner color="colorPalette.plain.fg" /> : <Indicator />}
+					<Toast.Root>
+						{toast.type === 'loading' ? (
+							<Spinner color="colorPalette.plain.fg" />
+						) : (
+							<Toast.Indicator />
+						)}
 
 						<Stack gap="3" alignItems="start">
 							<Stack gap="1">
-								{toast.title && <Title>{toast.title}</Title>}
-								{toast.description && <Description>{toast.description}</Description>}
+								{toast.title && <Toast.Title>{toast.title}</Toast.Title>}
+								{toast.description && <Toast.Description>{toast.description}</Toast.Description>}
 							</Stack>
-							{toast.action && <ActionTrigger>{toast.action.label}</ActionTrigger>}
+							{toast.action && <Toast.ActionTrigger>{toast.action.label}</Toast.ActionTrigger>}
 						</Stack>
 						{toast.closable && (
-							<CloseTrigger asChild>
+							<Toast.CloseTrigger asChild>
 								<CloseButton size="sm" />
-							</CloseTrigger>
+							</Toast.CloseTrigger>
 						)}
-					</Root>
+					</Toast.Root>
 				)}
 			</StyledToaster>
 		</Portal>

@@ -36,7 +36,7 @@ const localeLabels = {
  * // Iterate configured locales and get their display labels
  * localeAtom.locales.map((l) => localeAtom.label(l)())
  */
-export const localeAtom = atom(getLocale(), 'locale').extend(
+export const localeAtom = atom(() => getLocale(), 'locale').extend(
 	withParams((value: string | undefined) => (isLocale(value) ? value : baseLocale)),
 	withLocalStorage({
 		key: 'locale',
