@@ -4,16 +4,25 @@ import { HttpResponse, delay, http } from 'msw'
 import { connectionsMockData } from '#entities/connection/mocks/data'
 import { composeApiUrl } from '#shared/api'
 import { Error404 } from '#shared/mocks'
+import { neverResolve, to500 } from '#shared/mocks/utils'
 
 import { CONNECTIONS_API_PATH } from '../api/connectionsApi'
 
-export const connectionHandlers = [
-	http.get(composeApiUrl(CONNECTIONS_API_PATH), async () => {
+const listUrl = composeApiUrl(CONNECTIONS_API_PATH)
+const detailUrl = composeApiUrl(`${CONNECTIONS_API_PATH}/:connectionId`)
+
+export const connectionList = {
+	default: http.get(listUrl, async () => {
 		await delay()
 
 		return HttpResponse.json(connectionsMockData.map(({ details: _, ...rest }) => rest))
 	}),
-	http.get(composeApiUrl(`${CONNECTIONS_API_PATH}/:connectionId`), async ({ params }) => {
+	error: http.get(listUrl, () => to500()),
+	loading: http.get(listUrl, neverResolve),
+}
+
+export const connectionDetail = {
+	default: http.get(detailUrl, async ({ params }) => {
 		await delay()
 
 		const connectionId = params['connectionId']
@@ -22,4 +31,8 @@ export const connectionHandlers = [
 
 		return HttpResponse.json(connection)
 	}),
-]
+	error: http.get(detailUrl, () => to500()),
+	loading: http.get(detailUrl, neverResolve),
+}
+
+export const connectionHandlers = [connectionList.default, connectionDetail.default]

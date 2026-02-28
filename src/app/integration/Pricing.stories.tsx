@@ -1,22 +1,6 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { createMyself, type Locator } from '#shared/test'
-
-const loc = {
-	pricingHeadingAppears: (canvas) => canvas.findByRole('heading', { name: 'Pricing' }),
-	freePlanPriceAppears: (canvas) => canvas.findByText('$0/mo'),
-	proPlanPriceAppears: (canvas) => canvas.findByText('$12/mo'),
-	teamPlanPriceAppears: (canvas) => canvas.findByText('$29/mo'),
-} satisfies Record<string, Locator>
-
-const I = createMyself((I) => ({
-	seePricingContent: async () => {
-		await I.see(loc.pricingHeadingAppears)
-		await I.see(loc.freePlanPriceAppears)
-		await I.see(loc.proPlanPriceAppears)
-		await I.see(loc.teamPlanPriceAppears)
-	},
-}))
+import { pricingActor as I, pricingLoc as loc } from '#pages/pricing/testing'
 
 const meta = preview.meta({
 	title: 'Integration/Pricing',
@@ -30,7 +14,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders pricing heading', async () => {
-	await I.see(loc.pricingHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 Default.test('renders all plan cards', async () => {
@@ -43,7 +27,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders pricing heading', async () => {
-	await I.see(loc.pricingHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 DefaultMobile.test('[mobile] renders all plan cards', async () => {

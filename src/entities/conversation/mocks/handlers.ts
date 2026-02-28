@@ -4,19 +4,29 @@ import { HttpResponse, delay, http } from 'msw'
 import { conversationsMockData } from '#entities/conversation/mocks/data'
 import { composeApiUrl } from '#shared/api'
 import { Error404 } from '#shared/mocks'
+import { neverResolve, to500 } from '#shared/mocks/utils'
 
 import {
 	CONVERSATIONS_API_PATH,
 	CONVERSATIONS_UNREAD_COUNT_API_PATH,
 } from '../api/conversationsApi'
 
-export const conversationHandlers = [
-	http.get(composeApiUrl(CONVERSATIONS_API_PATH), async () => {
+const listUrl = composeApiUrl(CONVERSATIONS_API_PATH)
+const unreadCountUrl = composeApiUrl(CONVERSATIONS_UNREAD_COUNT_API_PATH)
+const detailUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId`)
+
+export const conversationList = {
+	default: http.get(listUrl, async () => {
 		await delay()
 
 		return HttpResponse.json(conversationsMockData.map(({ messages: _, ...rest }) => rest))
 	}),
-	http.get(composeApiUrl(CONVERSATIONS_UNREAD_COUNT_API_PATH), async () => {
+	error: http.get(listUrl, () => to500()),
+	loading: http.get(listUrl, neverResolve),
+}
+
+export const conversationUnreadCount = {
+	default: http.get(unreadCountUrl, async () => {
 		await delay()
 
 		const unreadCount = conversationsMockData.reduce(
@@ -26,7 +36,10 @@ export const conversationHandlers = [
 
 		return HttpResponse.json({ unreadCount })
 	}),
-	http.get(composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId`), async ({ params }) => {
+}
+
+export const conversationDetail = {
+	default: http.get(detailUrl, async ({ params }) => {
 		await delay()
 
 		const conversationId = params['conversationId']
@@ -37,4 +50,12 @@ export const conversationHandlers = [
 
 		return HttpResponse.json(conversation)
 	}),
+	error: http.get(detailUrl, () => to500()),
+	loading: http.get(detailUrl, neverResolve),
+}
+
+export const conversationHandlers = [
+	conversationList.default,
+	conversationUnreadCount.default,
+	conversationDetail.default,
 ]

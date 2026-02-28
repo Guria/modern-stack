@@ -3,7 +3,7 @@ import { type ReactNode } from 'react'
 
 import type { Connection } from '#entities/connection'
 
-import { MasterDetails } from '#widgets/layout'
+import { MasterDetails } from '#widgets/master-details'
 
 import { ConnectionList } from './components/ConnectionList'
 

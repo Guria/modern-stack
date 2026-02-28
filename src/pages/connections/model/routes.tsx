@@ -3,14 +3,15 @@ import type { ReactElement } from 'react'
 import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchConnectionById, fetchConnections } from '#entities/connection'
+import { m } from '#paraglide/messages.js'
 import { getFirstOutletChild, rootRoute } from '#shared/router'
+import { PageError } from '#widgets/data-page'
 
 import { ConnectionDetail } from '../ui/ConnectionDetail'
 import { ConnectionDetailLoadingState } from '../ui/ConnectionDetailLoadingState'
 import { ConnectionNoSelection } from '../ui/ConnectionNoSelection'
 import { ConnectionNotFound } from '../ui/ConnectionNotFound'
 import { ConnectionsPage } from '../ui/ConnectionsPage'
-import { ConnectionsPageError } from '../ui/ConnectionsPageError'
 import { ConnectionsPageLoading } from '../ui/ConnectionsPageLoading'
 
 export const connectionsRoute = rootRoute.reatomRoute(
@@ -26,7 +27,13 @@ export const connectionsRoute = rootRoute.reatomRoute(
 			}
 
 			if (connections == null) {
-				return <ConnectionsPageError onRetry={wrap(() => retryComputed(self.loader))} />
+				return (
+					<PageError
+						title={m.connections_error_title()}
+						description={m.connections_error_description()}
+						onRetry={wrap(() => retryComputed(self.loader))}
+					/>
+				)
 			}
 
 			return (

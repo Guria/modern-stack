@@ -1,66 +1,7 @@
-import { http, HttpResponse } from 'msw'
-import { expect, within } from 'storybook/test'
-
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { handlersArray } from '#app/mocks/handlers'
-import { CONNECTIONS_API_PATH } from '#entities/connection'
-import { composeApiUrl } from '#shared/api'
-import { neverResolve } from '#shared/mocks/utils'
-import { createMyself, type Locator } from '#shared/test'
-
-const connectionsApiUrl = composeApiUrl(CONNECTIONS_API_PATH)
-const connectionDetailApiUrl = composeApiUrl(`${CONNECTIONS_API_PATH}/:connectionId`)
-
-const to500 = () => new HttpResponse(null, { status: 500 })
-
-const loc = {
-	noSelectionMessageAppears: (canvas) => canvas.findByText('No connection selected'),
-	connectionsLoadingStateAppears: (canvas) =>
-		canvas.findByRole('status', { name: 'Loading connections page' }),
-	connectionsErrorHeadingAppears: (canvas) =>
-		canvas.findByRole('heading', { name: 'Could not load connections' }),
-	maybeConnectionsErrorHeading: (canvas) =>
-		canvas.queryByRole('heading', { name: 'Could not load connections' }),
-	connectionsAlertRegionAppears: (canvas) => canvas.findByRole('alert'),
-	retryButtonAppears: (canvas) => canvas.findByRole('button', { name: 'Try again' }),
-	detailRegionAppears: (canvas) => canvas.findByRole('main'),
-} satisfies Record<string, Locator>
-
-const I = createMyself((I) => ({
-	goBackToConnections: async () => {
-		await I.click((canvas) => canvas.findByLabelText('Back to connections'))
-	},
-	clickConnection: async (name: string | RegExp) => {
-		const pattern = typeof name === 'string' ? new RegExp(name, 'i') : name
-		await I.click((canvas) => canvas.findByRole('link', { name: pattern }))
-	},
-	seeConnectionList: async () => {
-		await I.see((canvas) => canvas.findByRole('link', { name: /Stripe API/i }))
-		await I.see((canvas) => canvas.findByRole('link', { name: /Analytics DB/i }))
-		await I.see((canvas) => canvas.findByRole('link', { name: /Slack Notifications/i }))
-		await I.see((canvas) => canvas.findByRole('link', { name: /Auth0 SSO/i }))
-		await I.see((canvas) => canvas.findByRole('link', { name: /S3 Data Lake/i }))
-	},
-	seeStatusBadges: async () => {
-		await I.see((canvas) => canvas.findAllByText('Active').then((els: HTMLElement[]) => els[0]!))
-		await I.see((canvas) => canvas.findAllByText('Inactive').then((els: HTMLElement[]) => els[0]!))
-		await I.see((canvas) => canvas.findAllByText('Error').then((els: HTMLElement[]) => els[0]!))
-	},
-	seeTypeBadges: async () => {
-		await I.see((canvas) => canvas.findAllByText('API').then((els: HTMLElement[]) => els[0]!))
-		await I.see((canvas) => canvas.findAllByText('Database').then((els: HTMLElement[]) => els[0]!))
-		await I.see((canvas) => canvas.findAllByText('Webhook').then((els: HTMLElement[]) => els[0]!))
-	},
-	seeConnectionDetail: async (name: string | RegExp) => {
-		await I.see((canvas) => canvas.findByRole('heading', { name, level: 1 }))
-	},
-	seeConnectionsError: async () => {
-		await I.see(loc.connectionsErrorHeadingAppears)
-		await I.see(loc.connectionsAlertRegionAppears)
-		await I.see(loc.retryButtonAppears)
-	},
-}))
+import { connectionDetail, connectionList } from '#entities/connection/mocks/handlers'
+import { connectionsActor as I, connectionsLoc as loc } from '#pages/connections/testing'
 
 const meta = preview.meta({
 	title: 'Integration/Connections',
@@ -82,20 +23,19 @@ Default.test('shows no-selection message when no connection selected', async () 
 })
 
 Default.test('shows connection detail when connection is clicked', async () => {
-	await I.clickConnection('Stripe API')
-	await I.seeConnectionDetail('Stripe API')
+	await I.clickItem('Stripe API')
+	await I.seeDetail('Stripe API')
 })
 
 Default.test('shows all detail paragraphs in connection detail', async () => {
-	await I.clickConnection('Stripe API')
+	await I.clickItem('Stripe API')
 
-	const detail = await I.resolveLocator(loc.detailRegionAppears)
-	const detailCanvas = within(detail)
-	await detailCanvas.findByRole('heading', { name: 'Stripe API', level: 1 })
-	await detailCanvas.findByText(/Connected to Stripe API v2023-10-16/)
-	await detailCanvas.findByText(/Webhook endpoint configured/)
-	await detailCanvas.findByText(/Average response latency/)
-	await detailCanvas.findByText(/Rate limit headroom/)
+	const detail = await I.see(loc.detailRegionAppears)
+	await I.see(loc.connectionHeading('Stripe API').within(detail))
+	await I.seeText(/Connected to Stripe API v2023-10-16/, detail)
+	await I.seeText(/Webhook endpoint configured/, detail)
+	await I.seeText(/Average response latency/, detail)
+	await I.seeText(/Rate limit headroom/, detail)
 })
 
 Default.test('displays correct status badges for all statuses', async () => {
@@ -107,11 +47,11 @@ Default.test('displays correct type badges for all types', async () => {
 })
 
 Default.test('can select different connections', async () => {
-	await I.clickConnection('Stripe API')
-	await I.seeConnectionDetail('Stripe API')
+	await I.clickItem('Stripe API')
+	await I.seeDetail('Stripe API')
 
-	await I.clickConnection('Analytics DB')
-	await I.seeConnectionDetail('Analytics DB')
+	await I.clickItem('Analytics DB')
+	await I.seeDetail('Analytics DB')
 })
 
 export const DefaultMobile = meta.story({
@@ -128,20 +68,19 @@ DefaultMobile.test('[mobile] shows connection list when no connection is selecte
 })
 
 DefaultMobile.test('[mobile] shows connection detail when connection is clicked', async () => {
-	await I.clickConnection('Stripe API')
-	await I.seeConnectionDetail('Stripe API')
+	await I.clickItem('Stripe API')
+	await I.seeDetail('Stripe API')
 })
 
 DefaultMobile.test('[mobile] shows all detail paragraphs in connection detail', async () => {
-	await I.clickConnection('Stripe API')
+	await I.clickItem('Stripe API')
 
-	const detail = await I.resolveLocator(loc.detailRegionAppears)
-	const detailCanvas = within(detail)
-	await detailCanvas.findByRole('heading', { name: 'Stripe API', level: 1 })
-	await detailCanvas.findByText(/Connected to Stripe API v2023-10-16/)
-	await detailCanvas.findByText(/Webhook endpoint configured/)
-	await detailCanvas.findByText(/Average response latency/)
-	await detailCanvas.findByText(/Rate limit headroom/)
+	const detail = await I.see(loc.detailRegionAppears)
+	await I.see(loc.connectionHeading('Stripe API').within(detail))
+	await I.seeText(/Connected to Stripe API v2023-10-16/, detail)
+	await I.seeText(/Webhook endpoint configured/, detail)
+	await I.seeText(/Average response latency/, detail)
+	await I.seeText(/Rate limit headroom/, detail)
 })
 
 DefaultMobile.test('[mobile] displays correct status badges for all statuses', async () => {
@@ -153,20 +92,20 @@ DefaultMobile.test('[mobile] displays correct type badges for all types', async 
 })
 
 DefaultMobile.test('[mobile] can select different connections', async () => {
-	await I.clickConnection('Stripe API')
-	await I.seeConnectionDetail('Stripe API')
+	await I.clickItem('Stripe API')
+	await I.seeDetail('Stripe API')
 
-	await I.goBackToConnections()
+	await I.goBack()
 
-	await I.clickConnection('Analytics DB')
-	await I.seeConnectionDetail('Analytics DB')
+	await I.clickItem('Analytics DB')
+	await I.seeDetail('Analytics DB')
 })
 
 export const HandlesConnectionsLoadServerError = meta.story({
 	name: 'Connections Load Server Error',
 	parameters: {
 		msw: {
-			handlers: [http.get(connectionsApiUrl, to500), ...handlersArray],
+			handlers: { connectionList: connectionList.error },
 		},
 	},
 })
@@ -174,54 +113,30 @@ export const HandlesConnectionsLoadServerError = meta.story({
 HandlesConnectionsLoadServerError.test(
 	'shows error state when connections request fails',
 	async () => {
-		await I.seeConnectionsError()
-		await I.see((canvas) =>
-			canvas.findByText("We couldn't load the connection list. Try again in a moment."),
-		)
+		await I.seeError()
+		await I.seeText("We couldn't load the connection list. Try again in a moment.")
 	},
 )
-
-HandlesConnectionsLoadServerError.test('renders as an alert region', async () => {
-	await I.see(loc.connectionsAlertRegionAppears)
-})
-
-HandlesConnectionsLoadServerError.test('shows retry button on error', async () => {
-	await I.see(loc.retryButtonAppears)
-})
 
 export const HandlesConnectionsLoadServerErrorMobile = meta.story({
 	name: 'Connections Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [http.get(connectionsApiUrl, to500), ...handlersArray],
-		},
-	},
+	parameters: HandlesConnectionsLoadServerError.input.parameters,
 })
 
 HandlesConnectionsLoadServerErrorMobile.test(
 	'[mobile] shows error state when connections request fails',
 	async () => {
-		await I.seeConnectionsError()
-		await I.see((canvas) =>
-			canvas.findByText("We couldn't load the connection list. Try again in a moment."),
-		)
+		await I.seeError()
+		await I.seeText("We couldn't load the connection list. Try again in a moment.")
 	},
 )
-
-HandlesConnectionsLoadServerErrorMobile.test('[mobile] renders as an alert region', async () => {
-	await I.see(loc.connectionsAlertRegionAppears)
-})
-
-HandlesConnectionsLoadServerErrorMobile.test('[mobile] shows retry button on error', async () => {
-	await I.see(loc.retryButtonAppears)
-})
 
 export const KeepsLoadingWhenConnectionsRequestNeverResolves = meta.story({
 	name: 'Connections Request Loading State',
 	parameters: {
 		msw: {
-			handlers: [http.get(connectionsApiUrl, neverResolve), ...handlersArray],
+			handlers: { connectionList: connectionList.loading },
 		},
 	},
 })
@@ -229,26 +144,20 @@ export const KeepsLoadingWhenConnectionsRequestNeverResolves = meta.story({
 KeepsLoadingWhenConnectionsRequestNeverResolves.test(
 	'shows loading state while connections request is pending',
 	async () => {
-		await I.see(loc.connectionsLoadingStateAppears)
-		await I.dontSee(loc.maybeConnectionsErrorHeading)
+		await I.seeLoading()
 	},
 )
 
 export const KeepsLoadingWhenConnectionsRequestNeverResolvesMobile = meta.story({
 	name: 'Connections Request Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [http.get(connectionsApiUrl, neverResolve), ...handlersArray],
-		},
-	},
+	parameters: KeepsLoadingWhenConnectionsRequestNeverResolves.input.parameters,
 })
 
 KeepsLoadingWhenConnectionsRequestNeverResolvesMobile.test(
 	'[mobile] shows loading state while connections request is pending',
 	async () => {
-		await I.see(loc.connectionsLoadingStateAppears)
-		await I.dontSee(loc.maybeConnectionsErrorHeading)
+		await I.seeLoading()
 	},
 )
 
@@ -256,7 +165,7 @@ export const HandlesConnectionDetailServerError = meta.story({
 	name: 'Connection Detail Server Error',
 	parameters: {
 		msw: {
-			handlers: [http.get(connectionDetailApiUrl, to500), ...handlersArray],
+			handlers: { connectionDetail: connectionDetail.error },
 		},
 	},
 })
@@ -264,34 +173,28 @@ export const HandlesConnectionDetailServerError = meta.story({
 HandlesConnectionDetailServerError.test(
 	'shows not found when connection detail request fails',
 	async () => {
-		await I.clickConnection('Stripe API')
+		await I.clickItem('Stripe API')
 
-		const detail = await I.resolveLocator(loc.detailRegionAppears)
-		const detailCanvas = within(detail)
-		await detailCanvas.findByRole('heading', { name: 'Connection not found' })
-		await detailCanvas.findByText('No connection exists for id "1".')
+		const detail = await I.see(loc.detailRegionAppears)
+		await I.see(loc.connectionHeading('Connection not found').within(detail))
+		await I.seeText(/No connection exists for id/, detail)
 	},
 )
 
 export const HandlesConnectionDetailServerErrorMobile = meta.story({
 	name: 'Connection Detail Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [http.get(connectionDetailApiUrl, to500), ...handlersArray],
-		},
-	},
+	parameters: HandlesConnectionDetailServerError.input.parameters,
 })
 
 HandlesConnectionDetailServerErrorMobile.test(
 	'[mobile] shows not found when connection detail request fails',
 	async () => {
-		await I.clickConnection('Stripe API')
+		await I.clickItem('Stripe API')
 
-		const detail = await I.resolveLocator(loc.detailRegionAppears)
-		const detailCanvas = within(detail)
-		await detailCanvas.findByRole('heading', { name: 'Connection not found' })
-		await detailCanvas.findByText('No connection exists for id "1".')
+		const detail = await I.see(loc.detailRegionAppears)
+		await I.see(loc.connectionHeading('Connection not found').within(detail))
+		await I.seeText(/No connection exists for id/, detail)
 	},
 )
 
@@ -299,7 +202,7 @@ export const KeepsLoadingWhenConnectionDetailNeverResolves = meta.story({
 	name: 'Connection Detail Loading State',
 	parameters: {
 		msw: {
-			handlers: [http.get(connectionDetailApiUrl, neverResolve), ...handlersArray],
+			handlers: { connectionDetail: connectionDetail.loading },
 		},
 	},
 })
@@ -307,45 +210,29 @@ export const KeepsLoadingWhenConnectionDetailNeverResolves = meta.story({
 KeepsLoadingWhenConnectionDetailNeverResolves.test(
 	'shows detail loading state while connection detail is pending',
 	async () => {
-		await I.clickConnection('Stripe API')
+		await I.clickItem('Stripe API')
 
-		const detail = await I.resolveLocator(loc.detailRegionAppears)
-		const detailCanvas = within(detail)
-		const loadingState = await detailCanvas.findByRole('status', {
-			name: 'Loading connection detail',
-		})
-		expect(loadingState).toBeInTheDocument()
-		expect(
-			detailCanvas.queryByRole('heading', { name: 'Stripe API', level: 1 }),
-		).not.toBeInTheDocument()
-		expect(detailCanvas.queryByText('Connection not found')).not.toBeInTheDocument()
+		const detail = await I.see(loc.detailRegionAppears)
+		await I.see(loc.connectionDetailLoading.within(detail))
+		await I.dontSee(loc.maybeConnectionHeading('Stripe API').within(detail))
+		await I.dontSeeText('Connection not found', detail)
 	},
 )
 
 export const KeepsLoadingWhenConnectionDetailNeverResolvesMobile = meta.story({
 	name: 'Connection Detail Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [http.get(connectionDetailApiUrl, neverResolve), ...handlersArray],
-		},
-	},
+	parameters: KeepsLoadingWhenConnectionDetailNeverResolves.input.parameters,
 })
 
 KeepsLoadingWhenConnectionDetailNeverResolvesMobile.test(
 	'[mobile] shows detail loading state while connection detail is pending',
 	async () => {
-		await I.clickConnection('Stripe API')
+		await I.clickItem('Stripe API')
 
-		const detail = await I.resolveLocator(loc.detailRegionAppears)
-		const detailCanvas = within(detail)
-		const loadingState = await detailCanvas.findByRole('status', {
-			name: 'Loading connection detail',
-		})
-		expect(loadingState).toBeInTheDocument()
-		expect(
-			detailCanvas.queryByRole('heading', { name: 'Stripe API', level: 1 }),
-		).not.toBeInTheDocument()
-		expect(detailCanvas.queryByText('Connection not found')).not.toBeInTheDocument()
+		const detail = await I.see(loc.detailRegionAppears)
+		await I.see(loc.connectionDetailLoading.within(detail))
+		await I.dontSee(loc.maybeConnectionHeading('Stripe API').within(detail))
+		await I.dontSeeText('Connection not found', detail)
 	},
 )

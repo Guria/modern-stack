@@ -1,19 +1,17 @@
 import preview from '#.storybook/preview'
-import { createMyself, type Locator } from '#shared/test'
+import { button, createActor, loc } from '#shared/test'
 
 import { CalculatorPage } from './CalculatorPage'
 
-const loc = {
-	button: (name: string | RegExp) => (canvas) => canvas.findByRole('button', { name }),
-	display: (value: string) => (canvas) => canvas.findByText(value, { selector: 'span' }),
-} satisfies Record<string, (name: any) => Locator>
+const btn = (name: string | RegExp) => button(name)
+const display = (value: string) => loc((canvas) => canvas.findByText(value, { selector: 'span' }))
 
-const I = createMyself((I) => ({
+const I = createActor().extend((I) => ({
 	press: async (label: string | RegExp) => {
-		await I.click(loc.button(label))
+		await I.click(btn(label))
 	},
 	seeDisplay: async (value: string) => {
-		await I.see(loc.display(value))
+		await I.see(display(value))
 	},
 }))
 
@@ -120,10 +118,10 @@ Default.test('handles consecutive operations', async () => {
 	await I.seeDisplay('12')
 })
 
-Default.test('division by zero returns 0', async () => {
+Default.test('division by zero shows Error', async () => {
 	await I.press('5')
 	await I.press('÷')
 	await I.press('0')
 	await I.press('=')
-	await I.seeDisplay('0')
+	await I.seeDisplay('Error')
 })

@@ -4,7 +4,7 @@ import { MessageCircle } from 'lucide-react'
 import { conversationUnreadCountAtom } from '#entities/conversation'
 import { m } from '#paraglide/messages.js'
 import { Badge } from '#shared/components'
-import { SideNavButton, SideNavItemContent } from '#widgets/layout'
+import { SideNavButton, SideNavItemContent } from '#widgets/side-nav'
 
 import { chatRoute } from '../model/routes'
 

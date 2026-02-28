@@ -1,22 +1,6 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { createMyself, type Locator } from '#shared/test'
-
-const loc = {
-	calculatorHeadingAppears: (canvas) => canvas.findByRole('heading', { name: 'Calculator' }),
-	acButtonAppears: (canvas) => canvas.findByRole('button', { name: 'AC' }),
-	equalsButtonAppears: (canvas) => canvas.findByRole('button', { name: '=' }),
-	zeroButtonAppears: (canvas) => canvas.findByRole('button', { name: '0' }),
-} satisfies Record<string, Locator>
-
-const I = createMyself((I) => ({
-	seeCalculatorContent: async () => {
-		await I.see(loc.calculatorHeadingAppears)
-		await I.see(loc.acButtonAppears)
-		await I.see(loc.equalsButtonAppears)
-		await I.see(loc.zeroButtonAppears)
-	},
-}))
+import { calculatorActor as I, calculatorLoc as loc } from '#pages/calculator/testing'
 
 const meta = preview.meta({
 	title: 'Integration/Calculator',
@@ -30,7 +14,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders calculator heading', async () => {
-	await I.see(loc.calculatorHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 Default.test('renders calculator buttons', async () => {
@@ -43,7 +27,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders calculator heading', async () => {
-	await I.see(loc.calculatorHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 DefaultMobile.test('[mobile] renders calculator buttons', async () => {

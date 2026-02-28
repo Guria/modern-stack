@@ -1,24 +1,15 @@
 import preview from '#.storybook/preview'
-import { createMyself, type Locator } from '#shared/test'
+import { button, createActor, loc } from '#shared/test'
 
 import { TimerPage } from './TimerPage'
 
-type Canvas = Parameters<Locator>[0]
+const heading = loc((canvas) => canvas.findByRole('heading', { name: 'Timer' }))
+const startBtn = button('Start')
+const pauseBtn = button('Pause')
+const resetBtn = button('Reset')
+const durationBtn = (label: string) => button(label)
 
-const loc = {
-	heading: (canvas: Canvas) => canvas.findByRole('heading', { name: 'Timer' }),
-	display: (canvas: Canvas) => canvas.findByText(/\d{2}:\d{2}/),
-	startBtn: (canvas: Canvas) => canvas.findByRole('button', { name: 'Start' }),
-	pauseBtn: (canvas: Canvas) => canvas.findByRole('button', { name: 'Pause' }),
-	resetBtn: (canvas: Canvas) => canvas.findByRole('button', { name: 'Reset' }),
-	durationBtn: (canvas: Canvas, label: string) => canvas.findByRole('button', { name: label }),
-} satisfies Record<string, Locator | ((canvas: Canvas, label: string) => Promise<HTMLElement>)>
-
-const I = createMyself((I) => ({
-	seeTime: async (time: string) => {
-		await I.seeText(loc.display, time)
-	},
-}))
+const I = createActor()
 
 const meta = preview.meta({
 	title: 'Pages/Timer',
@@ -32,29 +23,29 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders timer and starts/pauses/resets', async () => {
-	await I.see(loc.heading)
-	await I.seeTime('05:00')
+	await I.see(heading)
+	await I.seeText('05:00')
 
-	await I.click(loc.startBtn)
-	await I.see(loc.pauseBtn)
+	await I.click(startBtn)
+	await I.see(pauseBtn)
 
 	// We can't easily wait for a tick in storybook-test without mocked timers
 	// but we can verify the button toggles.
 
-	await I.click(loc.pauseBtn)
-	await I.see(loc.startBtn)
+	await I.click(pauseBtn)
+	await I.see(startBtn)
 
-	await I.click(loc.resetBtn)
-	await I.seeTime('05:00')
+	await I.click(resetBtn)
+	await I.seeText('05:00')
 })
 
 Default.test('changes duration', async () => {
-	await I.click((canvas) => loc.durationBtn(canvas, '1m'))
-	await I.seeTime('01:00')
+	await I.click(durationBtn('1m'))
+	await I.seeText('01:00')
 
-	await I.click((canvas) => loc.durationBtn(canvas, '10m'))
-	await I.seeTime('10:00')
+	await I.click(durationBtn('10m'))
+	await I.seeText('10:00')
 
-	await I.click((canvas) => loc.durationBtn(canvas, '5m'))
-	await I.seeTime('05:00')
+	await I.click(durationBtn('5m'))
+	await I.seeText('05:00')
 })

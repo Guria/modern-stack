@@ -7,7 +7,7 @@ import { initialize, mswLoader } from 'msw-storybook-addon'
 // oxlint-disable-next-line no-restricted-imports
 import { useMemo, type PropsWithChildren } from 'react'
 
-import { handlersArray } from '#app/mocks/handlers'
+import { handlers } from '#app/mocks/handlers'
 import { css } from '#styled-system/css'
 
 import { setupStorybookUrl } from './setupStorybookUrl'
@@ -46,7 +46,7 @@ const preview = definePreview({
 	],
 	parameters: {
 		a11y: { test: 'todo' },
-		msw: { handlers: handlersArray },
+		msw: { handlers },
 	},
 	beforeEach: async ({ globals }) => {
 		if (!import.meta.env['VITEST']) return

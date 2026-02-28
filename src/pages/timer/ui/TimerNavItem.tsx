@@ -1,7 +1,7 @@
 import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { SideNavButton, SideNavItemContent } from '#widgets/layout'
+import { SideNavButton, SideNavItemContent } from '#widgets/side-nav'
 
 import { formatTime, timerRemainingAtom, timerRunningAtom } from '../model/atoms'
 import { timerRoute } from '../model/routes'

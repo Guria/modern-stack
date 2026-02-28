@@ -1,26 +1,6 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { createMyself, type Locator } from '#shared/test'
-
-const loc = {
-	usageHeadingAppears: (canvas) => canvas.findByRole('heading', { name: 'Usage' }),
-	storageResetNoteAppears: (canvas) =>
-		canvas.findByText('Storage usage resets on the 1st of each month.'),
-	breakdownHeadingAppears: (canvas) => canvas.findByRole('heading', { name: 'Breakdown' }),
-	documentsRowAppears: (canvas) => canvas.findByText('Documents'),
-	mediaRowAppears: (canvas) => canvas.findByText('Media'),
-	otherRowAppears: (canvas) => canvas.findByText('Other'),
-} satisfies Record<string, Locator>
-
-const I = createMyself((I) => ({
-	seeUsageContent: async () => {
-		await I.see(loc.usageHeadingAppears)
-		await I.see(loc.breakdownHeadingAppears)
-		await I.see(loc.documentsRowAppears)
-		await I.see(loc.mediaRowAppears)
-		await I.see(loc.otherRowAppears)
-	},
-}))
+import { usageActor as I, usageLoc as loc } from '#pages/usage/testing'
 
 const meta = preview.meta({
 	title: 'Integration/Usage',
@@ -34,7 +14,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders usage heading', async () => {
-	await I.see(loc.usageHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 Default.test('renders storage reset note', async () => {
@@ -54,7 +34,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders usage heading', async () => {
-	await I.see(loc.usageHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 DefaultMobile.test('[mobile] renders usage content', async () => {

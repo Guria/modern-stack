@@ -1,4 +1,4 @@
-import { MasterDetails } from '#widgets/layout'
+import { MasterDetails } from '#widgets/master-details'
 
 import { ConnectionListLoading } from './components/ConnectionListLoading'
 import { ConnectionDetailLoadingState } from './ConnectionDetailLoadingState'

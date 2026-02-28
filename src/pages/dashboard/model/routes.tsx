@@ -1,10 +1,11 @@
 import { urlAtom, withChangeHook, wrap } from '@reatom/core'
 
 import { fetchDashboardData } from '#entities/dashboard'
+import { m } from '#paraglide/messages.js'
 import { rootRoute } from '#shared/router'
+import { PageError } from '#widgets/data-page'
 
 import { DashboardPage } from '../ui/DashboardPage'
-import { DashboardPageError } from '../ui/DashboardPageError'
 import { DashboardPageLoading } from '../ui/DashboardPageLoading'
 
 urlAtom.extend(
@@ -25,7 +26,13 @@ export const dashboardRoute = rootRoute.reatomRoute(
 				return <DashboardPageLoading />
 			}
 			if (data == null) {
-				return <DashboardPageError onRetry={wrap(self.loader.retry)} />
+				return (
+					<PageError
+						title={m.dashboard_error_title()}
+						description={m.dashboard_error_description()}
+						onRetry={wrap(self.loader.retry)}
+					/>
+				)
 			}
 			return <DashboardPage data={data} />
 		},

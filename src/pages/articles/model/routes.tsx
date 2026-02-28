@@ -3,14 +3,15 @@ import type { ReactElement } from 'react'
 import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchArticles, fetchArticleById } from '#entities/article'
+import { m } from '#paraglide/messages.js'
 import { getFirstOutletChild, rootRoute } from '#shared/router'
+import { PageError } from '#widgets/data-page'
 
 import { ArticleDetail } from '../ui/ArticleDetail'
 import { ArticleDetailLoadingState } from '../ui/ArticleDetailLoadingState'
 import { ArticleNoSelection } from '../ui/ArticleNoSelection'
 import { ArticleNotFound } from '../ui/ArticleNotFound'
 import { ArticlesPage } from '../ui/ArticlesPage'
-import { ArticlesPageError } from '../ui/ArticlesPageError'
 import { ArticlesPageLoading } from '../ui/ArticlesPageLoading'
 
 export const articlesRoute = rootRoute.reatomRoute(
@@ -26,7 +27,13 @@ export const articlesRoute = rootRoute.reatomRoute(
 			}
 
 			if (articles == null) {
-				return <ArticlesPageError onRetry={wrap(() => retryComputed(self.loader))} />
+				return (
+					<PageError
+						title={m.articles_error_title()}
+						description={m.articles_error_description()}
+						onRetry={wrap(() => retryComputed(self.loader))}
+					/>
+				)
 			}
 
 			return (

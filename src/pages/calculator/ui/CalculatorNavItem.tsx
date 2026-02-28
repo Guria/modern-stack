@@ -2,7 +2,7 @@ import { reatomComponent } from '@reatom/react'
 import { Calculator } from 'lucide-react'
 
 import { m } from '#paraglide/messages.js'
-import { SideNavButton, SideNavItemContent } from '#widgets/layout'
+import { SideNavButton, SideNavItemContent } from '#widgets/side-nav'
 
 import { calculatorRoute } from '../model/routes'
 

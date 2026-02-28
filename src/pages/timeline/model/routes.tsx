@@ -1,10 +1,11 @@
 import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchTimelineEvents } from '#entities/timeline-event'
+import { m } from '#paraglide/messages.js'
 import { rootRoute } from '#shared/router'
+import { PageError } from '#widgets/data-page'
 
 import { TimelinePage } from '../ui/TimelinePage'
-import { TimelinePageError } from '../ui/TimelinePageError'
 import { TimelinePageLoading } from '../ui/TimelinePageLoading'
 
 export const timelineRoute = rootRoute.reatomRoute(
@@ -18,7 +19,13 @@ export const timelineRoute = rootRoute.reatomRoute(
 				return <TimelinePageLoading />
 			}
 			if (data == null) {
-				return <TimelinePageError onRetry={wrap(() => retryComputed(self.loader))} />
+				return (
+					<PageError
+						title={m.timeline_error_title()}
+						description={m.timeline_error_description()}
+						onRetry={wrap(() => retryComputed(self.loader))}
+					/>
+				)
 			}
 			return <TimelinePage events={data} />
 		},

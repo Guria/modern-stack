@@ -1,5 +1,6 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"error_retry": "Try again",
 	"app_name": "Modern Stack",
 	"nav_dashboard": "Dashboard",
 	"nav_articles": "Articles",
@@ -58,6 +59,8 @@
 	"language_es": "Spanish",
 	"topbar_language_switcher_label": "Switch language",
 	"topbar_github_link_label": "View source on GitHub",
+	"topbar_toggle_sidebar": "Toggle sidebar",
+	"topbar_open_menu": "Open menu",
 	"settings_show_language_switcher": "Language switcher in top bar",
 	"settings_show_language_switcher_desc": "Show a language selector in the top navigation bar.",
 	"settings_top_bar": "Top Bar",
@@ -76,10 +79,10 @@
 	"connection_no_selection_desc": "Choose a connection from the list to view its details.",
 	"articles_error_title": "Could not load articles",
 	"articles_error_description": "We couldn't load the article list. Try again in a moment.",
-	"articles_error_retry": "Try again",
+
 	"connections_error_title": "Could not load connections",
 	"connections_error_description": "We couldn't load the connection list. Try again in a moment.",
-	"connections_error_retry": "Try again",
+
 	"connection_back_to_connections": "Back to connections",
 	"connection_not_found": "Connection not found",
 	"article_back_to_articles": "Back to articles",
@@ -104,21 +107,21 @@
 	"item_not_found_description": "Item \"{itemId}\" was not found.",
 	"items_error_title": "Could not load items",
 	"items_error_description": "We couldn't load the items. Try again in a moment.",
-	"items_error_retry": "Try again",
+
 	"chat_no_selection": "No conversation selected",
 	"chat_no_selection_desc": "Choose a conversation from the list to start reading.",
 	"chat_not_found": "Conversation not found",
 	"chat_not_found_description": "No conversation exists for id \"{conversationId}\".",
 	"chat_error_title": "Could not load conversations",
 	"chat_error_description": "We couldn't load the conversations. Try again in a moment.",
-	"chat_error_retry": "Try again",
+
 	"chat_search_placeholder": "Search conversations...",
 	"chat_new_conversation": "New conversation",
 	"chat_message_placeholder": "Type a message...",
 	"chat_back_to_conversations": "Back to conversations",
 	"dashboard_error_title": "Could not load dashboard",
 	"dashboard_error_description": "We couldn't load the dashboard data. Try again in a moment.",
-	"dashboard_error_retry": "Try again",
+
 	"dashboard_stat_vs_last_week": "vs last week",
 	"dashboard_top_pages": "Top Pages",
 	"dashboard_col_page": "Page",
@@ -131,7 +134,7 @@
 	"timeline_title": "Timeline",
 	"timeline_error_title": "Could not load timeline",
 	"timeline_error_description": "We couldn't load the timeline data. Try again in a moment.",
-	"timeline_error_retry": "Try again",
+
 	"usage_title": "Usage",
 	"usage_storage": "Storage",
 	"usage_storage_desc": "{usedGB} GB of {totalGB} GB used",

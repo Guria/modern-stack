@@ -1,7 +1,7 @@
 import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { BackButton, MobileHeaderTitle } from '#widgets/layout'
+import { BackButton, MobileHeaderTitle } from '#widgets/mobile-header'
 
 import { chatConversationRoute, chatRoute } from '../model/routes'
 import { ConversationHeaderContent } from './ConversationHeaderContent'

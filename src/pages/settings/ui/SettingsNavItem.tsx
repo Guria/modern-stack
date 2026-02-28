@@ -2,7 +2,7 @@ import { reatomComponent } from '@reatom/react'
 import { Settings } from 'lucide-react'
 
 import { m } from '#paraglide/messages.js'
-import { SideNavButton, SideNavItemContent } from '#widgets/layout'
+import { SideNavButton, SideNavItemContent } from '#widgets/side-nav'
 
 import { settingsRoute } from '../model/routes'
 

@@ -1,4 +1,4 @@
-import { MasterDetails } from '#widgets/layout'
+import { MasterDetails } from '#widgets/master-details'
 
 import { ArticleDetailLoadingState } from './ArticleDetailLoadingState'
 import { ArticleListLoading } from './components/ArticleListLoading'

@@ -36,4 +36,10 @@ export default defineConfig([
 			'fsd/no-public-api-sidestep': 'off',
 		},
 	},
+	{
+		files: ['../../**/testing.ts', '../../**/testing.tsx'],
+		rules: {
+			'fsd/no-public-api-sidestep': 'off',
+		},
+	},
 ])

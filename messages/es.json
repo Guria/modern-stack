@@ -1,5 +1,6 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"error_retry": "Intentar de nuevo",
 	"app_name": "Modern Stack",
 	"nav_dashboard": "Panel",
 	"nav_articles": "Artículos",
@@ -58,6 +59,8 @@
 	"language_es": "Español",
 	"topbar_language_switcher_label": "Cambiar idioma",
 	"topbar_github_link_label": "Ver código fuente en GitHub",
+	"topbar_toggle_sidebar": "Alternar barra lateral",
+	"topbar_open_menu": "Abrir menú",
 	"settings_show_language_switcher": "Selector de idioma en la barra superior",
 	"settings_show_language_switcher_desc": "Mostrar un selector de idioma en la barra de navegación superior.",
 	"settings_top_bar": "Barra Superior",
@@ -76,10 +79,10 @@
 	"connection_no_selection_desc": "Elige una conexión de la lista para ver sus detalles.",
 	"articles_error_title": "No se pudieron cargar los artículos",
 	"articles_error_description": "No pudimos cargar la lista de artículos. Intenta de nuevo en un momento.",
-	"articles_error_retry": "Intentar de nuevo",
+
 	"connections_error_title": "No se pudieron cargar las conexiones",
 	"connections_error_description": "No pudimos cargar la lista de conexiones. Intenta de nuevo en un momento.",
-	"connections_error_retry": "Intentar de nuevo",
+
 	"connection_back_to_connections": "Volver a conexiones",
 	"connection_not_found": "Conexión no encontrada",
 	"article_back_to_articles": "Volver a artículos",
@@ -104,21 +107,21 @@
 	"item_not_found_description": "El elemento \"{itemId}\" no fue encontrado.",
 	"items_error_title": "No se pudieron cargar los elementos",
 	"items_error_description": "No pudimos cargar los elementos. Intenta de nuevo en un momento.",
-	"items_error_retry": "Intentar de nuevo",
+
 	"chat_no_selection": "Ninguna conversación seleccionada",
 	"chat_no_selection_desc": "Elige una conversación de la lista para empezar a leer.",
 	"chat_not_found": "Conversación no encontrada",
 	"chat_not_found_description": "No existe ninguna conversación para el id \"{conversationId}\".",
 	"chat_error_title": "No se pudieron cargar las conversaciones",
 	"chat_error_description": "No pudimos cargar las conversaciones. Intenta de nuevo en un momento.",
-	"chat_error_retry": "Intentar de nuevo",
+
 	"chat_search_placeholder": "Buscar conversaciones...",
 	"chat_new_conversation": "Nueva conversación",
 	"chat_message_placeholder": "Escribe un mensaje...",
 	"chat_back_to_conversations": "Volver a conversaciones",
 	"dashboard_error_title": "No se pudo cargar el panel",
 	"dashboard_error_description": "No pudimos cargar los datos del panel. Intenta de nuevo en un momento.",
-	"dashboard_error_retry": "Intentar de nuevo",
+
 	"dashboard_stat_vs_last_week": "vs semana pasada",
 	"dashboard_top_pages": "Páginas principales",
 	"dashboard_col_page": "Página",
@@ -131,7 +134,7 @@
 	"timeline_title": "Cronología",
 	"timeline_error_title": "No se pudo cargar la cronología",
 	"timeline_error_description": "No pudimos cargar los datos de la cronología. Intenta de nuevo en un momento.",
-	"timeline_error_retry": "Intentar de nuevo",
+
 	"usage_title": "Uso",
 	"usage_storage": "Almacenamiento",
 	"usage_storage_desc": "{usedGB} GB de {totalGB} GB usados",

@@ -4,7 +4,7 @@ import { m } from '#paraglide/messages.js'
 import { Toaster } from '#shared/components'
 import { localeAtom } from '#shared/model'
 import { styled } from '#styled-system/jsx'
-import { AppShell } from '#widgets/layout'
+import { AppShell } from '#widgets/app-shell'
 
 import { MobileHeader } from './MobileHeader'
 import { OrgSwitcher } from './OrgSwitcher'

@@ -3,7 +3,7 @@ import { type ReactNode } from 'react'
 
 import type { Article } from '#entities/article'
 
-import { MasterDetails } from '#widgets/layout'
+import { MasterDetails } from '#widgets/master-details'
 
 import { ArticleList } from './components/ArticleList'
 

@@ -2,7 +2,7 @@ import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
 import { Skeleton } from '#shared/components'
-import { BackButton, MobileHeaderTitle } from '#widgets/layout'
+import { BackButton, MobileHeaderTitle } from '#widgets/mobile-header'
 
 import { articleDetailRoute, articlesRoute } from '../model/routes'
 

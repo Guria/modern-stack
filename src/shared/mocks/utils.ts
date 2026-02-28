@@ -27,6 +27,16 @@ export const Error400 = createHttpErrorClass(400, 'Error400')
 export const Error404 = createHttpErrorClass(404, 'Error404')
 export const Error500 = createHttpErrorClass(500, 'Error500')
 
+export const to400 = (message = 'Bad Request') => {
+	throw new Error400(message)
+}
+export const to404 = (message = 'Not Found') => {
+	throw new Error404(message)
+}
+export const to500 = (message = 'Internal Server Error') => {
+	throw new Error500(message)
+}
+
 export async function neverResolve(): Promise<never> {
 	return new Promise(noop)
 }

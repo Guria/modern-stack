@@ -2,7 +2,7 @@ import { reatomComponent } from '@reatom/react'
 import { LayoutDashboard } from 'lucide-react'
 
 import { m } from '#paraglide/messages.js'
-import { SideNavButton, SideNavItemContent } from '#widgets/layout'
+import { SideNavButton, SideNavItemContent } from '#widgets/side-nav'
 
 import { dashboardRoute } from '../model/routes'
 

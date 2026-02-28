@@ -1,22 +1,6 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { createMyself, type Locator } from '#shared/test'
-
-const loc = {
-	timerHeadingAppears: (canvas) => canvas.findByRole('heading', { name: 'Timer' }),
-	timerDisplayAppears: (canvas) => canvas.findByText('05:00'),
-	startButtonAppears: (canvas) => canvas.findByRole('button', { name: 'Start' }),
-	resetButtonAppears: (canvas) => canvas.findByRole('button', { name: 'Reset' }),
-} satisfies Record<string, Locator>
-
-const I = createMyself((I) => ({
-	seeTimerContent: async () => {
-		await I.see(loc.timerHeadingAppears)
-		await I.see(loc.timerDisplayAppears)
-		await I.see(loc.startButtonAppears)
-		await I.see(loc.resetButtonAppears)
-	},
-}))
+import { timerActor as I, timerLoc as loc } from '#pages/timer/testing'
 
 const meta = preview.meta({
 	title: 'Integration/Timer',
@@ -30,11 +14,11 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders timer heading', async () => {
-	await I.see(loc.timerHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 Default.test('renders timer display', async () => {
-	await I.see(loc.timerDisplayAppears)
+	await I.see(loc.displayAppears)
 })
 
 Default.test('renders start and reset buttons', async () => {
@@ -48,9 +32,9 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders timer heading', async () => {
-	await I.see(loc.timerHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
-DefaultMobile.test('[mobile] renders timer display', async () => {
+DefaultMobile.test('[mobile] renders timer content', async () => {
 	await I.seeTimerContent()
 })

@@ -3,7 +3,7 @@ import { type ReactNode } from 'react'
 
 import type { Conversation } from '#entities/conversation'
 
-import { MasterDetails } from '#widgets/layout'
+import { MasterDetails } from '#widgets/master-details'
 
 import { ConversationList } from './components/ConversationList'
 

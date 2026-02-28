@@ -3,13 +3,14 @@ import type { ReactElement } from 'react'
 import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchItems, fetchItemById } from '#entities/item'
+import { m } from '#paraglide/messages.js'
 import { getFirstOutletChild, rootRoute } from '#shared/router'
+import { PageError } from '#widgets/data-page'
 
 import { ItemDetail } from '../ui/ItemDetail'
 import { ItemDetailLoadingState } from '../ui/ItemDetailLoadingState'
 import { ItemNotFound } from '../ui/ItemNotFound'
 import { ItemsPage } from '../ui/ItemsPage'
-import { ItemsPageError } from '../ui/ItemsPageError'
 import { ItemsPageLoading } from '../ui/ItemsPageLoading'
 
 export const itemsRoute = rootRoute.reatomRoute(
@@ -23,7 +24,13 @@ export const itemsRoute = rootRoute.reatomRoute(
 				return <ItemsPageLoading />
 			}
 			if (data == null) {
-				return <ItemsPageError onRetry={wrap(() => retryComputed(self.loader))} />
+				return (
+					<PageError
+						title={m.items_error_title()}
+						description={m.items_error_description()}
+						onRetry={wrap(() => retryComputed(self.loader))}
+					/>
+				)
 			}
 			// If a child route is active (e.g. /items/:id), render it full page
 			if (itemDetailRoute()) {

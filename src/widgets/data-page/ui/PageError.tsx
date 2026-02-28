@@ -1,12 +1,15 @@
+import { type ReactNode } from 'react'
+
 import { m } from '#paraglide/messages.js'
 import { Button, Card } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
-type ItemsPageErrorProps = {
-	onRetry?: () => void
-}
+type PageErrorProps = {
+	title: ReactNode
+	description: ReactNode
+} & ({ onRetry: () => void; retryLabel?: ReactNode } | { onRetry?: never; retryLabel?: never })
 
-export function ItemsPageError({ onRetry }: ItemsPageErrorProps) {
+export function PageError({ title, description, retryLabel, onRetry }: PageErrorProps) {
 	return (
 		<Card.Root
 			role="alert"
@@ -18,10 +21,10 @@ export function ItemsPageError({ onRetry }: ItemsPageErrorProps) {
 			m="8"
 		>
 			<styled.h2 fontSize="lg" fontWeight="semibold" color="red.subtle.fg" mb="2">
-				{m.items_error_title()}
+				{title}
 			</styled.h2>
 			<styled.p color="red.subtle.fg" mb="4">
-				{m.items_error_description()}
+				{description}
 			</styled.p>
 			{onRetry && (
 				<Button
@@ -32,7 +35,7 @@ export function ItemsPageError({ onRetry }: ItemsPageErrorProps) {
 					w="fit-content"
 					onClick={onRetry}
 				>
-					{m.items_error_retry()}
+					{retryLabel ?? m.error_retry()}
 				</Button>
 			)}
 		</Card.Root>

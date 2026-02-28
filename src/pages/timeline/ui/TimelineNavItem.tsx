@@ -2,7 +2,7 @@ import { reatomComponent } from '@reatom/react'
 import { Clock } from 'lucide-react'
 
 import { m } from '#paraglide/messages.js'
-import { SideNavButton, SideNavItemContent } from '#widgets/layout'
+import { SideNavButton, SideNavItemContent } from '#widgets/side-nav'
 
 import { timelineRoute } from '../model/routes'
 

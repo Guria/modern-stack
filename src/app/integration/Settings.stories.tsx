@@ -1,22 +1,6 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { createMyself, type Locator } from '#shared/test'
-
-const loc = {
-	settingsHeadingAppears: (canvas) => canvas.findByRole('heading', { name: 'Settings' }),
-	profileSectionAppears: (canvas) => canvas.findByRole('heading', { name: 'Profile' }),
-	notificationsSectionAppears: (canvas) => canvas.findByRole('heading', { name: 'Notifications' }),
-	appearanceSectionAppears: (canvas) => canvas.findByRole('heading', { name: 'Appearance' }),
-} satisfies Record<string, Locator>
-
-const I = createMyself((I) => ({
-	seeSettingsContent: async () => {
-		await I.see(loc.settingsHeadingAppears)
-		await I.see(loc.profileSectionAppears)
-		await I.see(loc.notificationsSectionAppears)
-		await I.see(loc.appearanceSectionAppears)
-	},
-}))
+import { settingsActor as I, settingsLoc as loc } from '#pages/settings/testing'
 
 const meta = preview.meta({
 	title: 'Integration/Settings',
@@ -30,7 +14,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders settings heading', async () => {
-	await I.see(loc.settingsHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 Default.test('renders Profile section', async () => {
@@ -51,7 +35,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders settings heading', async () => {
-	await I.see(loc.settingsHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 DefaultMobile.test('[mobile] renders all sections', async () => {

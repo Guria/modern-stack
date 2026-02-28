@@ -29,7 +29,7 @@ const inputDot = action(() => {
 	}
 }, 'calculator.inputDot')
 
-function calculate(left: number, op: string, right: number): number {
+function calculate(left: number, op: string, right: number) {
 	switch (op) {
 		case '+':
 			return left + right
@@ -38,7 +38,7 @@ function calculate(left: number, op: string, right: number): number {
 		case '*':
 			return left * right
 		case '/':
-			return right !== 0 ? left / right : 0
+			return right !== 0 ? left / right : null
 		default:
 			return right
 	}
@@ -46,9 +46,18 @@ function calculate(left: number, op: string, right: number): number {
 
 const handleOperator = action((nextOp: string) => {
 	const current = parseFloat(displayAtom())
+	const prev = prevValueAtom()
+	const op = operatorAtom()
 
-	if (prevValueAtom() !== null && operatorAtom()) {
-		const result = calculate(prevValueAtom()!, operatorAtom()!, current)
+	if (prev !== null && op) {
+		const result = calculate(prev, op, current)
+		if (result === null) {
+			displayAtom.set('Error')
+			prevValueAtom.set(null)
+			operatorAtom.set(null)
+			resetNextAtom.set(true)
+			return
+		}
 		displayAtom.set(String(result))
 		prevValueAtom.set(result)
 	} else {
@@ -60,9 +69,11 @@ const handleOperator = action((nextOp: string) => {
 }, 'calculator.handleOperator')
 
 const handleEquals = action(() => {
-	if (prevValueAtom() !== null && operatorAtom()) {
-		const result = calculate(prevValueAtom()!, operatorAtom()!, parseFloat(displayAtom()))
-		displayAtom.set(String(result))
+	const prev = prevValueAtom()
+	const op = operatorAtom()
+	if (prev !== null && op) {
+		const result = calculate(prev, op, parseFloat(displayAtom()))
+		displayAtom.set(result === null ? 'Error' : String(result))
 		prevValueAtom.set(null)
 		operatorAtom.set(null)
 		resetNextAtom.set(true)

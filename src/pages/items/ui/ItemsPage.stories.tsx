@@ -2,53 +2,38 @@ import { expect } from 'storybook/test'
 
 import preview from '#.storybook/preview'
 import { itemsMockData } from '#entities/item/mocks/data'
-import { createMyself, type Locator } from '#shared/test'
+import { assert, createActor, loc, type ArrayLocator } from '#shared/test'
 
 import { ItemsPage } from './ItemsPage'
 
-type Canvas = Parameters<Locator>[0]
+const heading = loc((canvas) => canvas.findByRole('heading', { name: 'Items' }))
+const item = (name: string) => loc((canvas) => canvas.findByText(name))
+const maybeItem = (name: string) => loc((canvas) => canvas.queryByText(name))
+const sortSelect = loc((canvas) => canvas.findByRole('combobox', { name: /Sort by/i }))
+const categorySelect = loc((canvas) => canvas.findByRole('combobox', { name: /Category/i }))
+const stockSelect = loc((canvas) => canvas.findByRole('combobox', { name: /Stock/i }))
+const sortDirectionBtn = loc((canvas) => canvas.findByRole('button', { name: /Asc|Desc/ }))
+const priceElements: ArrayLocator = (canvas) => canvas.findAllByText(/^\$/)
+const noItemsMessage = loc((canvas) => canvas.findByText('No items match the current filters.'))
 
-const loc = {
-	heading: (canvas: Canvas) => canvas.findByRole('heading', { name: 'Items' }),
-	item: (name: string) => (canvas: Canvas) => canvas.findByText(name),
-	maybeItem: (name: string) => (canvas: Canvas) => canvas.queryByText(name),
-	sortSelect: async (canvas: Canvas) => {
-		const labels = await canvas.findAllByText(/Sort by/i)
-		const label = labels.find((el: Element) => el.tagName.toLowerCase() === 'label')
-		return label!.querySelector('button')
-	},
-	categorySelect: async (canvas: Canvas) => {
-		const labels = await canvas.findAllByText(/Category/i)
-		const label = labels.find((el: Element) => el.tagName.toLowerCase() === 'label')
-		return label!.querySelector('button')
-	},
-	stockSelect: async (canvas: Canvas) => {
-		const labels = await canvas.findAllByText(/Stock/i)
-		const label = labels.find((el: Element) => el.tagName.toLowerCase() === 'label')
-		return label!.querySelector('button')
-	},
-	sortDirectionBtn: (canvas: Canvas) => canvas.findByRole('button', { name: /Asc|Desc/ }),
-	noItemsMessage: (canvas: Canvas) => canvas.findByText('No items match the current filters.'),
-} satisfies Record<string, Locator | ((name: string) => Locator)>
-
-const I = createMyself((I) => ({
+const I = createActor().extend((I) => ({
 	seeItem: async (name: string) => {
-		await I.see(loc.item(name))
+		await I.see(item(name))
 	},
 	dontSeeItem: async (name: string) => {
-		await I.dontSee(loc.maybeItem(name))
+		await I.dontSee(maybeItem(name))
 	},
 	selectSort: async (option: string) => {
-		await I.selectOption(loc.sortSelect, option)
+		await I.selectOption(sortSelect, option)
 	},
 	selectCategory: async (option: string) => {
-		await I.selectOption(loc.categorySelect, option)
+		await I.selectOption(categorySelect, option)
 	},
 	selectStock: async (option: string) => {
-		await I.selectOption(loc.stockSelect, option)
+		await I.selectOption(stockSelect, option)
 	},
 	toggleSortDirection: async () => {
-		await I.click(loc.sortDirectionBtn)
+		await I.click(sortDirectionBtn)
 	},
 }))
 
@@ -68,7 +53,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders items list', async () => {
-	await I.see(loc.heading)
+	await I.see(heading)
 	await I.seeItem('Wireless Headphones')
 	await I.seeItem('Standing Desk')
 })
@@ -98,8 +83,13 @@ Default.test('filters by stock: Out of Stock', async () => {
 Default.test('sorts by price: Ascending', async () => {
 	await I.selectSort('Price')
 	// Default is Ascending
-	const items = await I.resolveLocator((canvas: Canvas) => canvas.findAllByText(/^\$/))
-	const prices = await Promise.all(items.map((el: HTMLElement) => el.textContent!.replace('$', '')))
+	const items = (await I.resolveLocator(priceElements)) as HTMLElement[]
+	const prices = await Promise.all(
+		items.map((el: unknown) => {
+			assert(el instanceof HTMLElement, 'Expected HTMLElement')
+			return (el.textContent ?? '').replace('$', '')
+		}),
+	)
 	const numericPrices = prices.map(Number)
 	const sortedPrices = [...numericPrices].sort((a, b) => a - b)
 	expect(numericPrices).toEqual(sortedPrices)
@@ -108,32 +98,21 @@ Default.test('sorts by price: Ascending', async () => {
 Default.test('sorts by price: Descending', async () => {
 	await I.selectSort('Price')
 	await I.toggleSortDirection()
-	const items = await I.resolveLocator((canvas: Canvas) => canvas.findAllByText(/^\$/))
-	const prices = await Promise.all(items.map((el: HTMLElement) => el.textContent!.replace('$', '')))
+	const items = (await I.resolveLocator(priceElements)) as HTMLElement[]
+	const prices = await Promise.all(
+		items.map((el: unknown) => {
+			assert(el instanceof HTMLElement, 'Expected HTMLElement')
+			return (el.textContent ?? '').replace('$', '')
+		}),
+	)
 	const numericPrices = prices.map(Number)
 	const sortedPrices = [...numericPrices].sort((a, b) => b - a)
 	expect(numericPrices).toEqual(sortedPrices)
 })
 
 Default.test('shows no items message when filters match nothing', async () => {
-	// Filter for Food AND Out of Stock (only Matcha Powder is Food and Out of Stock in mocks)
-	// Wait, Matcha Powder IS Food and Out of Stock.
-	// Let's filter for Furniture AND Out of Stock (only Ergonomic Chair)
-	// Let's filter for Clothing AND Out of Stock (only Merino Wool Sweater)
-	// If I filter for Food AND In Stock (Organic Coffee Beans, Dark Chocolate Bar)
-
-	// Let's use a combination that has 0 results.
-	// Actually, I can just use a category that has no items in the mock if I had one.
-	// Or just check a specific combination.
-
-	// In the mock:
-	// electronics: 1(T), 4(T), 7(T) - all in stock
-	// furniture: 2(T), 6(F), 9(T) - 6 is out of stock
-	// clothing: 3(F), 8(T), 11(T) - 3 is out of stock
-	// food: 5(T), 10(T), 12(F) - 12 is out of stock
-
-	// So Electronics + Out of Stock should have 0 results.
+	// Electronics + Out of Stock = 0 results in mock data
 	await I.selectCategory('Electronics')
 	await I.selectStock('Out of Stock')
-	await I.see(loc.noItemsMessage)
+	await I.see(noItemsMessage)
 })

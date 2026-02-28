@@ -1,59 +1,7 @@
-import { http, HttpResponse } from 'msw'
-import { expect, within } from 'storybook/test'
-
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { handlersArray } from '#app/mocks/handlers'
-import { CONVERSATIONS_API_PATH, CONVERSATIONS_UNREAD_COUNT_API_PATH } from '#entities/conversation'
-import { conversationsMockData } from '#entities/conversation/mocks/data'
-import { composeApiUrl } from '#shared/api'
-import { neverResolve } from '#shared/mocks/utils'
-import { createMyself, type Locator } from '#shared/test'
-
-const conversationsApiUrl = composeApiUrl(CONVERSATIONS_API_PATH)
-const conversationDetailApiUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId`)
-const conversationsUnreadCountApiUrl = composeApiUrl(CONVERSATIONS_UNREAD_COUNT_API_PATH)
-
-const unreadCountHandler = http.get(conversationsUnreadCountApiUrl, () => {
-	const unreadCount = conversationsMockData.reduce(
-		(totalUnread, conversation) => totalUnread + conversation.unread,
-		0,
-	)
-	return HttpResponse.json({ unreadCount })
-})
-
-const to500 = () => new HttpResponse(null, { status: 500 })
-
-const loc = {
-	noSelectionMessageAppears: (canvas) => canvas.findByText('No conversation selected'),
-	chatLoadingStateAppears: (canvas) => canvas.findByRole('status', { name: 'Loading chat page' }),
-	chatErrorHeadingAppears: (canvas) =>
-		canvas.findByRole('heading', { name: 'Could not load conversations' }),
-	maybeChatErrorHeading: (canvas) =>
-		canvas.queryByRole('heading', { name: 'Could not load conversations' }),
-	chatAlertRegionAppears: (canvas) => canvas.findByRole('alert'),
-	retryButtonAppears: (canvas) => canvas.findByRole('button', { name: 'Try again' }),
-	detailRegionAppears: (canvas) => canvas.findByRole('main'),
-} satisfies Record<string, Locator>
-
-const I = createMyself((I) => ({
-	goBackToConversations: async () => {
-		await I.click((canvas) => canvas.findByLabelText('Back to conversations'))
-	},
-	clickConversation: async (name: string | RegExp) => {
-		const pattern = typeof name === 'string' ? new RegExp(name, 'i') : name
-		await I.click((canvas) => canvas.findByRole('link', { name: pattern }))
-	},
-	seeConversationList: async () => {
-		await I.see((canvas) => canvas.findByRole('link', { name: /Engineering/i }))
-		await I.see((canvas) => canvas.findByRole('link', { name: /Alex Johnson/i }))
-	},
-	seeChatError: async () => {
-		await I.see(loc.chatErrorHeadingAppears)
-		await I.see(loc.chatAlertRegionAppears)
-		await I.see(loc.retryButtonAppears)
-	},
-}))
+import { conversationDetail, conversationList } from '#entities/conversation/mocks/handlers'
+import { chatActor as I, chatLoc as loc } from '#pages/chat/testing'
 
 const meta = preview.meta({
 	title: 'Integration/Chat',
@@ -75,11 +23,10 @@ Default.test('shows no-selection message when no conversation selected', async (
 })
 
 Default.test('shows message thread when conversation is clicked', async () => {
-	await I.clickConversation('Engineering')
+	await I.clickItem('Engineering')
 
-	const detail = await I.resolveLocator(loc.detailRegionAppears)
-	const detailCanvas = within(detail)
-	await detailCanvas.findByText('Has anyone looked at the failing CI on main?')
+	const detail = await I.see(loc.detailRegionAppears)
+	await I.seeText('Has anyone looked at the failing CI on main?', detail)
 })
 
 export const DefaultMobile = meta.story({
@@ -92,16 +39,15 @@ DefaultMobile.test('[mobile] renders conversation list', async () => {
 })
 
 DefaultMobile.test('[mobile] shows message thread when conversation is clicked', async () => {
-	await I.clickConversation('Engineering')
+	await I.clickItem('Engineering')
 
-	const detail = await I.resolveLocator(loc.detailRegionAppears)
-	const detailCanvas = within(detail)
-	await detailCanvas.findByText('Has anyone looked at the failing CI on main?')
+	const detail = await I.see(loc.detailRegionAppears)
+	await I.seeText('Has anyone looked at the failing CI on main?', detail)
 })
 
 DefaultMobile.test('[mobile] can navigate back to conversation list', async () => {
-	await I.clickConversation('Engineering')
-	await I.goBackToConversations()
+	await I.clickItem('Engineering')
+	await I.goBack()
 	await I.seeConversationList()
 })
 
@@ -109,59 +55,35 @@ export const HandlesChatLoadServerError = meta.story({
 	name: 'Conversations Load Server Error',
 	parameters: {
 		msw: {
-			handlers: [http.get(conversationsApiUrl, to500), ...handlersArray],
+			handlers: { conversationList: conversationList.error },
 		},
 	},
 })
 
 HandlesChatLoadServerError.test('shows error state when conversations request fails', async () => {
-	await I.seeChatError()
-	await I.see((canvas) =>
-		canvas.findByText("We couldn't load the conversations. Try again in a moment."),
-	)
-})
-
-HandlesChatLoadServerError.test('renders as an alert region', async () => {
-	await I.see(loc.chatAlertRegionAppears)
-})
-
-HandlesChatLoadServerError.test('shows retry button on error', async () => {
-	await I.see(loc.retryButtonAppears)
+	await I.seeError()
+	await I.seeText("We couldn't load the conversations. Try again in a moment.")
 })
 
 export const HandlesChatLoadServerErrorMobile = meta.story({
 	name: 'Conversations Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [http.get(conversationsApiUrl, to500), ...handlersArray],
-		},
-	},
+	parameters: HandlesChatLoadServerError.input.parameters,
 })
 
 HandlesChatLoadServerErrorMobile.test(
 	'[mobile] shows error state when conversations request fails',
 	async () => {
-		await I.seeChatError()
-		await I.see((canvas) =>
-			canvas.findByText("We couldn't load the conversations. Try again in a moment."),
-		)
+		await I.seeError()
+		await I.seeText("We couldn't load the conversations. Try again in a moment.")
 	},
 )
-
-HandlesChatLoadServerErrorMobile.test('[mobile] renders as an alert region', async () => {
-	await I.see(loc.chatAlertRegionAppears)
-})
-
-HandlesChatLoadServerErrorMobile.test('[mobile] shows retry button on error', async () => {
-	await I.see(loc.retryButtonAppears)
-})
 
 export const KeepsLoadingWhenChatRequestNeverResolves = meta.story({
 	name: 'Conversations Request Loading State',
 	parameters: {
 		msw: {
-			handlers: [http.get(conversationsApiUrl, neverResolve), ...handlersArray],
+			handlers: { conversationList: conversationList.loading },
 		},
 	},
 })
@@ -169,26 +91,20 @@ export const KeepsLoadingWhenChatRequestNeverResolves = meta.story({
 KeepsLoadingWhenChatRequestNeverResolves.test(
 	'keeps loading state for pending conversations request',
 	async () => {
-		await I.see(loc.chatLoadingStateAppears)
-		await I.dontSee(loc.maybeChatErrorHeading)
+		await I.seeLoading()
 	},
 )
 
 export const KeepsLoadingWhenChatRequestNeverResolvesMobile = meta.story({
 	name: 'Conversations Request Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [http.get(conversationsApiUrl, neverResolve), ...handlersArray],
-		},
-	},
+	parameters: KeepsLoadingWhenChatRequestNeverResolves.input.parameters,
 })
 
 KeepsLoadingWhenChatRequestNeverResolvesMobile.test(
 	'[mobile] keeps loading state for pending conversations request',
 	async () => {
-		await I.see(loc.chatLoadingStateAppears)
-		await I.dontSee(loc.maybeChatErrorHeading)
+		await I.seeLoading()
 	},
 )
 
@@ -196,7 +112,7 @@ export const HandlesConversationDetailServerError = meta.story({
 	name: 'Conversation Detail Server Error',
 	parameters: {
 		msw: {
-			handlers: [unreadCountHandler, http.get(conversationDetailApiUrl, to500), ...handlersArray],
+			handlers: { conversationDetail: conversationDetail.error },
 		},
 	},
 })
@@ -204,34 +120,28 @@ export const HandlesConversationDetailServerError = meta.story({
 HandlesConversationDetailServerError.test(
 	'shows not found when conversation detail request fails',
 	async () => {
-		await I.clickConversation('Engineering')
+		await I.clickItem('Engineering')
 
-		const detail = await I.resolveLocator(loc.detailRegionAppears)
-		const detailCanvas = within(detail)
-		await detailCanvas.findByRole('heading', { name: 'Conversation not found' })
-		await detailCanvas.findByText('No conversation exists for id "1".')
+		const detail = await I.see(loc.detailRegionAppears)
+		await I.see(loc.conversationNotFoundHeading.within(detail))
+		await I.seeText(/No conversation exists for id/, detail)
 	},
 )
 
 export const HandlesConversationDetailServerErrorMobile = meta.story({
 	name: 'Conversation Detail Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [unreadCountHandler, http.get(conversationDetailApiUrl, to500), ...handlersArray],
-		},
-	},
+	parameters: HandlesConversationDetailServerError.input.parameters,
 })
 
 HandlesConversationDetailServerErrorMobile.test(
 	'[mobile] shows not found when conversation detail request fails',
 	async () => {
-		await I.clickConversation('Engineering')
+		await I.clickItem('Engineering')
 
-		const detail = await I.resolveLocator(loc.detailRegionAppears)
-		const detailCanvas = within(detail)
-		await detailCanvas.findByRole('heading', { name: 'Conversation not found' })
-		await detailCanvas.findByText('No conversation exists for id "1".')
+		const detail = await I.see(loc.detailRegionAppears)
+		await I.see(loc.conversationNotFoundHeading.within(detail))
+		await I.seeText(/No conversation exists for id/, detail)
 	},
 )
 
@@ -239,11 +149,7 @@ export const KeepsLoadingWhenConversationDetailNeverResolves = meta.story({
 	name: 'Conversation Detail Loading State',
 	parameters: {
 		msw: {
-			handlers: [
-				unreadCountHandler,
-				http.get(conversationDetailApiUrl, neverResolve),
-				...handlersArray,
-			],
+			handlers: { conversationDetail: conversationDetail.loading },
 		},
 	},
 })
@@ -251,43 +157,27 @@ export const KeepsLoadingWhenConversationDetailNeverResolves = meta.story({
 KeepsLoadingWhenConversationDetailNeverResolves.test(
 	'shows message thread loading state while conversation detail is pending',
 	async () => {
-		await I.clickConversation('Engineering')
+		await I.clickItem('Engineering')
 
-		const detail = await I.resolveLocator(loc.detailRegionAppears)
-		const detailCanvas = within(detail)
-		const loadingState = await detailCanvas.findByRole('status', {
-			name: 'Loading message thread',
-		})
-		expect(loadingState).toBeInTheDocument()
-		expect(detailCanvas.queryByText('Conversation not found')).not.toBeInTheDocument()
+		const detail = await I.see(loc.detailRegionAppears)
+		await I.see(loc.messageThreadLoading.within(detail))
+		await I.dontSee(loc.maybeConversationNotFoundText.within(detail))
 	},
 )
 
 export const KeepsLoadingWhenConversationDetailNeverResolvesMobile = meta.story({
 	name: 'Conversation Detail Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [
-				unreadCountHandler,
-				http.get(conversationDetailApiUrl, neverResolve),
-				...handlersArray,
-			],
-		},
-	},
+	parameters: KeepsLoadingWhenConversationDetailNeverResolves.input.parameters,
 })
 
 KeepsLoadingWhenConversationDetailNeverResolvesMobile.test(
 	'[mobile] shows message thread loading state while conversation detail is pending',
 	async () => {
-		await I.clickConversation('Engineering')
+		await I.clickItem('Engineering')
 
-		const detail = await I.resolveLocator(loc.detailRegionAppears)
-		const detailCanvas = within(detail)
-		const loadingState = await detailCanvas.findByRole('status', {
-			name: 'Loading message thread',
-		})
-		expect(loadingState).toBeInTheDocument()
-		expect(detailCanvas.queryByText('Conversation not found')).not.toBeInTheDocument()
+		const detail = await I.see(loc.detailRegionAppears)
+		await I.see(loc.messageThreadLoading.within(detail))
+		await I.dontSee(loc.maybeConversationNotFoundText.within(detail))
 	},
 )

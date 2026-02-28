@@ -4,7 +4,7 @@ import { ArticleDetailMobileHeader } from '#pages/articles'
 import { ChatConversationMobileHeader } from '#pages/chat'
 import { ConnectionDetailMobileHeader } from '#pages/connections'
 import { m } from '#paraglide/messages.js'
-import { MobileHeaderTitle } from '#widgets/layout'
+import { MobileHeaderTitle } from '#widgets/mobile-header'
 
 import {
 	articleDetailRoute,

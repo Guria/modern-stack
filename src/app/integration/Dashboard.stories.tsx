@@ -1,41 +1,7 @@
-import { http, HttpResponse } from 'msw'
-
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { handlersArray } from '#app/mocks/handlers'
-import { DASHBOARD_API_PATH } from '#entities/dashboard'
-import { composeApiUrl } from '#shared/api'
-import { neverResolve } from '#shared/mocks/utils'
-import { createMyself, type Locator } from '#shared/test'
-
-const dashboardApiUrl = composeApiUrl(DASHBOARD_API_PATH)
-
-const to500 = () => new HttpResponse(null, { status: 500 })
-
-const loc = {
-	dashboardHeadingAppears: (canvas) => canvas.findByRole('heading', { name: 'Dashboard' }),
-	dashboardLoadingStateAppears: (canvas) =>
-		canvas.findByRole('status', { name: 'Loading dashboard page' }),
-	dashboardErrorHeadingAppears: (canvas) =>
-		canvas.findByRole('heading', { name: 'Could not load dashboard' }),
-	maybeDashboardErrorHeading: (canvas) =>
-		canvas.queryByRole('heading', { name: 'Could not load dashboard' }),
-	dashboardAlertRegionAppears: (canvas) => canvas.findByRole('alert'),
-	retryButtonAppears: (canvas) => canvas.findByRole('button', { name: 'Try again' }),
-} satisfies Record<string, Locator>
-
-const I = createMyself((I) => ({
-	seeDashboardContent: async () => {
-		await I.see(loc.dashboardHeadingAppears)
-		await I.see((canvas) => canvas.findByText('Total Revenue'))
-		await I.see((canvas) => canvas.findByText('Active Users'))
-	},
-	seeDashboardError: async () => {
-		await I.see(loc.dashboardErrorHeadingAppears)
-		await I.see(loc.dashboardAlertRegionAppears)
-		await I.see(loc.retryButtonAppears)
-	},
-}))
+import { dashboardStats } from '#entities/dashboard/mocks/handlers'
+import { dashboardActor as I, dashboardLoc as loc } from '#pages/dashboard/testing'
 
 const meta = preview.meta({
 	title: 'Integration/Dashboard',
@@ -49,13 +15,13 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders dashboard heading', async () => {
-	await I.see(loc.dashboardHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 Default.test('renders stat cards', async () => {
 	await I.seeDashboardContent()
-	await I.see((canvas) => canvas.findByText('Bounce Rate'))
-	await I.see((canvas) => canvas.findByText('Avg. Session'))
+	await I.seeText('Bounce Rate')
+	await I.seeText('Avg. Session')
 })
 
 export const DefaultMobile = meta.story({
@@ -64,7 +30,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders dashboard heading', async () => {
-	await I.see(loc.dashboardHeadingAppears)
+	await I.see(loc.headingAppears)
 })
 
 DefaultMobile.test('[mobile] renders stat cards', async () => {
@@ -75,59 +41,35 @@ export const HandlesDashboardLoadServerError = meta.story({
 	name: 'Dashboard Load Server Error',
 	parameters: {
 		msw: {
-			handlers: [http.get(dashboardApiUrl, to500), ...handlersArray],
+			handlers: { dashboardStats: dashboardStats.error },
 		},
 	},
 })
 
 HandlesDashboardLoadServerError.test('shows error state when dashboard request fails', async () => {
-	await I.seeDashboardError()
-	await I.see((canvas) =>
-		canvas.findByText("We couldn't load the dashboard data. Try again in a moment."),
-	)
-})
-
-HandlesDashboardLoadServerError.test('renders as an alert region', async () => {
-	await I.see(loc.dashboardAlertRegionAppears)
-})
-
-HandlesDashboardLoadServerError.test('shows retry button on error', async () => {
-	await I.see(loc.retryButtonAppears)
+	await I.seeError()
+	await I.seeText("We couldn't load the dashboard data. Try again in a moment.")
 })
 
 export const HandlesDashboardLoadServerErrorMobile = meta.story({
 	name: 'Dashboard Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [http.get(dashboardApiUrl, to500), ...handlersArray],
-		},
-	},
+	parameters: HandlesDashboardLoadServerError.input.parameters,
 })
 
 HandlesDashboardLoadServerErrorMobile.test(
 	'[mobile] shows error state when dashboard request fails',
 	async () => {
-		await I.seeDashboardError()
-		await I.see((canvas) =>
-			canvas.findByText("We couldn't load the dashboard data. Try again in a moment."),
-		)
+		await I.seeError()
+		await I.seeText("We couldn't load the dashboard data. Try again in a moment.")
 	},
 )
-
-HandlesDashboardLoadServerErrorMobile.test('[mobile] renders as an alert region', async () => {
-	await I.see(loc.dashboardAlertRegionAppears)
-})
-
-HandlesDashboardLoadServerErrorMobile.test('[mobile] shows retry button on error', async () => {
-	await I.see(loc.retryButtonAppears)
-})
 
 export const KeepsLoadingWhenDashboardRequestNeverResolves = meta.story({
 	name: 'Dashboard Request Loading State',
 	parameters: {
 		msw: {
-			handlers: [http.get(dashboardApiUrl, neverResolve), ...handlersArray],
+			handlers: { dashboardStats: dashboardStats.loading },
 		},
 	},
 })
@@ -135,25 +77,19 @@ export const KeepsLoadingWhenDashboardRequestNeverResolves = meta.story({
 KeepsLoadingWhenDashboardRequestNeverResolves.test(
 	'keeps loading state for pending dashboard request',
 	async () => {
-		await I.see(loc.dashboardLoadingStateAppears)
-		await I.dontSee(loc.maybeDashboardErrorHeading)
+		await I.seeLoading()
 	},
 )
 
 export const KeepsLoadingWhenDashboardRequestNeverResolvesMobile = meta.story({
 	name: 'Dashboard Request Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: {
-		msw: {
-			handlers: [http.get(dashboardApiUrl, neverResolve), ...handlersArray],
-		},
-	},
+	parameters: KeepsLoadingWhenDashboardRequestNeverResolves.input.parameters,
 })
 
 KeepsLoadingWhenDashboardRequestNeverResolvesMobile.test(
 	'[mobile] keeps loading state for pending dashboard request',
 	async () => {
-		await I.see(loc.dashboardLoadingStateAppears)
-		await I.dontSee(loc.maybeDashboardErrorHeading)
+		await I.seeLoading()
 	},
 )

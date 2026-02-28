@@ -128,6 +128,7 @@ export const AppShell = reatomComponent(
 							variant="plain"
 							size="sm"
 							display={{ base: 'none', md: 'inline-flex' }}
+							aria-label={m.topbar_toggle_sidebar()}
 							onClick={wrap(desktopSidebarCollapsedAtom.toggle)}
 						>
 							<PanelLeft className={css({ w: '5', h: '5' })} />
@@ -137,6 +138,7 @@ export const AppShell = reatomComponent(
 							variant="plain"
 							size="sm"
 							display={{ base: 'inline-flex', md: 'none' }}
+							aria-label={m.topbar_open_menu()}
 							onClick={wrap(sidebarAtom.setTrue)}
 						>
 							<MenuIcon className={css({ w: '5', h: '5' })} />
