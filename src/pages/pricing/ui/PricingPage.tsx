@@ -1,5 +1,5 @@
 import { m } from '#paraglide/messages.js'
-import { Badge, Button } from '#shared/components'
+import { Badge, Button, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 const currentPlan = 'free'
@@ -111,9 +111,7 @@ function PlanCard({
 export function PricingPage() {
 	return (
 		<styled.div p="8" maxW="800px">
-			<styled.h1 fontSize="2xl" fontWeight="bold" mb="2">
-				{m.pricing_title()}
-			</styled.h1>
+			<VisuallyHidden as="h1">{m.pricing_title()}</VisuallyHidden>
 			<styled.p fontSize="sm" color="gray.11" mb="8">
 				{m.pricing_desc()}
 			</styled.p>

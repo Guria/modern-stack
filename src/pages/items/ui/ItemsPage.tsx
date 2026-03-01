@@ -5,7 +5,7 @@ import { reatomComponent } from '@reatom/react'
 import type { Category, Item } from '#entities/item'
 
 import { m } from '#paraglide/messages.js'
-import { Badge, Button, Select } from '#shared/components'
+import { Badge, Button, Select, VisuallyHidden } from '#shared/components'
 import { reatomLoc } from '#shared/model'
 import { withCoerce } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
@@ -104,9 +104,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 
 	return (
 		<styled.div p="6">
-			<styled.h1 fontSize="2xl" fontWeight="bold" mb="6">
-				{m.items_title()}
-			</styled.h1>
+			<VisuallyHidden as="h1">{m.items_title()}</VisuallyHidden>
 
 			<styled.div display="flex" flexWrap="wrap" gap="3" mb="6" alignItems="center">
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">

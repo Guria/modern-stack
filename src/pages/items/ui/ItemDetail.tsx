@@ -1,24 +1,14 @@
 import type { Item } from '#entities/item'
 
 import { m } from '#paraglide/messages.js'
-import { Badge, Breadcrumb } from '#shared/components'
+import { Badge } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { CategoryBadge } from './components/CategoryBadge'
 
-export function ItemDetail({ item, itemsHref }: { item: Item; itemsHref: string }) {
+export function ItemDetail({ item }: { item: Item }) {
 	return (
 		<styled.div p="8" maxW="600px">
-			<Breadcrumb.Root mb="6">
-				<Breadcrumb.List>
-					<Breadcrumb.Item>
-						<Breadcrumb.Link href={itemsHref}>{m.nav_items()}</Breadcrumb.Link>
-					</Breadcrumb.Item>
-					<Breadcrumb.Separator />
-					<Breadcrumb.Item aria-current="page">{item.name}</Breadcrumb.Item>
-				</Breadcrumb.List>
-			</Breadcrumb.Root>
-
 			<styled.div display="flex" alignItems="center" gap="3" mb="6">
 				<styled.h1 fontSize="2xl" fontWeight="bold">
 					{item.name}

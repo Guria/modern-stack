@@ -1,19 +1,10 @@
 import { reatomBoolean, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
-import {
-	Github,
-	Languages,
-	Menu as MenuIcon,
-	Monitor,
-	Moon,
-	PanelLeft,
-	Search,
-	Sun,
-} from 'lucide-react'
+import { Github, Languages, Monitor, Moon, PanelLeft, Search, Sun } from 'lucide-react'
 import { type ReactNode } from 'react'
 
 import { m } from '#paraglide/messages.js'
-import { Drawer, IconButton, Input, Menu } from '#shared/components'
+import { IconButton, Input, Menu } from '#shared/components'
 import {
 	localeAtom,
 	showGithubLinkInTopBarAtom,
@@ -25,32 +16,51 @@ import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
 import { GlobalLoader } from './GlobalLoader'
+import { SidebarDrawer } from './sidebar'
 
 type AppShellProps = {
-	sidebarHeader: ReactNode
+	appName: string
 	sidebarContent: ReactNode
 	sidebarFooter: ReactNode
 	mobileHeader: ReactNode
+	breadcrumbs: ReactNode
 	children: ReactNode
 }
 
-const sidebarAtom = reatomBoolean(false, 'sidebar.open')
 const desktopSidebarCollapsedAtom = reatomBoolean(false, 'desktopSidebar.collapsed')
 
 export const AppShell = reatomComponent(
-	({ sidebarHeader, sidebarContent, sidebarFooter, mobileHeader, children }: AppShellProps) => {
+	({
+		appName,
+		sidebarContent,
+		sidebarFooter,
+		mobileHeader,
+		breadcrumbs,
+		children,
+	}: AppShellProps) => {
 		const isCollapsed = desktopSidebarCollapsedAtom()
 
 		const sidebarInner = (
 			<>
-				<styled.div
-					display="flex"
-					alignItems="center"
-					mb="3"
-					px="2"
-					className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
-				>
-					{sidebarHeader}
+				<styled.div mb="3" px="2" h="10" display="flex" alignItems="center">
+					<styled.h2
+						fontSize="lg"
+						fontWeight="bold"
+						className={css({
+							opacity: 1,
+							visibility: 'visible',
+							whiteSpace: 'nowrap',
+							transition: 'opacity 0.12s ease',
+							transitionDelay: '0.2s',
+							'[data-sidebar-collapsed] &': {
+								opacity: 0,
+								visibility: 'hidden',
+								transitionDelay: '0s',
+							},
+						})}
+					>
+						{appName}
+					</styled.h2>
 				</styled.div>
 				<styled.div
 					flex="1"
@@ -72,19 +82,7 @@ export const AppShell = reatomComponent(
 
 		return (
 			<styled.div display="flex" minH="100dvh" position="relative">
-				{/* Mobile Drawer */}
-				<Drawer.Root
-					open={sidebarAtom()}
-					onOpenChange={wrap(({ open }) => void sidebarAtom.set(open))}
-					placement="start"
-				>
-					<Drawer.Backdrop display={{ base: 'block', md: 'none' }} />
-					<Drawer.Positioner display={{ base: 'flex', md: 'none' }}>
-						<Drawer.Content maxW="220px" p="4" gap="1">
-							{sidebarInner}
-						</Drawer.Content>
-					</Drawer.Positioner>
-				</Drawer.Root>
+				<SidebarDrawer>{sidebarInner}</SidebarDrawer>
 
 				{/* Desktop Sidebar */}
 				<styled.aside
@@ -109,12 +107,12 @@ export const AppShell = reatomComponent(
 				</styled.aside>
 
 				{/* Main content */}
-				<styled.div display="flex" flex="1" flexDirection="column" minW="0">
+				<styled.div display="flex" flex="1" flexDirection="column" minW="0" isolation="isolate">
 					<styled.header
 						display="flex"
 						alignItems="center"
 						gap="2"
-						px={{ base: '3', md: '4' }}
+						px={{ base: '3', md: '6' }}
 						h="14"
 						borderBottomWidth="1px"
 						borderColor="gray.4"
@@ -123,37 +121,48 @@ export const AppShell = reatomComponent(
 						zIndex="sticky"
 						bg="gray.1"
 					>
-						{/* Desktop: toggle sidebar */}
-						<IconButton
-							variant="plain"
-							size="sm"
-							display={{ base: 'none', md: 'inline-flex' }}
-							aria-label={m.topbar_toggle_sidebar()}
-							onClick={wrap(desktopSidebarCollapsedAtom.toggle)}
-						>
-							<PanelLeft className={css({ w: '5', h: '5' })} />
-						</IconButton>
-						{/* Mobile: open drawer */}
-						<IconButton
-							variant="plain"
-							size="sm"
-							display={{ base: 'inline-flex', md: 'none' }}
-							aria-label={m.topbar_open_menu()}
-							onClick={wrap(sidebarAtom.setTrue)}
-						>
-							<MenuIcon className={css({ w: '5', h: '5' })} />
-						</IconButton>
-						<styled.div w="1px" h="5" bg="gray.5" flexShrink={0} />
-						<styled.div display={{ base: 'flex', md: 'none' }} alignItems="center">
-							{mobileHeader}
-						</styled.div>
 						<styled.div
-							display={{ base: 'none', md: 'flex' }}
+							display={{ base: 'flex', md: 'none' }}
 							alignItems="center"
 							flex="1"
-							gap="2"
-							maxW="480px"
+							minW="0"
 						>
+							{mobileHeader}
+						</styled.div>
+						{/* Desktop: toggle sidebar on seam */}
+						<IconButton
+							variant="plain"
+							size="xs"
+							display={{ base: 'none', md: 'inline-flex' }}
+							position="absolute"
+							left="0"
+							top="50%"
+							bg="gray.1"
+							borderWidth="1px"
+							borderColor="gray.4"
+							borderRadius="full"
+							aria-label={m.topbar_toggle_sidebar()}
+							onClick={wrap(desktopSidebarCollapsedAtom.toggle)}
+							className={css({ transform: 'translate(-50%, -50%)' })}
+						>
+							<PanelLeft className={css({ w: '4', h: '4' })} />
+						</IconButton>
+						{/* Desktop: breadcrumbs */}
+						<styled.div display={{ base: 'none', md: 'flex' }} alignItems="center" minW="0">
+							{breadcrumbs}
+						</styled.div>
+						<styled.div ml="auto" />
+						{/* Desktop: compact search (intermediate viewports) */}
+						<IconButton
+							variant="plain"
+							size="sm"
+							display={{ base: 'none', md: 'inline-flex', xl: 'none' }}
+							aria-label={m.topbar_search_placeholder()}
+						>
+							<Search className={css({ w: '4', h: '4' })} />
+						</IconButton>
+						{/* Desktop: compact search */}
+						<styled.div display={{ base: 'none', xl: 'flex' }} alignItems="center" gap="2">
 							<Search className={css({ w: '4', h: '4', color: 'gray.10', flexShrink: 0 })} />
 							<Input
 								placeholder={m.topbar_search_placeholder()}
@@ -161,13 +170,13 @@ export const AppShell = reatomComponent(
 								variant="outline"
 								bg="transparent"
 								borderWidth="0"
+								w="180px"
 								_focus={{ borderWidth: '0', outline: 'none', boxShadow: 'none' }}
 							/>
 							<styled.kbd fontSize="xs" color="gray.9" flexShrink={0}>
 								⌘K
 							</styled.kbd>
 						</styled.div>
-						<styled.div ml="auto" />
 						{showGithubLinkInTopBarAtom() && (
 							<IconButton
 								variant="plain"

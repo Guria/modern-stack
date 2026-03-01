@@ -1,6 +1,10 @@
+import { Plus, SlidersHorizontal } from 'lucide-react'
+
 import type { Connection } from '#entities/connection'
 
 import { m } from '#paraglide/messages.js'
+import { Group, IconButton, Input } from '#shared/components'
+import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
 import { ConnectionStatusBadge } from './ConnectionStatusBadge'
@@ -19,9 +23,17 @@ export function ConnectionList({
 }: ConnectionListProps) {
 	return (
 		<>
-			<styled.h3 fontSize="sm" fontWeight="semibold" p="4" color="gray.11">
-				{m.nav_connections()}
-			</styled.h3>
+			<styled.div px="3" py="3" borderBottomWidth="1px" borderColor="gray.4">
+				<Group attached w="full">
+					<Input placeholder={m.connection_search_placeholder()} size="sm" flex="1" />
+					<IconButton size="sm" variant="outline" aria-label={m.list_filters()}>
+						<SlidersHorizontal className={css({ w: '4', h: '4' })} />
+					</IconButton>
+					<IconButton size="sm" variant="outline" aria-label={m.connection_new()}>
+						<Plus className={css({ w: '4', h: '4' })} />
+					</IconButton>
+				</Group>
+			</styled.div>
 			{connections.map((connection) => (
 				<styled.a
 					key={connection.id}

@@ -7,7 +7,11 @@ export function MobileHeaderTitle({ label }: { label: ReactNode }) {
 		<styled.span
 			flex="1"
 			minW="0"
-			fontWeight="bold"
+			fontSize="sm"
+			fontWeight="semibold"
+			color="fg.default"
+			letterSpacing="tight"
+			lineHeight="short"
 			whiteSpace="nowrap"
 			overflow="hidden"
 			textOverflow="ellipsis"

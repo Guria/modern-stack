@@ -93,6 +93,7 @@
 	"article_no_selection_desc": "Elige un artículo de la lista para ver su contenido.",
 	"article_edit": "Editar",
 	"article_new": "Nuevo artículo",
+	"article_search_placeholder": "Buscar artículos...",
 	"items_title": "Elementos",
 	"items_sort_by": "Ordenar por",
 	"items_sort_asc": "Asc",
@@ -115,6 +116,9 @@
 	"chat_error_title": "No se pudieron cargar las conversaciones",
 	"chat_error_description": "No pudimos cargar las conversaciones. Intenta de nuevo en un momento.",
 
+	"connection_new": "Nueva conexión",
+	"connection_search_placeholder": "Buscar conexiones...",
+	"list_filters": "Filtros",
 	"chat_search_placeholder": "Buscar conversaciones...",
 	"chat_new_conversation": "Nueva conversación",
 	"chat_message_placeholder": "Escribe un mensaje...",

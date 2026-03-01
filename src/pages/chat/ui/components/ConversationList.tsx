@@ -1,9 +1,9 @@
-import { SquarePen } from 'lucide-react'
+import { SlidersHorizontal, SquarePen } from 'lucide-react'
 
 import type { Conversation } from '#entities/conversation'
 
 import { m } from '#paraglide/messages.js'
-import { Avatar, Badge, IconButton, Input } from '#shared/components'
+import { Avatar, Badge, Group, IconButton, Input } from '#shared/components'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
@@ -20,18 +20,16 @@ export function ConversationList({
 }: ConversationListProps) {
 	return (
 		<styled.div>
-			<styled.div
-				p="3"
-				borderBottomWidth="1px"
-				borderColor="gray.4"
-				display="flex"
-				gap="2"
-				alignItems="center"
-			>
-				<Input placeholder={m.chat_search_placeholder()} size="sm" flex="1" />
-				<IconButton size="sm" variant="plain" aria-label={m.chat_new_conversation()}>
-					<SquarePen className={css({ w: '4', h: '4' })} />
-				</IconButton>
+			<styled.div px="3" py="3" borderBottomWidth="1px" borderColor="gray.4">
+				<Group attached w="full">
+					<Input placeholder={m.chat_search_placeholder()} size="sm" flex="1" />
+					<IconButton size="sm" variant="outline" aria-label={m.list_filters()}>
+						<SlidersHorizontal className={css({ w: '4', h: '4' })} />
+					</IconButton>
+					<IconButton size="sm" variant="outline" aria-label={m.chat_new_conversation()}>
+						<SquarePen className={css({ w: '4', h: '4' })} />
+					</IconButton>
+				</Group>
 			</styled.div>
 			{conversations.map((conversation) => (
 				<styled.a

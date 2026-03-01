@@ -5,7 +5,7 @@ import { styled } from '#styled-system/jsx'
 
 export function ConversationHeaderContent({ conversation }: { conversation: Conversation }) {
 	return (
-		<styled.div display="flex" alignItems="center" gap="3">
+		<styled.div display="flex" alignItems="center" gap="3" minW="0">
 			<Avatar.Root w="8" h="8">
 				<Avatar.Fallback
 					name={conversation.name}
@@ -15,8 +15,8 @@ export function ConversationHeaderContent({ conversation }: { conversation: Conv
 					color="colorPalette.11"
 				/>
 			</Avatar.Root>
-			<styled.div>
-				<styled.div fontWeight="medium" fontSize="sm">
+			<styled.div minW="0">
+				<styled.div fontWeight="medium" fontSize="sm" truncate>
 					{conversation.name}
 				</styled.div>
 				<styled.div fontSize="xs" color="gray.11">

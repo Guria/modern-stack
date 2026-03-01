@@ -2,7 +2,7 @@ import { wrap } from '@reatom/core'
 import { reatomComponent, useAtom } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { Button, Input } from '#shared/components'
+import { Button, Input, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import {
@@ -39,9 +39,7 @@ export const TimerPage = reatomComponent(() => {
 	return (
 		<styled.div p="8" display="flex" justifyContent="center" alignItems="center" minH="100dvh">
 			<styled.div w="320px" display="flex" flexDirection="column" alignItems="center" gap="6">
-				<styled.h1 fontSize="2xl" fontWeight="bold">
-					{m.nav_timer()}
-				</styled.h1>
+				<VisuallyHidden as="h1">{m.nav_timer()}</VisuallyHidden>
 
 				<styled.div
 					fontSize="6xl"

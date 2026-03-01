@@ -1,5 +1,5 @@
 import { m } from '#paraglide/messages.js'
-import { Button } from '#shared/components'
+import { Button, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { breakdown, percentage, totalGB, usedGB } from '../model/data'
@@ -24,9 +24,7 @@ function BreakdownRow({ label, gb, total }: { label: string; gb: number; total: 
 export function UsagePage() {
 	return (
 		<styled.div p="8" maxW="600px">
-			<styled.h1 fontSize="2xl" fontWeight="bold" mb="8">
-				{m.usage_title()}
-			</styled.h1>
+			<VisuallyHidden as="h1">{m.usage_title()}</VisuallyHidden>
 
 			<styled.div mb="8">
 				<styled.div display="flex" alignItems="center" justifyContent="space-between" mb="2">

@@ -5,7 +5,7 @@ import { atom, reatomEnum, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { Button, Input, Select, Switch } from '#shared/components'
+import { Button, Input, Select, Switch, VisuallyHidden } from '#shared/components'
 import {
 	localeAtom,
 	reatomLoc,
@@ -110,9 +110,7 @@ const languageCollection = reatomLoc(
 export const SettingsPage = reatomComponent(() => {
 	return (
 		<styled.div p="8" maxW="800px">
-			<styled.h1 fontSize="2xl" fontWeight="bold" mb="8">
-				{m.settings_title()}
-			</styled.h1>
+			<VisuallyHidden as="h1">{m.settings_title()}</VisuallyHidden>
 
 			<Section
 				title={m.settings_profile()}

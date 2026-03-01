@@ -2,7 +2,7 @@ import { action, atom, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { Button } from '#shared/components'
+import { Button, VisuallyHidden } from '#shared/components'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
@@ -130,9 +130,7 @@ export const CalculatorPage = reatomComponent(() => {
 	return (
 		<styled.div p="8" display="flex" justifyContent="center" alignItems="center" minH="100dvh">
 			<styled.div w="320px">
-				<styled.h1 fontSize="2xl" fontWeight="bold" mb="6">
-					{m.calculator_title()}
-				</styled.h1>
+				<VisuallyHidden as="h1">{m.calculator_title()}</VisuallyHidden>
 
 				<styled.div bg="gray.2" borderRadius="xl" p="4" borderWidth="1px" borderColor="gray.4">
 					<styled.div

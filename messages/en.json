@@ -93,6 +93,7 @@
 	"article_no_selection_desc": "Choose an article from the list to view its content.",
 	"article_edit": "Edit",
 	"article_new": "New article",
+	"article_search_placeholder": "Search articles...",
 	"items_title": "Items",
 	"items_sort_by": "Sort by",
 	"items_sort_asc": "Asc",
@@ -115,6 +116,9 @@
 	"chat_error_title": "Could not load conversations",
 	"chat_error_description": "We couldn't load the conversations. Try again in a moment.",
 
+	"connection_new": "New connection",
+	"connection_search_placeholder": "Search connections...",
+	"list_filters": "Filters",
 	"chat_search_placeholder": "Search conversations...",
 	"chat_new_conversation": "New conversation",
 	"chat_message_placeholder": "Type a message...",

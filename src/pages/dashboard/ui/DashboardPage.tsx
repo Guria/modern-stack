@@ -3,6 +3,7 @@ import { reatomComponent } from '@reatom/react'
 import type { DashboardData } from '#entities/dashboard'
 
 import { m } from '#paraglide/messages.js'
+import { VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { BarChart } from './components/BarChart'
@@ -26,9 +27,7 @@ export const DashboardPage = reatomComponent(function DashboardPage({ data }: Da
 
 	return (
 		<styled.div p="6">
-			<styled.h1 fontSize="2xl" fontWeight="bold" mb="6">
-				{m.dashboard_title()}
-			</styled.h1>
+			<VisuallyHidden as="h1">{m.dashboard_title()}</VisuallyHidden>
 
 			<styled.div
 				display="grid"

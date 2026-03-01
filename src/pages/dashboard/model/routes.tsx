@@ -1,4 +1,4 @@
-import { urlAtom, withChangeHook, wrap } from '@reatom/core'
+import { wrap } from '@reatom/core'
 
 import { fetchDashboardData } from '#entities/dashboard'
 import { m } from '#paraglide/messages.js'
@@ -8,13 +8,6 @@ import { PageError } from '#widgets/data-page'
 import { DashboardPage } from '../ui/DashboardPage'
 import { DashboardPageLoading } from '../ui/DashboardPageLoading'
 
-urlAtom.extend(
-	withChangeHook(() => {
-		if (rootRoute.exact()) {
-			dashboardRoute.go(undefined, true)
-		}
-	}),
-)
 export const dashboardRoute = rootRoute.reatomRoute(
 	{
 		path: 'dashboard',
