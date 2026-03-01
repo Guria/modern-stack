@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import { Skeleton } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -5,7 +6,7 @@ const statRows = Array.from({ length: 4 }, (_, index) => index)
 
 export function DashboardPageLoading() {
 	return (
-		<styled.div role="status" aria-label="Loading dashboard page" p="6">
+		<styled.div role="status" aria-label={m.dashboard_loading_page()} p="6">
 			<Skeleton h="8" w="40" mb="6" />
 			<styled.div
 				display="grid"

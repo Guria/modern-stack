@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import { Skeleton } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
@@ -5,7 +6,7 @@ const timelineRows = Array.from({ length: 7 }, (_, index) => index)
 
 export function TimelinePageLoading() {
 	return (
-		<styled.div role="status" aria-label="Loading timeline page" p="6" maxW="700px">
+		<styled.div role="status" aria-label={m.timeline_loading_page()} p="6" maxW="700px">
 			<Skeleton h="8" w="28" mb="6" />
 			<styled.div display="grid" gap="4">
 				{timelineRows.map((row) => (

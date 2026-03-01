@@ -13,12 +13,11 @@ export const timelineRoute = rootRoute.reatomRoute(
 		path: 'timeline',
 		loader: fetchTimelineEvents,
 		render: (self) => {
-			const loaderStatus = self.loader.status()
-			const data = self.loader.data()
-			if (loaderStatus.isFirstPending || (loaderStatus.isPending && data == null)) {
+			const { isFirstPending, isPending, data: events } = self.loader.status()
+			if (isFirstPending || (isPending && !events)) {
 				return <TimelinePageLoading />
 			}
-			if (data == null) {
+			if (!events) {
 				return (
 					<PageError
 						title={m.timeline_error_title()}
@@ -27,7 +26,7 @@ export const timelineRoute = rootRoute.reatomRoute(
 					/>
 				)
 			}
-			return <TimelinePage events={data} />
+			return <TimelinePage events={events} />
 		},
 	},
 	'timeline',

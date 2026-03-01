@@ -6,10 +6,10 @@ import { m } from '#paraglide/messages.js'
 import { VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
-import { BarChart } from './components/BarChart'
-import { RecentActivityList } from './components/RecentActivityList'
-import { StatCard } from './components/StatCard'
-import { TopPagesList } from './components/TopPagesList'
+import { BarChart } from './widgets/BarChart'
+import { RecentActivityList } from './widgets/RecentActivityList'
+import { StatCard } from './widgets/StatCard'
+import { TopPagesList } from './widgets/TopPagesList'
 
 const emptyDashboardData = {
 	stats: [],

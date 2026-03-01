@@ -1,5 +1,5 @@
 import { m } from '#paraglide/messages.js'
-import { Badge, Button, VisuallyHidden } from '#shared/components'
+import { Badge, Button, Text, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 const currentPlan = 'free'
@@ -82,14 +82,7 @@ function PlanCard({
 			</styled.div>
 			<styled.ul listStyleType="none" p="0" m="0" display="flex" flexDirection="column" gap="2">
 				{features.map((f) => (
-					<styled.li
-						key={f}
-						fontSize="sm"
-						color="gray.11"
-						display="flex"
-						alignItems="center"
-						gap="2"
-					>
+					<styled.li key={f} fontSize="sm" color="muted" display="flex" alignItems="center" gap="2">
 						<styled.span color="green.9">✓</styled.span>
 						{f}
 					</styled.li>
@@ -112,9 +105,9 @@ export function PricingPage() {
 	return (
 		<styled.div p="8" maxW="800px">
 			<VisuallyHidden as="h1">{m.pricing_title()}</VisuallyHidden>
-			<styled.p fontSize="sm" color="gray.11" mb="8">
+			<Text fontSize="sm" color="muted" mb="8">
 				{m.pricing_desc()}
-			</styled.p>
+			</Text>
 
 			<styled.div
 				display="grid"

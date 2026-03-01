@@ -17,8 +17,8 @@ import {
 import { withCoerce } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
-import { FieldRow } from './components/FieldRow'
-import { Section } from './components/Section'
+import { FieldRow } from './FieldRow'
+import { Section } from './Section'
 
 // Profile atoms
 const displayNameAtom = atom('Alex Johnson', 'settings.displayName')
@@ -143,7 +143,7 @@ export const SettingsPage = reatomComponent(() => {
 					/>
 				</FieldRow>
 				<FieldRow label={m.settings_role()}>
-					<styled.span fontSize="sm" color="gray.11">
+					<styled.span fontSize="sm" color="muted">
 						{m.settings_role_admin()}
 					</styled.span>
 				</FieldRow>

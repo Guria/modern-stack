@@ -1,31 +1,28 @@
-import type { ReactElement } from 'react'
-
 import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchConversationById, fetchConversations } from '#entities/conversation'
 import { m } from '#paraglide/messages.js'
-import { getFirstOutletChild, rootRoute } from '#shared/router'
+import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
 import { ChatPage } from '../ui/ChatPage'
 import { ChatPageLoading } from '../ui/ChatPageLoading'
-import { MessageThread } from '../ui/MessageThread'
-import { MessageThreadLoadingState } from '../ui/MessageThreadLoadingState'
-import { MessageThreadNoSelection } from '../ui/MessageThreadNoSelection'
-import { MessageThreadNotFound } from '../ui/MessageThreadNotFound'
+import { MessageThread } from '../ui/thread/MessageThread'
+import { MessageThreadLoadingState } from '../ui/thread/MessageThreadLoadingState'
+import { MessageThreadNoSelection } from '../ui/thread/MessageThreadNoSelection'
+import { MessageThreadNotFound } from '../ui/thread/MessageThreadNotFound'
 
 export const chatRoute = rootRoute.reatomRoute(
 	{
 		path: 'chat',
 		loader: fetchConversations,
-		render: (self): ReactElement => {
+		render: (self) => {
 			const selectedConversationId = chatConversationRoute()?.conversationId
-			const loaderStatus = self.loader.status()
-			const data = self.loader.data()
-			if (loaderStatus.isFirstPending || (loaderStatus.isPending && data == null)) {
+			const { isFirstPending, isPending, data: conversations } = self.loader.status()
+			if (isFirstPending || (isPending && !conversations)) {
 				return <ChatPageLoading showDetail={selectedConversationId !== undefined} />
 			}
-			if (data == null) {
+			if (!conversations) {
 				return (
 					<PageError
 						title={m.chat_error_title()}
@@ -37,12 +34,12 @@ export const chatRoute = rootRoute.reatomRoute(
 
 			return (
 				<ChatPage
-					conversations={data}
+					conversations={conversations}
 					selectedConversationId={selectedConversationId}
 					getConversationHref={(conversationId: string) =>
 						chatConversationRoute.path({ conversationId })
 					}
-					detail={getFirstOutletChild(self, <MessageThreadNoSelection />)}
+					detail={self.outlet().at(0) ?? <MessageThreadNoSelection />}
 				/>
 			)
 		},
@@ -55,12 +52,8 @@ export const chatConversationRoute = chatRoute.reatomRoute(
 		path: ':conversationId',
 		loader: ({ conversationId }) => fetchConversationById(conversationId),
 		render: (self) => {
-			const isLoadingConversation = self.loader.pending() > 0
-			if (isLoadingConversation) {
-				return <MessageThreadLoadingState />
-			}
-
-			const conversation = self.loader.data()
+			const { isPending, data: conversation } = self.loader.status()
+			if (isPending) return <MessageThreadLoadingState />
 			return conversation ? (
 				<MessageThread conversation={conversation} />
 			) : (

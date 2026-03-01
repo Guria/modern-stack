@@ -6,7 +6,7 @@ import { m } from '#paraglide/messages.js'
 import { VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
-import { TimelineEventCard } from './components/TimelineEventCard'
+import { TimelineEventCard } from './TimelineEventCard'
 
 export const TimelinePage = reatomComponent(({ events }: { events: TimelineEvent[] }) => {
 	const grouped = new Map<string, TimelineEvent[]>()
@@ -26,7 +26,7 @@ export const TimelinePage = reatomComponent(({ events }: { events: TimelineEvent
 					<styled.div
 						fontSize="xs"
 						fontWeight="semibold"
-						color="gray.11"
+						color="muted"
 						textTransform="uppercase"
 						letterSpacing="wide"
 						mb="4"

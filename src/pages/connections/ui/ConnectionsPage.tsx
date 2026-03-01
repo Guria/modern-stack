@@ -5,7 +5,7 @@ import type { Connection } from '#entities/connection'
 
 import { MasterDetails } from '#widgets/master-details'
 
-import { ConnectionList } from './components/ConnectionList'
+import { ConnectionList } from './list/ConnectionList'
 
 type ConnectionsPageProps = {
 	connections: Connection[]

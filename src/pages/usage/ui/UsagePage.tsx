@@ -1,5 +1,5 @@
 import { m } from '#paraglide/messages.js'
-import { Button, VisuallyHidden } from '#shared/components'
+import { Button, Heading, Text, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { breakdown, percentage, totalGB, usedGB } from '../model/data'
@@ -11,7 +11,7 @@ function BreakdownRow({ label, gb, total }: { label: string; gb: number; total: 
 			<styled.div flex="1" fontSize="sm">
 				{label}
 			</styled.div>
-			<styled.div fontSize="sm" color="gray.11" w="16" textAlign="right">
+			<styled.div fontSize="sm" color="muted" w="16" textAlign="right">
 				{gb} GB
 			</styled.div>
 			<styled.div w="24" h="1.5" bg="gray.4" borderRadius="full" overflow="hidden">
@@ -30,7 +30,7 @@ export function UsagePage() {
 				<styled.div display="flex" alignItems="center" justifyContent="space-between" mb="2">
 					<styled.span fontWeight="medium">{m.usage_storage()}</styled.span>
 					<styled.div display="flex" alignItems="center" gap="3">
-						<styled.span fontSize="sm" color="gray.11">
+						<styled.span fontSize="sm" color="muted">
 							{m.usage_storage_desc({ usedGB, totalGB })}
 						</styled.span>
 						<Button size="xs" variant="outline" asChild>
@@ -46,25 +46,25 @@ export function UsagePage() {
 						style={{ width: `${percentage}%` }}
 					/>
 				</styled.div>
-				<styled.div fontSize="sm" color="gray.11">
+				<styled.div fontSize="sm" color="muted">
 					{m.usage_percentage_used({ percentage })}
 				</styled.div>
 			</styled.div>
 
 			<styled.div mb="8">
-				<styled.h2 fontSize="lg" fontWeight="semibold" mb="3">
+				<Heading fontSize="lg" mb="3">
 					{m.usage_breakdown()}
-				</styled.h2>
-				<styled.div borderWidth="1px" borderColor="gray.4" borderRadius="lg" px="4" divideY="1px">
+				</Heading>
+				<styled.div borderWidth="1px" borderColor="border" borderRadius="lg" px="4" divideY="1px">
 					<BreakdownRow label={m.usage_documents()} gb={breakdown.documents} total={totalGB} />
 					<BreakdownRow label={m.usage_media()} gb={breakdown.media} total={totalGB} />
 					<BreakdownRow label={m.usage_other()} gb={breakdown.other} total={totalGB} />
 				</styled.div>
 			</styled.div>
 
-			<styled.p fontSize="sm" color="gray.11">
+			<Text fontSize="sm" color="muted">
 				{m.usage_reset_info()}
-			</styled.p>
+			</Text>
 		</styled.div>
 	)
 }

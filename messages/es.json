@@ -77,11 +77,14 @@
 	"connection_test": "Probar conexión",
 	"connection_no_selection": "No se seleccionó ninguna conexión",
 	"connection_no_selection_desc": "Elige una conexión de la lista para ver sus detalles.",
+	"connection_loading_detail": "Cargando detalle de la conexión",
 	"articles_error_title": "No se pudieron cargar los artículos",
 	"articles_error_description": "No pudimos cargar la lista de artículos. Intenta de nuevo en un momento.",
+	"articles_loading_page": "Cargando página de artículos",
 
 	"connections_error_title": "No se pudieron cargar las conexiones",
 	"connections_error_description": "No pudimos cargar la lista de conexiones. Intenta de nuevo en un momento.",
+	"connections_loading_page": "Cargando página de conexiones",
 
 	"connection_back_to_connections": "Volver a conexiones",
 	"connection_not_found": "Conexión no encontrada",
@@ -94,6 +97,7 @@
 	"article_edit": "Editar",
 	"article_new": "Nuevo artículo",
 	"article_search_placeholder": "Buscar artículos...",
+	"article_loading_detail": "Cargando detalle del artículo",
 	"items_title": "Elementos",
 	"items_sort_by": "Ordenar por",
 	"items_sort_asc": "Asc",
@@ -105,9 +109,12 @@
 	"items_no_results": "Ningún elemento coincide con los filtros actuales.",
 	"item_no_selection": "Ningún elemento seleccionado",
 	"item_no_selection_desc": "Elige un elemento de la lista para ver sus detalles.",
+	"item_not_found": "Elemento no encontrado",
 	"item_not_found_description": "El elemento \"{itemId}\" no fue encontrado.",
+	"item_loading_detail": "Cargando detalle del elemento",
 	"items_error_title": "No se pudieron cargar los elementos",
 	"items_error_description": "No pudimos cargar los elementos. Intenta de nuevo en un momento.",
+	"items_loading_page": "Cargando página de elementos",
 
 	"chat_no_selection": "Ninguna conversación seleccionada",
 	"chat_no_selection_desc": "Elige una conversación de la lista para empezar a leer.",
@@ -115,6 +122,8 @@
 	"chat_not_found_description": "No existe ninguna conversación para el id \"{conversationId}\".",
 	"chat_error_title": "No se pudieron cargar las conversaciones",
 	"chat_error_description": "No pudimos cargar las conversaciones. Intenta de nuevo en un momento.",
+	"chat_loading_page": "Cargando página de chat",
+	"chat_loading_message_thread": "Cargando hilo de mensajes",
 
 	"connection_new": "Nueva conexión",
 	"connection_search_placeholder": "Buscar conexiones...",
@@ -125,6 +134,7 @@
 	"chat_back_to_conversations": "Volver a conversaciones",
 	"dashboard_error_title": "No se pudo cargar el panel",
 	"dashboard_error_description": "No pudimos cargar los datos del panel. Intenta de nuevo en un momento.",
+	"dashboard_loading_page": "Cargando página del panel",
 
 	"dashboard_stat_vs_last_week": "vs semana pasada",
 	"dashboard_top_pages": "Páginas principales",
@@ -138,6 +148,7 @@
 	"timeline_title": "Cronología",
 	"timeline_error_title": "No se pudo cargar la cronología",
 	"timeline_error_description": "No pudimos cargar los datos de la cronología. Intenta de nuevo en un momento.",
+	"timeline_loading_page": "Cargando página de cronología",
 
 	"usage_title": "Uso",
 	"usage_storage": "Almacenamiento",

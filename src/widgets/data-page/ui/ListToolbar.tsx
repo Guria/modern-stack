@@ -1,0 +1,25 @@
+import { SlidersHorizontal } from 'lucide-react'
+import { type ReactNode } from 'react'
+
+import { m } from '#paraglide/messages.js'
+import { Group, IconButton, Input } from '#shared/components'
+import { styled } from '#styled-system/jsx'
+
+type ListToolbarProps = {
+	placeholder: string
+	children?: ReactNode
+}
+
+export function ListToolbar({ placeholder, children }: ListToolbarProps) {
+	return (
+		<styled.div px="3" py="3" borderBottomWidth="1px" borderColor="border">
+			<Group attached w="full" colorPalette="gray">
+				<Input placeholder={placeholder} size="sm" flex="1" />
+				<IconButton size="sm" variant="outline" aria-label={m.list_filters()}>
+					<SlidersHorizontal />
+				</IconButton>
+				{children}
+			</Group>
+		</styled.div>
+	)
+}

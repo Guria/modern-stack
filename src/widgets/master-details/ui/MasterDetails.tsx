@@ -26,7 +26,7 @@ export function MasterDetails({
 					top="0"
 					h="100dvh"
 					borderRightWidth="1px"
-					borderColor="gray.4"
+					borderColor="border"
 					overflowY="auto"
 				>
 					{master}

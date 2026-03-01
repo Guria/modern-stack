@@ -17,7 +17,7 @@ export function OrgSwitcher() {
 			bg="transparent"
 			border="none"
 			color="inherit"
-			_hover={{ bg: 'gray.3' }}
+			_hover={{ bg: 'colorPalette.surface.bg.active' }}
 			className={css({ '[data-sidebar-collapsed] &': { justifyContent: 'center' } })}
 		>
 			<styled.div
@@ -44,7 +44,7 @@ export function OrgSwitcher() {
 				<styled.div fontSize="sm" fontWeight="medium" truncate>
 					Acme Inc
 				</styled.div>
-				<styled.div fontSize="xs" color="gray.11" truncate>
+				<styled.div fontSize="xs" color="muted" truncate>
 					alex@acme.io
 				</styled.div>
 			</styled.div>
@@ -52,7 +52,7 @@ export function OrgSwitcher() {
 				className={css({
 					w: '4',
 					h: '4',
-					color: 'gray.11',
+					color: 'muted',
 					flexShrink: '0',
 					'[data-sidebar-collapsed] &': { display: 'none' },
 				})}

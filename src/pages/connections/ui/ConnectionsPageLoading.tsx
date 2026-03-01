@@ -1,7 +1,8 @@
+import { m } from '#paraglide/messages.js'
 import { MasterDetails } from '#widgets/master-details'
 
-import { ConnectionListLoading } from './components/ConnectionListLoading'
-import { ConnectionDetailLoadingState } from './ConnectionDetailLoadingState'
+import { ConnectionDetailLoadingState } from './detail/ConnectionDetailLoadingState'
+import { ConnectionListLoading } from './list/ConnectionListLoading'
 
 type ConnectionsPageLoadingProps = {
 	showDetail: boolean
@@ -9,7 +10,7 @@ type ConnectionsPageLoadingProps = {
 
 export function ConnectionsPageLoading({ showDetail }: ConnectionsPageLoadingProps) {
 	return (
-		<div role="status" aria-label="Loading connections page">
+		<div role="status" aria-label={m.connections_loading_page()}>
 			<div inert>
 				<MasterDetails
 					isDetailVisible={showDetail}

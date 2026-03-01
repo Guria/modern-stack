@@ -10,7 +10,7 @@ import { reatomLoc } from '#shared/model'
 import { withCoerce } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
-import { CategoryBadge } from './components/CategoryBadge'
+import { CategoryBadge } from './CategoryBadge'
 
 const sortFieldCollection = reatomLoc(
 	() =>
@@ -209,7 +209,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 				</styled.label>
 			</styled.div>
 
-			<styled.p fontSize="sm" color="gray.11" mb="3">
+			<styled.p fontSize="sm" color="muted" mb="3">
 				{m.items_found({ count: filtered.length })}
 			</styled.p>
 
@@ -224,11 +224,11 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 						px="4"
 						py="3"
 						borderWidth="1px"
-						borderColor="gray.4"
+						borderColor="border"
 						borderRadius="lg"
 						textDecoration="none"
 						color="inherit"
-						_hover={{ bg: 'gray.3' }}
+						_hover={{ bg: 'gray.surface.bg.active' }}
 					>
 						<styled.div display="flex" alignItems="center" gap="3">
 							<styled.span fontWeight="medium" fontSize="sm">
@@ -253,7 +253,7 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 					</styled.a>
 				))}
 				{filtered.length === 0 && (
-					<styled.p color="gray.11" fontSize="sm" py="8" textAlign="center">
+					<styled.p color="muted" fontSize="sm" py="8" textAlign="center">
 						{m.items_no_results()}
 					</styled.p>
 				)}

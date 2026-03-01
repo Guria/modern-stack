@@ -1,4 +1,5 @@
 export { AbsoluteCenter, type AbsoluteCenterProps } from './absolute-center'
+export * as Alert from './alert'
 export * as Avatar from './avatar'
 export { Badge, type BadgeProps } from './badge'
 export * as Breadcrumb from './breadcrumb'
@@ -7,7 +8,9 @@ export * as Card from './card'
 export { CloseButton, type CloseButtonProps } from './close-button'
 export * as Drawer from './drawer'
 export * as Field from './field'
+export * as Fieldset from './fieldset'
 export { Group, type GroupProps } from './group'
+export { Heading } from './heading'
 export { Icon, type IconProps } from './icon'
 export { IconButton, type IconButtonProps } from './icon-button'
 export { Input, type InputProps } from './input'
@@ -17,19 +20,13 @@ export * as Menu from './menu'
 export * as Progress from './progress'
 export * as ScrollArea from './scroll-area'
 export * as Select from './select'
-export {
-	Skeleton,
-	SkeletonCircle,
-	SkeletonText,
-	type SkeletonCircleProps,
-	type SkeletonProps,
-	type SkeletonTextProps,
-} from './skeleton'
+export { Skeleton, SkeletonCircle, SkeletonText } from './skeleton'
 export { Span, type SpanProps } from './span'
 export { Spinner, type SpinnerProps } from './spinner'
 export * as Splitter from './splitter'
 export * as Switch from './switch'
 export * as Table from './table'
+export { Text } from './text'
 export { Toaster } from './toast'
 export { toaster } from './toaster'
 export { VisuallyHidden } from './visually-hidden'

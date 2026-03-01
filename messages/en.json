@@ -77,11 +77,14 @@
 	"connection_test": "Test connection",
 	"connection_no_selection": "No connection selected",
 	"connection_no_selection_desc": "Choose a connection from the list to view its details.",
+	"connection_loading_detail": "Loading connection detail",
 	"articles_error_title": "Could not load articles",
 	"articles_error_description": "We couldn't load the article list. Try again in a moment.",
+	"articles_loading_page": "Loading articles page",
 
 	"connections_error_title": "Could not load connections",
 	"connections_error_description": "We couldn't load the connection list. Try again in a moment.",
+	"connections_loading_page": "Loading connections page",
 
 	"connection_back_to_connections": "Back to connections",
 	"connection_not_found": "Connection not found",
@@ -94,6 +97,7 @@
 	"article_edit": "Edit",
 	"article_new": "New article",
 	"article_search_placeholder": "Search articles...",
+	"article_loading_detail": "Loading article detail",
 	"items_title": "Items",
 	"items_sort_by": "Sort by",
 	"items_sort_asc": "Asc",
@@ -105,9 +109,12 @@
 	"items_no_results": "No items match the current filters.",
 	"item_no_selection": "No item selected",
 	"item_no_selection_desc": "Choose an item from the list to view its details.",
+	"item_not_found": "Item not found",
 	"item_not_found_description": "Item \"{itemId}\" was not found.",
+	"item_loading_detail": "Loading item detail",
 	"items_error_title": "Could not load items",
 	"items_error_description": "We couldn't load the items. Try again in a moment.",
+	"items_loading_page": "Loading items page",
 
 	"chat_no_selection": "No conversation selected",
 	"chat_no_selection_desc": "Choose a conversation from the list to start reading.",
@@ -115,6 +122,8 @@
 	"chat_not_found_description": "No conversation exists for id \"{conversationId}\".",
 	"chat_error_title": "Could not load conversations",
 	"chat_error_description": "We couldn't load the conversations. Try again in a moment.",
+	"chat_loading_page": "Loading chat page",
+	"chat_loading_message_thread": "Loading message thread",
 
 	"connection_new": "New connection",
 	"connection_search_placeholder": "Search connections...",
@@ -125,6 +134,7 @@
 	"chat_back_to_conversations": "Back to conversations",
 	"dashboard_error_title": "Could not load dashboard",
 	"dashboard_error_description": "We couldn't load the dashboard data. Try again in a moment.",
+	"dashboard_loading_page": "Loading dashboard page",
 
 	"dashboard_stat_vs_last_week": "vs last week",
 	"dashboard_top_pages": "Top Pages",
@@ -138,6 +148,7 @@
 	"timeline_title": "Timeline",
 	"timeline_error_title": "Could not load timeline",
 	"timeline_error_description": "We couldn't load the timeline data. Try again in a moment.",
+	"timeline_loading_page": "Loading timeline page",
 
 	"usage_title": "Usage",
 	"usage_storage": "Storage",

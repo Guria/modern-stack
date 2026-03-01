@@ -5,7 +5,7 @@ import type { Conversation } from '#entities/conversation'
 
 import { MasterDetails } from '#widgets/master-details'
 
-import { ConversationList } from './components/ConversationList'
+import { ConversationList } from './conversations/ConversationList'
 
 type ChatPageProps = {
 	conversations: Conversation[]

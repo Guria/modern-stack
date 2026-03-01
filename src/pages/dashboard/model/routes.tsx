@@ -1,4 +1,4 @@
-import { wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchDashboardData } from '#entities/dashboard'
 import { m } from '#paraglide/messages.js'
@@ -13,17 +13,16 @@ export const dashboardRoute = rootRoute.reatomRoute(
 		path: 'dashboard',
 		loader: fetchDashboardData,
 		render: (self) => {
-			const loaderStatus = self.loader.status()
-			const data = self.loader.data()
-			if (loaderStatus.isFirstPending || (loaderStatus.isPending && data == null)) {
+			const { isFirstPending, isPending, data } = self.loader.status()
+			if (isFirstPending || (isPending && !data)) {
 				return <DashboardPageLoading />
 			}
-			if (data == null) {
+			if (!data) {
 				return (
 					<PageError
 						title={m.dashboard_error_title()}
 						description={m.dashboard_error_description()}
-						onRetry={wrap(self.loader.retry)}
+						onRetry={wrap(() => retryComputed(self.loader))}
 					/>
 				)
 			}

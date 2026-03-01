@@ -1,18 +1,19 @@
+import { m } from '#paraglide/messages.js'
 import { styled } from '#styled-system/jsx'
 
-import { ConversationListLoading } from './components/ConversationListLoading'
-import { MessageThreadLoadingState } from './MessageThreadLoadingState'
+import { ConversationListLoading } from './conversations/ConversationListLoading'
+import { MessageThreadLoadingState } from './thread/MessageThreadLoadingState'
 
 export function ChatPageLoading({ showDetail }: { showDetail: boolean }) {
 	return (
-		<div role="status" aria-label="Loading chat page">
+		<div role="status" aria-label={m.chat_loading_page()}>
 			<div inert>
 				<styled.div display={{ base: 'none', md: 'flex' }}>
 					<styled.div
 						w="320px"
 						flexShrink={0}
 						borderRightWidth="1px"
-						borderColor="gray.4"
+						borderColor="border"
 						h="100dvh"
 						position="sticky"
 						top="0"

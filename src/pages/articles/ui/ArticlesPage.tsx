@@ -5,7 +5,7 @@ import type { Article } from '#entities/article'
 
 import { MasterDetails } from '#widgets/master-details'
 
-import { ArticleList } from './components/ArticleList'
+import { ArticleList } from './list/ArticleList'
 
 type ArticlesPageProps = {
 	articles: Article[]
@@ -14,17 +14,10 @@ type ArticlesPageProps = {
 	detail: ReactNode
 }
 
-export const ArticlesPage = reatomComponent(function ArticlesPage({
-	articles,
-	selectedArticleId,
-	getArticleHref,
-	detail,
-}: ArticlesPageProps) {
-	const hasDetail = selectedArticleId !== undefined
-
-	return (
+export const ArticlesPage = reatomComponent(
+	({ articles, selectedArticleId, getArticleHref, detail }: ArticlesPageProps) => (
 		<MasterDetails
-			isDetailVisible={hasDetail}
+			isDetailVisible={selectedArticleId !== undefined}
 			master={
 				<ArticleList
 					articles={articles}
@@ -34,5 +27,6 @@ export const ArticlesPage = reatomComponent(function ArticlesPage({
 			}
 			detail={detail}
 		/>
-	)
-})
+	),
+	'ArticlesPage',
+)

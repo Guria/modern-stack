@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 
 import { m } from '#paraglide/messages.js'
-import { Button, Card } from '#shared/components'
+import { Alert, Button } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 type PageErrorProps = {
@@ -11,33 +11,18 @@ type PageErrorProps = {
 
 export function PageError({ title, description, retryLabel, onRetry }: PageErrorProps) {
 	return (
-		<Card.Root
-			role="alert"
-			p="8"
-			borderWidth="1px"
-			borderColor="red.subtle.fg"
-			borderRadius="xl"
-			bg="red.subtle.bg"
-			m="8"
-		>
-			<styled.h2 fontSize="lg" fontWeight="semibold" color="red.subtle.fg" mb="2">
-				{title}
-			</styled.h2>
-			<styled.p color="red.subtle.fg" mb="4">
-				{description}
-			</styled.p>
-			{onRetry && (
-				<Button
-					variant="outline"
-					size="sm"
-					color="red.subtle.fg"
-					borderColor="red.subtle.fg"
-					w="fit-content"
-					onClick={onRetry}
-				>
-					{retryLabel ?? m.error_retry()}
-				</Button>
-			)}
-		</Card.Root>
+		<styled.div p="8">
+			<Alert.Root role="alert" status="error" variant="surface" borderRadius="xl" p="8">
+				<Alert.Content>
+					<Alert.Title fontSize="lg">{title}</Alert.Title>
+					<Alert.Description mb="4">{description}</Alert.Description>
+					{onRetry && (
+						<Button variant="outline" size="sm" w="fit-content" onClick={onRetry}>
+							{retryLabel ?? m.error_retry()}
+						</Button>
+					)}
+				</Alert.Content>
+			</Alert.Root>
+		</styled.div>
 	)
 }

@@ -7,8 +7,8 @@ export function PricingBanner({ active }: { active?: boolean }) {
 			px="2"
 			py="2"
 			borderRadius="md"
-			bg={active ? 'gray.4' : 'transparent'}
-			_hover={{ bg: 'gray.3' }}
+			bg={active ? 'colorPalette.surface.bg.active' : 'transparent'}
+			_hover={{ bg: 'colorPalette.surface.bg.active' }}
 			cursor="pointer"
 			w="full"
 			className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
@@ -16,7 +16,7 @@ export function PricingBanner({ active }: { active?: boolean }) {
 			<styled.div fontWeight="medium" fontSize="sm" color="gray.12" mb="0.5">
 				Upgrade to Pro
 			</styled.div>
-			<styled.div fontSize="xs" color="gray.11" mb="2">
+			<styled.div fontSize="xs" color="muted" mb="2">
 				Unlimited storage &amp; more
 			</styled.div>
 			<styled.div

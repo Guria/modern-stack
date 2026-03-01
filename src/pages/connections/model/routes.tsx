@@ -1,32 +1,29 @@
-import type { ReactElement } from 'react'
-
 import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchConnectionById, fetchConnections } from '#entities/connection'
 import { m } from '#paraglide/messages.js'
-import { getFirstOutletChild, rootRoute } from '#shared/router'
+import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
-import { ConnectionDetail } from '../ui/ConnectionDetail'
-import { ConnectionDetailLoadingState } from '../ui/ConnectionDetailLoadingState'
-import { ConnectionNoSelection } from '../ui/ConnectionNoSelection'
-import { ConnectionNotFound } from '../ui/ConnectionNotFound'
 import { ConnectionsPage } from '../ui/ConnectionsPage'
 import { ConnectionsPageLoading } from '../ui/ConnectionsPageLoading'
+import { ConnectionDetail } from '../ui/detail/ConnectionDetail'
+import { ConnectionDetailLoadingState } from '../ui/detail/ConnectionDetailLoadingState'
+import { ConnectionNoSelection } from '../ui/detail/ConnectionNoSelection'
+import { ConnectionNotFound } from '../ui/detail/ConnectionNotFound'
 
 export const connectionsRoute = rootRoute.reatomRoute(
 	{
 		path: 'connections',
 		loader: fetchConnections,
-		render: (self): ReactElement => {
+		render: (self) => {
 			const selectedConnectionId = connectionDetailRoute()?.connectionId
-			const loaderStatus = self.loader.status()
-			const connections = self.loader.data()
-			if (loaderStatus.isFirstPending || (loaderStatus.isPending && connections == null)) {
+			const { isFirstPending, isPending, data: connections } = self.loader.status()
+			if (isFirstPending || (isPending && !connections)) {
 				return <ConnectionsPageLoading showDetail={selectedConnectionId !== undefined} />
 			}
 
-			if (connections == null) {
+			if (!connections) {
 				return (
 					<PageError
 						title={m.connections_error_title()}
@@ -41,7 +38,7 @@ export const connectionsRoute = rootRoute.reatomRoute(
 					connections={connections}
 					selectedConnectionId={selectedConnectionId}
 					getConnectionHref={(connectionId: string) => connectionDetailRoute.path({ connectionId })}
-					detail={getFirstOutletChild(self, <ConnectionNoSelection />)}
+					detail={self.outlet().at(0) ?? <ConnectionNoSelection />}
 				/>
 			)
 		},
@@ -54,12 +51,8 @@ export const connectionDetailRoute = connectionsRoute.reatomRoute(
 		path: ':connectionId',
 		loader: ({ connectionId }) => fetchConnectionById(connectionId),
 		render: (self) => {
-			const isLoadingConnection = self.loader.pending() > 0
-			if (isLoadingConnection) {
-				return <ConnectionDetailLoadingState />
-			}
-
-			const connection = self.loader.data()
+			const { isPending, data: connection } = self.loader.status()
+			if (isPending) return <ConnectionDetailLoadingState />
 			return connection ? (
 				<ConnectionDetail connection={connection} />
 			) : (

@@ -132,7 +132,7 @@ export const CalculatorPage = reatomComponent(() => {
 			<styled.div w="320px">
 				<VisuallyHidden as="h1">{m.calculator_title()}</VisuallyHidden>
 
-				<styled.div bg="gray.2" borderRadius="xl" p="4" borderWidth="1px" borderColor="gray.4">
+				<styled.div bg="gray.2" borderRadius="xl" p="4" borderWidth="1px" borderColor="border">
 					<styled.div
 						textAlign="right"
 						fontSize="3xl"

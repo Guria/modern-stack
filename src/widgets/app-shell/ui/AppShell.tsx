@@ -4,7 +4,7 @@ import { Github, Languages, Monitor, Moon, PanelLeft, Search, Sun } from 'lucide
 import { type ReactNode } from 'react'
 
 import { m } from '#paraglide/messages.js'
-import { IconButton, Input, Menu } from '#shared/components'
+import { Heading, IconButton, Input, Kbd, Menu } from '#shared/components'
 import {
 	localeAtom,
 	showGithubLinkInTopBarAtom,
@@ -43,7 +43,7 @@ export const AppShell = reatomComponent(
 		const sidebarInner = (
 			<>
 				<styled.div mb="3" px="2" h="10" display="flex" alignItems="center">
-					<styled.h2
+					<Heading
 						fontSize="lg"
 						fontWeight="bold"
 						className={css({
@@ -60,7 +60,7 @@ export const AppShell = reatomComponent(
 						})}
 					>
 						{appName}
-					</styled.h2>
+					</Heading>
 				</styled.div>
 				<styled.div
 					flex="1"
@@ -73,7 +73,7 @@ export const AppShell = reatomComponent(
 					{sidebarContent}
 				</styled.div>
 				{sidebarFooter && (
-					<styled.div mt="auto" pt="3" borderTopWidth="1px" borderColor="gray.4">
+					<styled.div mt="auto" pt="3" borderTopWidth="1px" borderColor="border">
 						{sidebarFooter}
 					</styled.div>
 				)}
@@ -91,7 +91,7 @@ export const AppShell = reatomComponent(
 					flexShrink={0}
 					bg="gray.2"
 					borderRightWidth="1px"
-					borderColor="gray.4"
+					borderColor="border"
 					display={{ base: 'none', md: 'flex' }}
 					flexDirection="column"
 					p={isCollapsed ? '2' : '4'}
@@ -115,7 +115,7 @@ export const AppShell = reatomComponent(
 						px={{ base: '3', md: '6' }}
 						h="14"
 						borderBottomWidth="1px"
-						borderColor="gray.4"
+						borderColor="border"
 						position="sticky"
 						top="0"
 						zIndex="sticky"
@@ -139,13 +139,13 @@ export const AppShell = reatomComponent(
 							top="50%"
 							bg="gray.1"
 							borderWidth="1px"
-							borderColor="gray.4"
+							borderColor="border"
 							borderRadius="full"
 							aria-label={m.topbar_toggle_sidebar()}
 							onClick={wrap(desktopSidebarCollapsedAtom.toggle)}
 							className={css({ transform: 'translate(-50%, -50%)' })}
 						>
-							<PanelLeft className={css({ w: '4', h: '4' })} />
+							<PanelLeft />
 						</IconButton>
 						{/* Desktop: breadcrumbs */}
 						<styled.div display={{ base: 'none', md: 'flex' }} alignItems="center" minW="0">
@@ -159,7 +159,7 @@ export const AppShell = reatomComponent(
 							display={{ base: 'none', md: 'inline-flex', xl: 'none' }}
 							aria-label={m.topbar_search_placeholder()}
 						>
-							<Search className={css({ w: '4', h: '4' })} />
+							<Search />
 						</IconButton>
 						{/* Desktop: compact search */}
 						<styled.div display={{ base: 'none', xl: 'flex' }} alignItems="center" gap="2">
@@ -173,9 +173,7 @@ export const AppShell = reatomComponent(
 								w="180px"
 								_focus={{ borderWidth: '0', outline: 'none', boxShadow: 'none' }}
 							/>
-							<styled.kbd fontSize="xs" color="gray.9" flexShrink={0}>
-								⌘K
-							</styled.kbd>
+							<Kbd flexShrink={0}>⌘K</Kbd>
 						</styled.div>
 						{showGithubLinkInTopBarAtom() && (
 							<IconButton
@@ -190,7 +188,7 @@ export const AppShell = reatomComponent(
 									target="_blank"
 									rel="noopener noreferrer"
 								>
-									<Github className={css({ w: '4', h: '4' })} />
+									<Github />
 								</a>
 							</IconButton>
 						)}
@@ -203,7 +201,7 @@ export const AppShell = reatomComponent(
 										display={{ base: 'none', md: 'inline-flex' }}
 										aria-label={m.topbar_language_switcher_label()}
 									>
-										<Languages className={css({ w: '4', h: '4' })} />
+										<Languages />
 									</IconButton>
 								</Menu.Trigger>
 								<Menu.Positioner>
@@ -236,11 +234,11 @@ export const AppShell = reatomComponent(
 								aria-label={m.topbar_toggle_theme_label()}
 							>
 								{themePreferenceAtom() === 'system' ? (
-									<Monitor className={css({ w: '4', h: '4' })} />
+									<Monitor />
 								) : themePreferenceAtom() === 'dark' ? (
-									<Moon className={css({ w: '4', h: '4' })} />
+									<Moon />
 								) : (
-									<Sun className={css({ w: '4', h: '4' })} />
+									<Sun />
 								)}
 							</IconButton>
 						)}

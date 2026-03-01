@@ -9,8 +9,8 @@ export function UsageCard({ active }: { active?: boolean }) {
 			px="2"
 			py="2"
 			borderRadius="md"
-			bg={active ? 'gray.4' : 'transparent'}
-			_hover={{ bg: 'gray.3' }}
+			bg={active ? 'colorPalette.surface.bg.active' : 'transparent'}
+			_hover={{ bg: 'colorPalette.surface.bg.active' }}
 			cursor="pointer"
 			w="full"
 			className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
@@ -21,7 +21,7 @@ export function UsageCard({ active }: { active?: boolean }) {
 				justifyContent="space-between"
 				mb="1"
 				fontSize="xs"
-				color="gray.11"
+				color="muted"
 			>
 				<styled.span fontWeight="medium" color="gray.12">
 					Storage
@@ -38,7 +38,7 @@ export function UsageCard({ active }: { active?: boolean }) {
 					style={{ width: `${percentage}%` }}
 				/>
 			</styled.div>
-			<styled.div fontSize="xs" color="gray.11" mt="0.5">
+			<styled.div fontSize="xs" color="muted" mt="0.5">
 				{percentage}% used
 			</styled.div>
 		</styled.div>
