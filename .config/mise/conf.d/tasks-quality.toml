@@ -46,6 +46,7 @@ run = [ #
 
 [tasks.ci]
 description = "Run all CI checks. No auto-fixes"
+env = { VITE_CONNECT_LOGGER = "false" }
 run = [
 	{ tasks = [
 		"prepare:panda",
