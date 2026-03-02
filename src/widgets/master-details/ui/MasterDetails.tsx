@@ -23,15 +23,15 @@ export function MasterDetails({
 					flexShrink={0}
 					alignSelf="flex-start"
 					position="sticky"
-					top="0"
-					h="100dvh"
+					top="var(--app-header-h, 0px)"
+					h="calc(100dvh - var(--app-header-h, 0px))"
 					borderRightWidth="1px"
 					borderColor="border"
 					overflowY="auto"
 				>
 					{master}
 				</styled.section>
-				<styled.main flex="1" minW="0">
+				<styled.main flex="1" minW="0" maxW="4xl" mx="auto">
 					{detail}
 				</styled.main>
 			</styled.div>

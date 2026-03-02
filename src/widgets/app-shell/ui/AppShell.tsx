@@ -1,7 +1,7 @@
-import { reatomBoolean, wrap } from '@reatom/core'
+import { atom, computed, memo, reatomBoolean, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 import { Github, Languages, Monitor, Moon, PanelLeft, Search, Sun } from 'lucide-react'
-import { type ReactNode } from 'react'
+import { type CSSProperties, type ReactNode } from 'react'
 
 import { m } from '#paraglide/messages.js'
 import { Heading, IconButton, Input, Kbd, Menu } from '#shared/components'
@@ -12,13 +12,14 @@ import {
 	showThemeSwitcherInTopBarAtom,
 	themePreferenceAtom,
 } from '#shared/model'
+import { withResizeObserver } from '#shared/reatom'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
 import { GlobalLoader } from './GlobalLoader'
 import { SidebarDrawer } from './sidebar'
 
-type AppShellProps = {
+type Props = {
 	appName: string
 	sidebarContent: ReactNode
 	sidebarFooter: ReactNode
@@ -29,17 +30,19 @@ type AppShellProps = {
 
 const desktopSidebarCollapsedAtom = reatomBoolean(false, 'desktopSidebar.collapsed')
 
-export const AppShell = reatomComponent(
-	({
-		appName,
-		sidebarContent,
-		sidebarFooter,
-		mobileHeader,
-		breadcrumbs,
-		children,
-	}: AppShellProps) => {
-		const isCollapsed = desktopSidebarCollapsedAtom()
+const measureRefAtom = atom<HTMLElement | null>(null, 'appShell.measureRef').extend(
+	withResizeObserver(),
+	(target) => ({
+		height: computed(
+			() => memo(() => target.sizeEntry()?.contentRect.height) ?? 0,
+			'appShell.headerHeight',
+		),
+	}),
+)
 
+export const AppShell = reatomComponent(
+	({ appName, sidebarContent, sidebarFooter, mobileHeader, breadcrumbs, children }: Props) => {
+		const isCollapsed = desktopSidebarCollapsedAtom()
 		const sidebarInner = (
 			<>
 				<styled.div mb="3" px="2" h="10" display="flex" alignItems="center">
@@ -59,7 +62,7 @@ export const AppShell = reatomComponent(
 							},
 						})}
 					>
-						{appName}
+						<a href="/">{appName}</a>
 					</Heading>
 				</styled.div>
 				<styled.div
@@ -107,142 +110,153 @@ export const AppShell = reatomComponent(
 				</styled.aside>
 
 				{/* Main content */}
-				<styled.div display="flex" flex="1" flexDirection="column" minW="0" isolation="isolate">
-					<styled.header
-						display="flex"
-						alignItems="center"
-						gap="2"
-						px={{ base: '3', md: '6' }}
-						h="14"
-						borderBottomWidth="1px"
-						borderColor="border"
+				<styled.div
+					display="flex"
+					flex="1"
+					flexDirection="column"
+					minW="0"
+					isolation="isolate"
+					style={{ '--app-header-h': measureRefAtom.height() + 'px' } as CSSProperties}
+				>
+					<styled.div
+						ref={wrap((node) => void measureRefAtom.set(node))}
 						position="sticky"
 						top="0"
 						zIndex="sticky"
-						bg="gray.1"
 					>
-						<styled.div
-							display={{ base: 'flex', md: 'none' }}
+						<styled.header
+							display="flex"
 							alignItems="center"
-							flex="1"
-							minW="0"
-						>
-							{mobileHeader}
-						</styled.div>
-						{/* Desktop: toggle sidebar on seam */}
-						<IconButton
-							variant="plain"
-							size="xs"
-							display={{ base: 'none', md: 'inline-flex' }}
-							position="absolute"
-							left="0"
-							top="50%"
-							bg="gray.1"
-							borderWidth="1px"
+							gap="2"
+							px={{ base: '3', md: '6' }}
+							h="14"
+							borderBottomWidth="1px"
 							borderColor="border"
-							borderRadius="full"
-							aria-label={m.topbar_toggle_sidebar()}
-							onClick={wrap(desktopSidebarCollapsedAtom.toggle)}
-							className={css({ transform: 'translate(-50%, -50%)' })}
+							bg="gray.1"
 						>
-							<PanelLeft />
-						</IconButton>
-						{/* Desktop: breadcrumbs */}
-						<styled.div display={{ base: 'none', md: 'flex' }} alignItems="center" minW="0">
-							{breadcrumbs}
-						</styled.div>
-						<styled.div ml="auto" />
-						{/* Desktop: compact search (intermediate viewports) */}
-						<IconButton
-							variant="plain"
-							size="sm"
-							display={{ base: 'none', md: 'inline-flex', xl: 'none' }}
-							aria-label={m.topbar_search_placeholder()}
-						>
-							<Search />
-						</IconButton>
-						{/* Desktop: compact search */}
-						<styled.div display={{ base: 'none', xl: 'flex' }} alignItems="center" gap="2">
-							<Search className={css({ w: '4', h: '4', color: 'gray.10', flexShrink: 0 })} />
-							<Input
-								placeholder={m.topbar_search_placeholder()}
-								size="sm"
-								variant="outline"
-								bg="transparent"
-								borderWidth="0"
-								w="180px"
-								_focus={{ borderWidth: '0', outline: 'none', boxShadow: 'none' }}
-							/>
-							<Kbd flexShrink={0}>⌘K</Kbd>
-						</styled.div>
-						{showGithubLinkInTopBarAtom() && (
+							<styled.div
+								display={{ base: 'flex', md: 'none' }}
+								alignItems="center"
+								flex="1"
+								minW="0"
+							>
+								{mobileHeader}
+							</styled.div>
+							{/* Desktop: toggle sidebar on seam */}
+							<IconButton
+								variant="plain"
+								size="xs"
+								display={{ base: 'none', md: 'inline-flex' }}
+								position="absolute"
+								left="0"
+								top="50%"
+								bg="gray.1"
+								borderWidth="1px"
+								borderColor="border"
+								borderRadius="full"
+								aria-label={m.topbar_toggle_sidebar()}
+								onClick={wrap(desktopSidebarCollapsedAtom.toggle)}
+								className={css({ transform: 'translate(-50%, -50%)' })}
+							>
+								<PanelLeft />
+							</IconButton>
+							{/* Desktop: breadcrumbs */}
+							<styled.div display={{ base: 'none', md: 'flex' }} alignItems="center" minW="0">
+								{breadcrumbs}
+							</styled.div>
+							<styled.div ml="auto" />
+							{/* Desktop: compact search (intermediate viewports) */}
 							<IconButton
 								variant="plain"
 								size="sm"
-								display={{ base: 'none', md: 'inline-flex' }}
-								asChild
-								aria-label={m.topbar_github_link_label()}
+								display={{ base: 'none', md: 'inline-flex', xl: 'none' }}
+								aria-label={m.topbar_search_placeholder()}
 							>
-								<a
-									href="https://github.com/guria/modern-stack"
-									target="_blank"
-									rel="noopener noreferrer"
+								<Search />
+							</IconButton>
+							{/* Desktop: compact search */}
+							<styled.div display={{ base: 'none', xl: 'flex' }} alignItems="center" gap="2">
+								<Search className={css({ w: '4', h: '4', color: 'gray.10', flexShrink: 0 })} />
+								<Input
+									placeholder={m.topbar_search_placeholder()}
+									size="sm"
+									variant="outline"
+									bg="transparent"
+									borderWidth="0"
+									w="180px"
+									_focus={{ borderWidth: '0', outline: 'none', boxShadow: 'none' }}
+								/>
+								<Kbd flexShrink={0}>⌘K</Kbd>
+							</styled.div>
+							{showGithubLinkInTopBarAtom() && (
+								<IconButton
+									variant="plain"
+									size="sm"
+									display={{ base: 'none', md: 'inline-flex' }}
+									asChild
+									aria-label={m.topbar_github_link_label()}
 								>
-									<Github />
-								</a>
-							</IconButton>
-						)}
-						{showLanguageSwitcherInTopBarAtom() && (
-							<Menu.Root positioning={{ placement: 'bottom-end' }}>
-								<Menu.Trigger asChild>
-									<IconButton
-										variant="plain"
-										size="sm"
-										display={{ base: 'none', md: 'inline-flex' }}
-										aria-label={m.topbar_language_switcher_label()}
+									<a
+										href="https://github.com/guria/modern-stack"
+										target="_blank"
+										rel="noopener noreferrer"
 									>
-										<Languages />
-									</IconButton>
-								</Menu.Trigger>
-								<Menu.Positioner>
-									<Menu.Content>
-										<Menu.RadioItemGroup
-											id="locale"
-											value={localeAtom()}
-											onValueChange={wrap(({ value }) => void localeAtom.set(value))}
+										<Github />
+									</a>
+								</IconButton>
+							)}
+							{showLanguageSwitcherInTopBarAtom() && (
+								<Menu.Root positioning={{ placement: 'bottom-end' }}>
+									<Menu.Trigger asChild>
+										<IconButton
+											variant="plain"
+											size="sm"
+											display={{ base: 'none', md: 'inline-flex' }}
+											aria-label={m.topbar_language_switcher_label()}
 										>
-											{localeAtom.locales.map((locale) => (
-												<Menu.RadioItem key={locale} value={locale}>
-													<Menu.ItemText>{localeAtom.label(locale)()}</Menu.ItemText>
-													<Menu.ItemIndicator />
-												</Menu.RadioItem>
-											))}
-										</Menu.RadioItemGroup>
-									</Menu.Content>
-								</Menu.Positioner>
-							</Menu.Root>
-						)}
-						{showThemeSwitcherInTopBarAtom() && (
-							<IconButton
-								variant="plain"
-								size="sm"
-								display={{ base: 'none', md: 'inline-flex' }}
-								onClick={wrap(() => {
-									const next = { system: 'light', light: 'dark', dark: 'system' } as const
-									themePreferenceAtom.set(next[themePreferenceAtom()])
-								})}
-								aria-label={m.topbar_toggle_theme_label()}
-							>
-								{themePreferenceAtom() === 'system' ? (
-									<Monitor />
-								) : themePreferenceAtom() === 'dark' ? (
-									<Moon />
-								) : (
-									<Sun />
-								)}
-							</IconButton>
-						)}
-					</styled.header>
+											<Languages />
+										</IconButton>
+									</Menu.Trigger>
+									<Menu.Positioner>
+										<Menu.Content>
+											<Menu.RadioItemGroup
+												id="locale"
+												value={localeAtom()}
+												onValueChange={wrap(({ value }) => void localeAtom.set(value))}
+											>
+												{localeAtom.locales.map((locale) => (
+													<Menu.RadioItem key={locale} value={locale}>
+														<Menu.ItemText>{localeAtom.label(locale)()}</Menu.ItemText>
+														<Menu.ItemIndicator />
+													</Menu.RadioItem>
+												))}
+											</Menu.RadioItemGroup>
+										</Menu.Content>
+									</Menu.Positioner>
+								</Menu.Root>
+							)}
+							{showThemeSwitcherInTopBarAtom() && (
+								<IconButton
+									variant="plain"
+									size="sm"
+									display={{ base: 'none', md: 'inline-flex' }}
+									onClick={wrap(() => {
+										const next = { system: 'light', light: 'dark', dark: 'system' } as const
+										themePreferenceAtom.set(next[themePreferenceAtom()])
+									})}
+									aria-label={m.topbar_toggle_theme_label()}
+								>
+									{themePreferenceAtom() === 'system' ? (
+										<Monitor />
+									) : themePreferenceAtom() === 'dark' ? (
+										<Moon />
+									) : (
+										<Sun />
+									)}
+								</IconButton>
+							)}
+						</styled.header>
+					</styled.div>
 					{children}
 				</styled.div>
 				<GlobalLoader />

@@ -11,7 +11,7 @@ export function MessageThreadLoadingState() {
 			aria-label={m.chat_loading_message_thread()}
 			display="flex"
 			flexDirection="column"
-			h="calc(100dvh - 3.5rem)"
+			h="calc(100dvh - var(--app-header-h, 0px))"
 		>
 			<styled.div
 				px="6"
