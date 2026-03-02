@@ -37,7 +37,13 @@ export const TimerPage = reatomComponent(() => {
 	})
 
 	return (
-		<styled.div p="8" display="flex" justifyContent="center" alignItems="center" minH="100dvh">
+		<styled.div
+			p="8"
+			display="flex"
+			justifyContent="center"
+			alignItems="center"
+			minH="calc(100dvh - var(--app-header-h, 0px))"
+		>
 			<styled.div w="320px" display="flex" flexDirection="column" alignItems="center" gap="6">
 				<VisuallyHidden as="h1">{m.nav_timer()}</VisuallyHidden>
 

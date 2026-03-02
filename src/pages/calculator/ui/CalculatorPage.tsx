@@ -128,7 +128,13 @@ const functionStyle = css({
 
 export const CalculatorPage = reatomComponent(() => {
 	return (
-		<styled.div p="8" display="flex" justifyContent="center" alignItems="center" minH="100dvh">
+		<styled.div
+			p="8"
+			display="flex"
+			justifyContent="center"
+			alignItems="center"
+			minH="calc(100dvh - var(--app-header-h, 0px))"
+		>
 			<styled.div w="320px">
 				<VisuallyHidden as="h1">{m.calculator_title()}</VisuallyHidden>
 

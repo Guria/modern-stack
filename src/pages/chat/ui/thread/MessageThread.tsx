@@ -10,7 +10,7 @@ import { ConversationHeaderContent } from './ConversationHeaderContent'
 
 export function MessageThread({ conversation }: { conversation: Conversation }) {
 	return (
-		<styled.div display="flex" flexDirection="column" h="calc(100dvh - 3.5rem)">
+		<styled.div display="flex" flexDirection="column" h="calc(100dvh - var(--app-header-h, 0px))">
 			<styled.div
 				px="6"
 				py="3"

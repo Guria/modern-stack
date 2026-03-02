@@ -14,9 +14,9 @@ export function ChatPageLoading({ showDetail }: { showDetail: boolean }) {
 						flexShrink={0}
 						borderRightWidth="1px"
 						borderColor="border"
-						h="100dvh"
+						h="calc(100dvh - var(--app-header-h, 0px))"
 						position="sticky"
-						top="0"
+						top="var(--app-header-h, 0px)"
 						overflowY="auto"
 					>
 						<ConversationListLoading />
