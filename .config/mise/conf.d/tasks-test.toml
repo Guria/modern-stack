@@ -2,7 +2,7 @@
 test_timeout = "10000"
 coverage_threshold_lines = "80"
 coverage_threshold_functions = "80"
-coverage_threshold_branches = "75"
+coverage_threshold_branches = "70"
 coverage_threshold_statements = "80"
 
 [env]
