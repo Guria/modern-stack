@@ -1,5 +1,4 @@
 import type { Connection } from '#entities/connection'
-
 import { m } from '#paraglide/messages.js'
 import { Button, Heading, Text, toaster } from '#shared/components'
 import { styled } from '#styled-system/jsx'

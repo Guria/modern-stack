@@ -1,5 +1,4 @@
 import type { ChartPoint } from '#entities/dashboard'
-
 import { m } from '#paraglide/messages.js'
 import { Card } from '#shared/components'
 import { styled } from '#styled-system/jsx'

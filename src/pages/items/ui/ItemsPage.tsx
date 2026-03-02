@@ -3,7 +3,6 @@ import { reatomEnum, withSearchParams, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import type { Category, Item } from '#entities/item'
-
 import { m } from '#paraglide/messages.js'
 import { Badge, Button, Select, VisuallyHidden } from '#shared/components'
 import { reatomLoc } from '#shared/model'

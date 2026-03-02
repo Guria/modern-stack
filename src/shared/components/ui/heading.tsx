@@ -1,9 +1,8 @@
 import type { ComponentProps } from 'react'
 
-import type { StyledComponent } from '#styled-system/types'
-
 import { styled } from '#styled-system/jsx'
 import { type HeadingVariantProps, heading } from '#styled-system/recipes'
+import type { StyledComponent } from '#styled-system/types'
 
 type Props = HeadingVariantProps & { as?: React.ElementType }
 

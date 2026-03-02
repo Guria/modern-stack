@@ -1,5 +1,4 @@
 import type { Article } from '#entities/article'
-
 import { styled } from '#styled-system/jsx'
 
 import { ArticleStatusBadge } from '../ArticleStatusBadge'

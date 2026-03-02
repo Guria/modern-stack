@@ -1,7 +1,6 @@
 import { SquarePen } from 'lucide-react'
 
 import type { Conversation } from '#entities/conversation'
-
 import { m } from '#paraglide/messages.js'
 import { Avatar, Badge, IconButton } from '#shared/components'
 import { styled } from '#styled-system/jsx'

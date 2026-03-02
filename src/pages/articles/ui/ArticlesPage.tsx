@@ -2,7 +2,6 @@ import { reatomComponent } from '@reatom/react'
 import { type ReactNode } from 'react'
 
 import type { Article } from '#entities/article'
-
 import { MasterDetails } from '#widgets/master-details'
 
 import { ArticleList } from './list/ArticleList'

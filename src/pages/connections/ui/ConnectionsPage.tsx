@@ -2,7 +2,6 @@ import { reatomComponent } from '@reatom/react'
 import { type ReactNode } from 'react'
 
 import type { Connection } from '#entities/connection'
-
 import { MasterDetails } from '#widgets/master-details'
 
 import { ConnectionList } from './list/ConnectionList'

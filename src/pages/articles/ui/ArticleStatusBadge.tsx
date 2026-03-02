@@ -1,5 +1,4 @@
 import type { ArticleStatus } from '#entities/article'
-
 import { Badge } from '#shared/components'
 
 const statusConfig = {

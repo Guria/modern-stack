@@ -1,8 +1,7 @@
-import type { ChangeEvent } from 'react'
-
 import { createListCollection } from '@ark-ui/react/select'
 import { atom, reatomEnum, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
+import type { ChangeEvent } from 'react'
 
 import { m } from '#paraglide/messages.js'
 import { Button, Input, Select, Switch, VisuallyHidden } from '#shared/components'

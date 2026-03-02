@@ -1,6 +1,5 @@
-import type { ComponentProps } from 'react'
-
 import { ark } from '@ark-ui/react'
+import type { ComponentProps } from 'react'
 
 import { styled } from '#styled-system/jsx'
 import { group } from '#styled-system/recipes'

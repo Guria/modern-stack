@@ -1,7 +1,6 @@
 import { TrendingDown, TrendingUp } from 'lucide-react'
 
 import type { StatCard } from '#entities/dashboard'
-
 import { m } from '#paraglide/messages.js'
 import { Badge, Card } from '#shared/components'
 import { css } from '#styled-system/css'

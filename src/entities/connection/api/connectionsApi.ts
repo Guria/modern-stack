@@ -1,5 +1,4 @@
 import type { Connection } from '#entities/connection/model/types'
-
 import { apiClient } from '#shared/api'
 
 export const CONNECTIONS_API_PATH = '/connections'

@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 
-import { $ } from 'bun'
 import { join } from 'node:path'
+
+import { $ } from 'bun'
 
 const steigerDir = join(import.meta.dir, 'steiger')
 

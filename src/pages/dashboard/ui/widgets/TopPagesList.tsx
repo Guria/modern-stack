@@ -1,5 +1,4 @@
 import type { TopPage } from '#entities/dashboard'
-
 import { m } from '#paraglide/messages.js'
 import { Card, Progress, Table } from '#shared/components'
 import { styled } from '#styled-system/jsx'

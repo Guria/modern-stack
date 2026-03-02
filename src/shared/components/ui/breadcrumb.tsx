@@ -1,8 +1,7 @@
 'use client'
-import type { ComponentProps } from 'react'
-
 import { ark } from '@ark-ui/react/factory'
 import { ChevronRightIcon } from 'lucide-react'
+import type { ComponentProps } from 'react'
 
 import { createStyleContext } from '#styled-system/jsx'
 import { breadcrumb } from '#styled-system/recipes'

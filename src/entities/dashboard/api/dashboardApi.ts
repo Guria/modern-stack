@@ -1,5 +1,4 @@
 import type { DashboardData } from '#entities/dashboard/model/types'
-
 import { apiClient } from '#shared/api'
 
 export const DASHBOARD_API_PATH = '/dashboard'

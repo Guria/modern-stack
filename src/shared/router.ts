@@ -1,5 +1,4 @@
 import type { RouteChild } from '@reatom/core'
-
 import { reatomRoute } from '@reatom/core'
 import { createElement, Fragment } from 'react'
 

@@ -1,5 +1,4 @@
 import type { Article } from '#entities/article/model/types'
-
 import { apiClient } from '#shared/api'
 
 export const ARTICLES_API_PATH = '/articles'

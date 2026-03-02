@@ -1,7 +1,6 @@
 import { Send } from 'lucide-react'
 
 import type { Conversation } from '#entities/conversation'
-
 import { m } from '#paraglide/messages.js'
 import { Button, Input } from '#shared/components'
 import { styled } from '#styled-system/jsx'

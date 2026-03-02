@@ -1,7 +1,6 @@
 import { Plus } from 'lucide-react'
 
 import type { Article } from '#entities/article'
-
 import { m } from '#paraglide/messages.js'
 import { IconButton } from '#shared/components'
 import { ListToolbar } from '#widgets/data-page'

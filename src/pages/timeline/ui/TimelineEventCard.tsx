@@ -9,7 +9,6 @@ import {
 } from 'lucide-react'
 
 import type { TimelineEventKind, TimelineEvent } from '#entities/timeline-event'
-
 import { Badge, Text } from '#shared/components'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'

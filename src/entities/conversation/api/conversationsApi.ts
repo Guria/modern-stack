@@ -1,5 +1,4 @@
 import type { Conversation } from '#entities/conversation/model/types'
-
 import { apiClient } from '#shared/api'
 
 export const CONVERSATIONS_API_PATH = '/chat/conversations'

@@ -36,6 +36,7 @@ run = "bun scripts/check-tree-shaking.ts"
 
 [tasks.validate]
 description = "Run all quality checks (format, lint, typecheck, test). Default validation task for LLMs"
+env = { VITE_CONNECT_LOGGER = "false" }
 run = [ #
 	{ task = "prepare" },
 	{ task = "format" },
