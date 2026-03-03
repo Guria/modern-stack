@@ -26,8 +26,9 @@ Default.test('shows no-selection message when no conversation selected', async (
 Default.test('shows message thread when conversation is clicked', async () => {
 	await I.click(link(/Engineering/).wait())
 
-	const detail = await I.see(role('main'))
-	await I.see(text('Has anyone looked at the failing CI on main?').wait().within(detail))
+	await I.scope(role('main'), async () => {
+		await I.see(text('Has anyone looked at the failing CI on main?').wait())
+	})
 })
 
 export const DefaultMobile = meta.story({
@@ -42,8 +43,9 @@ DefaultMobile.test('[mobile] renders conversation list', async () => {
 DefaultMobile.test('[mobile] shows message thread when conversation is clicked', async () => {
 	await I.click(link(/Engineering/).wait())
 
-	const detail = await I.see(role('main'))
-	await I.see(text('Has anyone looked at the failing CI on main?').wait().within(detail))
+	await I.scope(role('main'), async () => {
+		await I.see(text('Has anyone looked at the failing CI on main?').wait())
+	})
 })
 
 DefaultMobile.test('[mobile] can navigate back to conversation list', async () => {
@@ -123,9 +125,10 @@ HandlesConversationDetailServerError.test(
 	async () => {
 		await I.click(link(/Engineering/).wait())
 
-		const detail = await I.see(role('main'))
-		await I.see(loc.conversationNotFoundHeading.wait().within(detail))
-		await I.see(text(/No conversation exists for id/).within(detail))
+		await I.scope(role('main'), async () => {
+			await I.see(loc.conversationNotFoundHeading.wait())
+			await I.see(text(/No conversation exists for id/))
+		})
 	},
 )
 
@@ -140,9 +143,10 @@ HandlesConversationDetailServerErrorMobile.test(
 	async () => {
 		await I.click(link(/Engineering/).wait())
 
-		const detail = await I.see(role('main'))
-		await I.see(loc.conversationNotFoundHeading.wait().within(detail))
-		await I.see(text(/No conversation exists for id/).within(detail))
+		await I.scope(role('main'), async () => {
+			await I.see(loc.conversationNotFoundHeading.wait())
+			await I.see(text(/No conversation exists for id/))
+		})
 	},
 )
 
