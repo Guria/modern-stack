@@ -122,7 +122,7 @@
 	"chat_not_found_description": "No conversation exists for id \"{conversationId}\".",
 	"chat_error_title": "Could not load conversations",
 	"chat_error_description": "We couldn't load the conversations. Try again in a moment.",
-	"chat_loading_page": "Loading chat page",
+	"chat_loading_page": "Loading conversations page",
 	"chat_loading_message_thread": "Loading message thread",
 
 	"connection_new": "New connection",

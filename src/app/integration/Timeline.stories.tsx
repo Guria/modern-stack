@@ -2,6 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { timelineEventList } from '#entities/timeline-event/mocks/handlers'
 import { timelineActor as I } from '#pages/timeline/testing'
+import { text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Timeline',
@@ -46,7 +47,7 @@ export const HandlesTimelineLoadServerError = meta.story({
 
 HandlesTimelineLoadServerError.test('shows error state when timeline request fails', async () => {
 	await I.seeError()
-	await I.seeText("We couldn't load the timeline data. Try again in a moment.")
+	await I.see(text("We couldn't load the timeline data. Try again in a moment."))
 })
 
 export const HandlesTimelineLoadServerErrorMobile = meta.story({
@@ -59,7 +60,7 @@ HandlesTimelineLoadServerErrorMobile.test(
 	'[mobile] shows error state when timeline request fails',
 	async () => {
 		await I.seeError()
-		await I.seeText("We couldn't load the timeline data. Try again in a moment.")
+		await I.see(text("We couldn't load the timeline data. Try again in a moment."))
 	},
 )
 

@@ -2,38 +2,28 @@ import { expect } from 'storybook/test'
 
 import preview from '#.storybook/preview'
 import { itemsMockData } from '#entities/item/mocks/data'
-import { assert, createActor, loc, type ArrayLocator } from '#shared/test'
+import { assert, createActor, heading, role, text } from '#shared/test'
 
 import { ItemsPage } from './ItemsPage'
 
-const heading = loc((canvas) => canvas.findByRole('heading', { name: 'Items' }))
-const item = (name: string) => loc((canvas) => canvas.findByText(name))
-const maybeItem = (name: string) => loc((canvas) => canvas.queryByText(name))
-const sortSelect = loc((canvas) => canvas.findByRole('combobox', { name: /Sort by/i }))
-const categorySelect = loc((canvas) => canvas.findByRole('combobox', { name: /Category/i }))
-const stockSelect = loc((canvas) => canvas.findByRole('combobox', { name: /Stock/i }))
-const sortDirectionBtn = loc((canvas) => canvas.findByRole('button', { name: /Asc|Desc/ }))
-const priceElements: ArrayLocator = (canvas) => canvas.findAllByText(/^\$/)
-const noItemsMessage = loc((canvas) => canvas.findByText('No items match the current filters.'))
-
 const I = createActor().extend((I) => ({
 	seeItem: async (name: string) => {
-		await I.see(item(name))
+		await I.see(text(name))
 	},
 	dontSeeItem: async (name: string) => {
-		await I.dontSee(maybeItem(name))
+		await I.dontSee(text(name))
 	},
 	selectSort: async (option: string) => {
-		await I.selectOption(sortSelect, option)
+		await I.selectOption(role('combobox', /Sort by/i), option)
 	},
 	selectCategory: async (option: string) => {
-		await I.selectOption(categorySelect, option)
+		await I.selectOption(role('combobox', /Category/i), option)
 	},
 	selectStock: async (option: string) => {
-		await I.selectOption(stockSelect, option)
+		await I.selectOption(role('combobox', /Stock/i), option)
 	},
 	toggleSortDirection: async () => {
-		await I.click(sortDirectionBtn)
+		await I.click(role('button', /Asc|Desc/))
 	},
 }))
 
@@ -53,7 +43,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders items list', async () => {
-	await I.see(heading)
+	await I.see(heading('Items'))
 	await I.seeItem('Wireless Headphones')
 	await I.seeItem('Standing Desk')
 })
@@ -83,7 +73,7 @@ Default.test('filters by stock: Out of Stock', async () => {
 Default.test('sorts by price: Ascending', async () => {
 	await I.selectSort('Price')
 	// Default is Ascending
-	const items = (await I.resolveLocator(priceElements)) as HTMLElement[]
+	const items = (await I.resolveLocator(text(/^\$/).all().wait())) as HTMLElement[]
 	const prices = await Promise.all(
 		items.map((el: unknown) => {
 			assert(el instanceof HTMLElement, 'Expected HTMLElement')
@@ -98,7 +88,7 @@ Default.test('sorts by price: Ascending', async () => {
 Default.test('sorts by price: Descending', async () => {
 	await I.selectSort('Price')
 	await I.toggleSortDirection()
-	const items = (await I.resolveLocator(priceElements)) as HTMLElement[]
+	const items = (await I.resolveLocator(text(/^\$/).all().wait())) as HTMLElement[]
 	const prices = await Promise.all(
 		items.map((el: unknown) => {
 			assert(el instanceof HTMLElement, 'Expected HTMLElement')
@@ -114,5 +104,5 @@ Default.test('shows no items message when filters match nothing', async () => {
 	// Electronics + Out of Stock = 0 results in mock data
 	await I.selectCategory('Electronics')
 	await I.selectStock('Out of Stock')
-	await I.see(noItemsMessage)
+	await I.see(text('No items match the current filters.'))
 })

@@ -36,9 +36,9 @@ export function MasterDetails({
 				</styled.main>
 			</styled.div>
 
-			<styled.div display={{ base: 'block', md: 'none' }}>
+			<styled.main display={{ base: 'block', md: 'none' }}>
 				{isDetailVisible ? detail : master}
-			</styled.div>
+			</styled.main>
 		</styled.div>
 	)
 }

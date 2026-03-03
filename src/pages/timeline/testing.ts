@@ -1,19 +1,21 @@
-import { createActor, textAll } from '#shared/test'
-import { dataPage, dataPageLoc } from '#widgets/data-page/testing'
+import { button, createActor, heading, role, text } from '#shared/test'
 
-export const timelineLoc = {
-	...dataPageLoc('timeline'),
-}
-
-export const timelineActor = createActor()
-	.extend(dataPage(timelineLoc))
-	.extend((I) => ({
-		seeTimelineEvents: async () => {
-			await I.seeText('Deployed v2.4.1 to production')
-			await I.seeText('Merged PR #482 - Auth token refresh')
-		},
-		seeDateGroups: async () => {
-			await I.see(textAll('Today'))
-			await I.see(textAll('Yesterday'))
-		},
-	}))
+export const timelineActor = createActor().extend((I) => ({
+	seeError: async () => {
+		await I.see(heading('Could not load timeline').wait())
+		await I.see(role('alert'))
+		await I.see(button('Try again'))
+	},
+	seeLoading: async () => {
+		await I.see(role('status', 'Loading timeline page').wait())
+		await I.dontSee(role('alert'))
+	},
+	seeTimelineEvents: async () => {
+		await I.see(text('Deployed v2.4.1 to production').wait())
+		await I.see(text('Merged PR #482 - Auth token refresh'))
+	},
+	seeDateGroups: async () => {
+		await I.see(text('Today').all().wait())
+		await I.see(text('Yesterday').all())
+	},
+}))

@@ -2,6 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { itemList } from '#entities/item/mocks/handlers'
 import { itemsActor as I } from '#pages/items/testing'
+import { text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Items',
@@ -50,7 +51,7 @@ export const HandlesItemsLoadServerError = meta.story({
 
 HandlesItemsLoadServerError.test('shows error state when items request fails', async () => {
 	await I.seeError()
-	await I.seeText("We couldn't load the items. Try again in a moment.")
+	await I.see(text("We couldn't load the items. Try again in a moment."))
 })
 
 export const HandlesItemsLoadServerErrorMobile = meta.story({
@@ -63,7 +64,7 @@ HandlesItemsLoadServerErrorMobile.test(
 	'[mobile] shows error state when items request fails',
 	async () => {
 		await I.seeError()
-		await I.seeText("We couldn't load the items. Try again in a moment.")
+		await I.see(text("We couldn't load the items. Try again in a moment."))
 	},
 )
 

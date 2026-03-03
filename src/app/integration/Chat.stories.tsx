@@ -2,6 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { conversationDetail, conversationList } from '#entities/conversation/mocks/handlers'
 import { chatActor as I, chatLoc as loc } from '#pages/chat/testing'
+import { link, role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Chat',
@@ -15,18 +16,18 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders conversation list', async () => {
-	await I.seeConversationList()
+	await I.see(link(/Engineering/i).wait())
 })
 
 Default.test('shows no-selection message when no conversation selected', async () => {
-	await I.see(loc.noSelectionMessageAppears)
+	await I.see(text('No conversation selected').wait())
 })
 
 Default.test('shows message thread when conversation is clicked', async () => {
-	await I.clickItem('Engineering')
+	await I.click(link(/Engineering/).wait())
 
-	const detail = await I.see(loc.detailRegionAppears)
-	await I.seeText('Has anyone looked at the failing CI on main?', detail)
+	const detail = await I.see(role('main'))
+	await I.see(text('Has anyone looked at the failing CI on main?').wait().within(detail))
 })
 
 export const DefaultMobile = meta.story({
@@ -35,20 +36,20 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders conversation list', async () => {
-	await I.seeConversationList()
+	await I.see(link(/Engineering/).wait())
 })
 
 DefaultMobile.test('[mobile] shows message thread when conversation is clicked', async () => {
-	await I.clickItem('Engineering')
+	await I.click(link(/Engineering/).wait())
 
-	const detail = await I.see(loc.detailRegionAppears)
-	await I.seeText('Has anyone looked at the failing CI on main?', detail)
+	const detail = await I.see(role('main'))
+	await I.see(text('Has anyone looked at the failing CI on main?').wait().within(detail))
 })
 
 DefaultMobile.test('[mobile] can navigate back to conversation list', async () => {
-	await I.clickItem('Engineering')
+	await I.click(link(/Engineering/).wait())
 	await I.goBack()
-	await I.seeConversationList()
+	await I.see(link(/Engineering/).wait())
 })
 
 export const HandlesChatLoadServerError = meta.story({
@@ -62,7 +63,7 @@ export const HandlesChatLoadServerError = meta.story({
 
 HandlesChatLoadServerError.test('shows error state when conversations request fails', async () => {
 	await I.seeError()
-	await I.seeText("We couldn't load the conversations. Try again in a moment.")
+	await I.see(text("We couldn't load the conversations. Try again in a moment."))
 })
 
 export const HandlesChatLoadServerErrorMobile = meta.story({
@@ -75,7 +76,7 @@ HandlesChatLoadServerErrorMobile.test(
 	'[mobile] shows error state when conversations request fails',
 	async () => {
 		await I.seeError()
-		await I.seeText("We couldn't load the conversations. Try again in a moment.")
+		await I.see(text("We couldn't load the conversations. Try again in a moment."))
 	},
 )
 
@@ -120,11 +121,11 @@ export const HandlesConversationDetailServerError = meta.story({
 HandlesConversationDetailServerError.test(
 	'shows not found when conversation detail request fails',
 	async () => {
-		await I.clickItem('Engineering')
+		await I.click(link(/Engineering/).wait())
 
-		const detail = await I.see(loc.detailRegionAppears)
-		await I.see(loc.conversationNotFoundHeading.within(detail))
-		await I.seeText(/No conversation exists for id/, detail)
+		const detail = await I.see(role('main'))
+		await I.see(loc.conversationNotFoundHeading.wait().within(detail))
+		await I.see(text(/No conversation exists for id/).within(detail))
 	},
 )
 
@@ -137,11 +138,11 @@ export const HandlesConversationDetailServerErrorMobile = meta.story({
 HandlesConversationDetailServerErrorMobile.test(
 	'[mobile] shows not found when conversation detail request fails',
 	async () => {
-		await I.clickItem('Engineering')
+		await I.click(link(/Engineering/).wait())
 
-		const detail = await I.see(loc.detailRegionAppears)
-		await I.see(loc.conversationNotFoundHeading.within(detail))
-		await I.seeText(/No conversation exists for id/, detail)
+		const detail = await I.see(role('main'))
+		await I.see(loc.conversationNotFoundHeading.wait().within(detail))
+		await I.see(text(/No conversation exists for id/).within(detail))
 	},
 )
 
@@ -157,11 +158,11 @@ export const KeepsLoadingWhenConversationDetailNeverResolves = meta.story({
 KeepsLoadingWhenConversationDetailNeverResolves.test(
 	'shows message thread loading state while conversation detail is pending',
 	async () => {
-		await I.clickItem('Engineering')
+		await I.click(link(/Engineering/).wait())
 
-		const detail = await I.see(loc.detailRegionAppears)
+		const detail = await I.see(role('main'))
 		await I.see(loc.messageThreadLoading.within(detail))
-		await I.dontSee(loc.maybeConversationNotFoundText.within(detail))
+		await I.dontSee(loc.conversationNotFoundHeading.within(detail))
 	},
 )
 
@@ -174,10 +175,10 @@ export const KeepsLoadingWhenConversationDetailNeverResolvesMobile = meta.story(
 KeepsLoadingWhenConversationDetailNeverResolvesMobile.test(
 	'[mobile] shows message thread loading state while conversation detail is pending',
 	async () => {
-		await I.clickItem('Engineering')
+		await I.click(link(/Engineering/).wait())
 
-		const detail = await I.see(loc.detailRegionAppears)
+		const detail = await I.see(role('main'))
 		await I.see(loc.messageThreadLoading.within(detail))
-		await I.dontSee(loc.maybeConversationNotFoundText.within(detail))
+		await I.dontSee(loc.conversationNotFoundHeading.within(detail))
 	},
 )

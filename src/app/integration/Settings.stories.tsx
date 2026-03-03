@@ -14,19 +14,19 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders settings heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 Default.test('renders Profile section', async () => {
-	await I.see(loc.profileSectionAppears)
+	await I.see(loc.profileSection)
 })
 
 Default.test('renders Notifications section', async () => {
-	await I.see(loc.notificationsSectionAppears)
+	await I.see(loc.notificationsSection)
 })
 
 Default.test('renders Appearance section', async () => {
-	await I.see(loc.appearanceSectionAppears)
+	await I.see(loc.appearanceSection)
 })
 
 export const DefaultMobile = meta.story({
@@ -35,7 +35,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders settings heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 DefaultMobile.test('[mobile] renders all sections', async () => {

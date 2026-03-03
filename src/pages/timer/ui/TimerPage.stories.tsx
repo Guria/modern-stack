@@ -1,5 +1,5 @@
 import preview from '#.storybook/preview'
-import { button, createActor, loc } from '#shared/test'
+import { button, createActor, loc, text } from '#shared/test'
 
 import { TimerPage } from './TimerPage'
 
@@ -24,7 +24,7 @@ export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders timer and starts/pauses/resets', async () => {
 	await I.see(heading)
-	await I.seeText('05:00')
+	await I.see(text('05:00'))
 
 	await I.click(startBtn)
 	await I.see(pauseBtn)
@@ -36,16 +36,16 @@ Default.test('renders timer and starts/pauses/resets', async () => {
 	await I.see(startBtn)
 
 	await I.click(resetBtn)
-	await I.seeText('05:00')
+	await I.see(text('05:00'))
 })
 
 Default.test('changes duration', async () => {
 	await I.click(durationBtn('1m'))
-	await I.seeText('01:00')
+	await I.see(text('01:00'))
 
 	await I.click(durationBtn('10m'))
-	await I.seeText('10:00')
+	await I.see(text('10:00'))
 
 	await I.click(durationBtn('5m'))
-	await I.seeText('05:00')
+	await I.see(text('05:00'))
 })

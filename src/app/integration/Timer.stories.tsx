@@ -14,16 +14,16 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders timer heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 Default.test('renders timer display', async () => {
-	await I.see(loc.displayAppears)
+	await I.see(loc.display)
 })
 
 Default.test('renders start and reset buttons', async () => {
-	await I.see(loc.startButtonAppears)
-	await I.see(loc.resetButtonAppears)
+	await I.see(loc.startButton)
+	await I.see(loc.resetButton)
 })
 
 export const DefaultMobile = meta.story({
@@ -32,7 +32,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders timer heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 DefaultMobile.test('[mobile] renders timer content', async () => {

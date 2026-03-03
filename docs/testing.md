@@ -14,14 +14,21 @@ bun run test:run       # single run (CI)
 bun run test:coverage  # single run + coverage report
 ```
 
+To run tests for a specific file pattern:
+
+```bash
+mise run test:run Articles    # runs all files matching "Articles"
+mise run test:run Dashboard   # runs all files matching "Dashboard"
+```
+
 ## Architecture
 
 ```
 src/
 ├── shared/
 │   ├── test/
-│   │   ├── loc.ts                 # Locator types, loc(), and shorthand factories
-│   │   ├── actor.ts               # Actor framework (createActor, createBase)
+│   │   ├── loc.ts                 # Locator types, fluent API, shorthand factories
+│   │   ├── actor.ts               # Actor framework (createActor, I.see, I.click, etc.)
 │   │   └── index.ts               # Barrel re-export
 │   └── mocks/
 │       ├── utils.ts               # HTTP error classes, neverResolve(), getParam()
@@ -34,11 +41,8 @@ src/
 │   ├── mocks/handlers.ts          # Central handler registry
 │   ├── mocks/browser.ts           # MSW browser worker setup
 │   └── integration/*.stories.tsx  # Integration test stories
-├── pages/
-│   └── <page>/testing.ts          # Per-page locators + actor extensions
-└── widgets/
-    ├── data-page/testing.ts       # Reusable data-page actor mixin
-    └── master-details/testing.ts  # Reusable master-detail actor mixin
+└── pages/
+    └── <page>/testing.ts          # Per-page locators + actor extensions
 ```
 
 ## Story file structure
@@ -50,6 +54,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { dashboardActor as I, dashboardLoc as loc } from '#pages/dashboard/testing'
+import { text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Dashboard',
@@ -63,7 +68,8 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders dashboard heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
+	await I.see(text('Total Revenue'))
 })
 ```
 
@@ -106,14 +112,15 @@ The base actor (`createActor()`) provides:
 | Method                           | Purpose                                      |
 | -------------------------------- | -------------------------------------------- |
 | `I.see(locator)`                 | Assert element is in the document            |
-| `I.dontSee(locator)`             | Assert element is absent                     |
-| `I.seeText(text, within?)`       | Assert text content exists                   |
-| `I.dontSeeText(text, within?)`   | Assert text content is absent                |
+| `I.dontSee(locator)`             | Assert element is absent (calls `.maybe()` internally) |
 | `I.seeInField(locator, value)`   | Assert input has value                       |
 | `I.click(locator)`               | Click an element                             |
 | `I.fill(locator, value)`         | Type into an input (replaces existing value) |
 | `I.selectOption(locator, value)` | Open a select and choose an option           |
 | `I.clear(locator)`               | Clear an input field                         |
+
+**Deprecated methods** (do not use):
+- `I.seeText()` / `I.dontSeeText()` — use `I.see(text(...))` instead
 
 ### Extending actors
 
@@ -121,136 +128,164 @@ Each page defines its own actor by extending the base with domain-specific metho
 
 ```tsx
 // src/pages/dashboard/testing.ts
-import { createActor, loc } from '#shared/test'
-import { dataPage, dataPageLoc } from '#widgets/data-page/testing'
+import { button, createActor, heading, role, text } from '#shared/test'
 
 export const dashboardLoc = {
-	headingAppears: loc((canvas) => canvas.findByRole('heading', { name: 'Dashboard' })),
-	...dataPageLoc('dashboard'),
+	heading: heading('Dashboard'),
 }
 
-export const dashboardActor = createActor()
-	.extend(dataPage(dashboardLoc)) // adds seeError(), seeLoading()
-	.extend((I) => ({
-		seeDashboardContent: async () => {
-			await I.see(dashboardLoc.headingAppears)
-			await I.seeText('Total Revenue')
-			await I.seeText('Active Users')
-		},
-	}))
+export const dashboardActor = createActor().extend((I) => ({
+	seeError: async () => {
+		await I.see(heading('Could not load dashboard').wait())
+		await I.see(role('alert'))
+		await I.see(button('Try again'))
+	},
+	seeLoading: async () => {
+		await I.see(role('status', 'Loading dashboard page').wait())
+		await I.dontSee(role('alert'))
+	},
+	seeDashboardContent: async () => {
+		await I.see(dashboardLoc.heading.wait())
+		await I.see(text('Total Revenue'))
+		await I.see(text('Active Users'))
+	},
+}))
 ```
 
-### Reusable actor mixins
-
-Widget-level testing modules provide composable mixins:
-
-- **`dataPage(locs)`** — adds `seeError()` and `seeLoading()` for pages with standard loading/error states.
-- **`masterDetail(entityPlural)`** — adds `goBack()`, `clickItem(name)`, and `seeDetail(name)` for master-detail layouts.
-
-### Locator factories
-
-Widget-level testing modules also export locator factories that generate the standard locator sets expected by the actor mixins above:
-
-**`dataPageLoc(entityName)`** — generates locators for data-fetching pages:
-
-| Locator               | Resolves to                                            |
-| --------------------- | ------------------------------------------------------ |
-| `loadingStateAppears` | `[role="status"][name="Loading <entityName> page"]`    |
-| `errorHeadingAppears` | `[role="heading"][name="Could not load <entityName>"]` |
-| `maybeErrorHeading`   | same, but `queryBy` (returns `null` if absent)         |
-| `alertRegionAppears`  | `[role="alert"]`                                       |
-| `retryButtonAppears`  | `[role="button"][name="Try again"]`                    |
-
-**`masterDetailLoc(entitySingular)`** — generates locators for master-detail pages:
-
-| Locator                     | Resolves to                                               |
-| --------------------------- | --------------------------------------------------------- |
-| `noSelectionMessageAppears` | text `"No <entitySingular> selected"`                     |
-| `detailRegionAppears`       | `[role="main"]`                                           |
-| `detailLoading`             | `[role="status"][name="Loading <entitySingular> detail"]` |
-| `detailHeading(name)`       | `[role="heading"]` with given name                        |
-| `maybeDetailHeading(name)`  | same, but `queryBy`                                       |
-
-**Combining factories** — spread and override as needed:
-
-```tsx
-const mdLoc = masterDetailLoc('article')
-
-export const articlesLoc = {
-	...dataPageLoc('articles'),
-	...mdLoc,
-	articleHeading: mdLoc.detailHeading,
-	articleDetailLoading: mdLoc.detailLoading,
-}
-```
-
-When a page's labels don't match the convention (e.g., chat uses "Could not load conversations" not "Could not load chat"), spread the closest factory and override individual locators:
-
-```tsx
-export const chatLoc = {
-	...dataPageLoc('conversations'), // error heading matches "conversations"
-	...mdLoc,
-	loadingStateAppears: loc(
-		(
-			canvas, // but loading label says "chat"
-		) => canvas.findByRole('status', { name: 'Loading chat page' }),
-	),
-}
-```
+**Guidelines:**
+- Use `.wait()` only on the **first** locator in each method to ensure the page has loaded
+- Subsequent locators in the same method can be synchronous (no `.wait()`)
+- Only define locators in the `Loc` object if they are:
+  - Used multiple times across methods, OR
+  - Exported and used in story files
+- Simple shortcuts like `role('main')` or `button('Submit')` should be inlined directly — no need to extract to `Loc`
 
 ## Locators
 
-Locators are functions that resolve an element from the Storybook canvas. Wrap them with `loc()` to get scoping support:
+### Fluent locator API
+
+All locators support a fluent API with `.wait()`, `.maybe()`, and `.all()` modifiers:
 
 ```tsx
-import { loc } from '#shared/test'
+import { text, role, heading } from '#shared/test'
 
-const displayAppears = loc((canvas) => canvas.findByRole('status', { name: 'Timer display' }))
+// Synchronous (getBy) - throws if not found
+text('Dashboard')
+role('heading', 'Dashboard')
+
+// Async (findBy) - waits for element
+text('Dashboard').wait()
+role('heading', 'Dashboard').wait()
+
+// Maybe (queryBy) - returns null if not found
+text('Dashboard').maybe()
+
+// All (getAllBy/findAllBy) - returns array
+text('Active').all()
+text('Active').all().wait()
+```
+
+**Pattern for loading checks:**
+```tsx
+await I.see(role('status', 'Loading page').wait())  // First check: wait for page
+await I.dontSee(role('alert'))                      // Subsequent: no .wait() needed
 ```
 
 ### Shorthand factories
 
-Common `findByRole` and `findByText` patterns have shorthand factories in `#shared/test`:
+Common patterns have shorthand factories in `#shared/test`:
 
-| Factory                | Equivalent `loc()`                                                     |
-| ---------------------- | ---------------------------------------------------------------------- |
-| `heading('Dashboard')` | `loc((canvas) => canvas.findByRole('heading', { name: 'Dashboard' }))` |
-| `button('Submit')`     | `loc((canvas) => canvas.findByRole('button', { name: 'Submit' }))`     |
-| `link(/Settings/i)`    | `loc((canvas) => canvas.findByRole('link', { name: /Settings/i }))`    |
-| `text('$0/mo')`        | `loc((canvas) => canvas.findByText('$0/mo'))`                          |
-| `textAll('Active')`    | `loc((canvas) => canvas.findAllByText('Active'))`                      |
+| Factory                   | Equivalent                                                             |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `heading('Dashboard')`    | `role('heading', 'Dashboard')`                                         |
+| `button('Submit')`        | `role('button', 'Submit')`                                             |
+| `link(/Settings/i)`       | `role('link', /Settings/i)`                                            |
+| `text('$0/mo')`           | Direct text matcher                                                    |
+| `backButton('articles')`  | `(canvas) => canvas.findByLabelText('Back to articles')`               |
 
-All factories accept `string | RegExp`. Use `loc()` directly for queries that need extra options (e.g., `{ selector }`, `{ current }`) or uncommon roles.
+All factories accept `string | RegExp`.
+
+**Examples:**
+```tsx
+import { button, heading, link, text, role } from '#shared/test'
+
+export const articlesActor = createActor().extend((I) => ({
+	seeArticleList: async () => {
+		await I.see(link(/Quarterly report/i).wait())  // First: .wait()
+		await I.see(link(/Hiring plan/i))              // Rest: no .wait()
+	},
+	seeStatusBadges: async () => {
+		await I.see(text('Done').all().wait())   // First .all(): .wait()
+		await I.see(text('In Progress').all())   // Rest: no .wait()
+	},
+}))
+```
+
+### Using `loc()` for custom locators
+
+For queries not covered by shortcuts, use `loc()` directly:
 
 ```tsx
-import { button, heading, text } from '#shared/test'
+import { loc } from '#shared/test'
 
-export const timerLoc = {
-	headingAppears: heading('Timer'),
-	displayAppears: text('05:00'),
-	startButtonAppears: button('Start'),
-	resetButtonAppears: button('Reset'),
-}
+const customLocator = loc((canvas) => canvas.findByRole('status', { name: 'Custom' }))
 ```
+
+**When to use `loc()`:**
+- Custom roles or uncommon ARIA patterns
+- Queries needing extra options (`{ selector }`, `{ current }`)
+- One-off locators that don't warrant a factory
 
 ### Scoping with `.within()`
 
 Locators can be scoped to a parent element:
 
 ```tsx
-const detail = await I.see(loc.detailRegionAppears)
-await I.see(loc.articleHeading('Quarterly report').within(detail))
-await I.seeText(/Regional performance/, detail)
+const detail = await I.see(role('main'))
+await I.see(heading('Quarterly report').wait().within(detail))
+await I.see(text(/Regional performance/).within(detail))
 ```
 
-### Naming conventions for locators
+## Locator organization
 
-- `*Appears` — async locators using `findBy*` (waits for element)
-- `maybe*` — sync locators using `queryBy*` (returns `null` if absent)
-- Parameterized locators are functions returning a `loc()`:
-  ```tsx
-  articleHeading: (name: string | RegExp) => loc((canvas) => canvas.findByRole('heading', { name }))
-  ```
+**Only export locators used multiple times or in stories:**
+
+```tsx
+// Good: used in stories
+export const dashboardLoc = {
+	heading: heading('Dashboard'),  // Used in multiple stories
+}
+
+// Bad: single-use locators
+export const dashboardLoc = {
+	loadingState: role('status', 'Loading dashboard page'),  // Only used once in seeLoading()
+	errorHeading: heading('Could not load dashboard'),       // Only used once in seeError()
+}
+```
+
+**Inline single-use locators:**
+
+```tsx
+export const dashboardActor = createActor().extend((I) => ({
+	seeError: async () => {
+		await I.see(heading('Could not load dashboard').wait())  // Inline
+		await I.see(role('alert'))                               // Inline
+		await I.see(button('Try again'))                         // Inline
+	},
+}))
+```
+
+**Simple shortcuts don't add semantic value:**
+
+```tsx
+// Bad: wrapper adds no meaning
+export const articlesLoc = {
+	detailRegion: role('main'),  // Just use role('main') directly
+}
+
+// Good: inline it
+const detail = await I.see(role('main'))
+```
 
 ## MSW mock handlers
 
@@ -392,5 +427,8 @@ Excluded from coverage:
 1. **Create mock data** in `src/entities/<entity>/mocks/data.ts` — typed array matching the entity type.
 2. **Create mock handlers** in `src/entities/<entity>/mocks/handlers.ts` — export `{ default, error, loading }` variants.
 3. **Register handlers** in `src/app/mocks/handlers.ts` — add default handlers to the `handlers` object.
-4. **Create a testing module** in `src/pages/<page>/testing.ts` — define locators and extend the actor with domain methods. Compose with `dataPage()` and/or `masterDetail()` mixins as appropriate.
+4. **Create a testing module** in `src/pages/<page>/testing.ts`:
+   - Define actor extensions with domain methods (`seeError`, `seeLoading`, page-specific methods)
+   - Only export locators used multiple times or in stories
+   - Inline single-use locators directly in methods
 5. **Create the story** in `src/app/integration/<Page>.stories.tsx` — define `Default`, `Default (Mobile)`, error, and loading variants with `.test()` assertions.

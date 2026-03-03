@@ -2,7 +2,7 @@ import { assert } from '@reatom/core'
 import type { StoryContext } from '@storybook/react-vite'
 import { expect, waitFor, within as withinElement } from 'storybook/test'
 
-import type { AnyLocator, Canvas, DefiniteLocator, Locator } from './loc'
+import type { AnyLocator, Canvas, DefiniteLocator, FluentLocator } from './loc'
 
 export { assert, waitFor }
 
@@ -36,18 +36,8 @@ function createBase(ctx: () => StoryContext) {
 			assert(el instanceof HTMLElement, 'Expected locator to resolve to an HTMLElement')
 			return el
 		},
-		dontSee: async (locator: Locator) => {
-			expect(await resolveLocator(locator)).toBeNull()
-		},
-		seeText: async (text: string | RegExp, within?: HTMLElement) => {
-			const canvas = within ? withinElement(within) : ctx().canvas
-			const el = await canvas.findByText(text)
-			expect(el).toBeInTheDocument()
-			return el
-		},
-		dontSeeText: async (text: string | RegExp, within?: HTMLElement) => {
-			const canvas = within ? withinElement(within) : ctx().canvas
-			expect(canvas.queryByText(text)).toBeNull()
+		dontSee: async (locator: FluentLocator) => {
+			expect(await resolveLocator(locator.maybe())).toBeNull()
 		},
 		seeInField: async (locator: DefiniteLocator, value: string | number) => {
 			const el = await resolveLocator(locator)

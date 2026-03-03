@@ -14,7 +14,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders pricing heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 Default.test('renders all plan cards', async () => {
@@ -27,7 +27,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders pricing heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 DefaultMobile.test('[mobile] renders all plan cards', async () => {

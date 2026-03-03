@@ -2,6 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { dashboardActor as I, dashboardLoc as loc } from '#pages/dashboard/testing'
+import { text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Dashboard',
@@ -15,13 +16,13 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders dashboard heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 Default.test('renders stat cards', async () => {
 	await I.seeDashboardContent()
-	await I.seeText('Bounce Rate')
-	await I.seeText('Avg. Session')
+	await I.see(text('Bounce Rate'))
+	await I.see(text('Avg. Session'))
 })
 
 export const DefaultMobile = meta.story({
@@ -30,7 +31,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders dashboard heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 DefaultMobile.test('[mobile] renders stat cards', async () => {
@@ -48,7 +49,7 @@ export const HandlesDashboardLoadServerError = meta.story({
 
 HandlesDashboardLoadServerError.test('shows error state when dashboard request fails', async () => {
 	await I.seeError()
-	await I.seeText("We couldn't load the dashboard data. Try again in a moment.")
+	await I.see(text("We couldn't load the dashboard data. Try again in a moment."))
 })
 
 export const HandlesDashboardLoadServerErrorMobile = meta.story({
@@ -61,7 +62,7 @@ HandlesDashboardLoadServerErrorMobile.test(
 	'[mobile] shows error state when dashboard request fails',
 	async () => {
 		await I.seeError()
-		await I.seeText("We couldn't load the dashboard data. Try again in a moment.")
+		await I.see(text("We couldn't load the dashboard data. Try again in a moment."))
 	},
 )
 

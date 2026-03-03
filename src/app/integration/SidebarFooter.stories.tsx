@@ -1,9 +1,9 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { createActor, loc } from '#shared/test'
+import { createActor, text } from '#shared/test'
 
-const storageProgressNoteAppears = loc((canvas) => canvas.findByText(/GB \/ \d+ GB/))
-const upgradeToProBannerAppears = loc((canvas) => canvas.findByText('Unlimited storage & more'))
+const storageProgressNote = text(/GB \/ \d+ GB/).wait()
+const upgradeToProBanner = text('Unlimited storage & more').wait()
 
 const I = createActor()
 
@@ -19,11 +19,11 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('shows usage storage card in sidebar footer', async () => {
-	await I.see(storageProgressNoteAppears)
+	await I.see(storageProgressNote)
 })
 
 Default.test('shows upgrade to pro banner in sidebar footer', async () => {
-	await I.see(upgradeToProBannerAppears)
+	await I.see(upgradeToProBanner)
 })
 
 export const ActiveUsageRoute = meta.story({
@@ -34,7 +34,7 @@ export const ActiveUsageRoute = meta.story({
 ActiveUsageRoute.test(
 	'shows storage card in sidebar and usage page content simultaneously',
 	async () => {
-		await I.see(storageProgressNoteAppears)
+		await I.see(storageProgressNote)
 		await I.see((canvas) => canvas.findByRole('heading', { name: 'Usage' }))
 	},
 )
@@ -51,7 +51,7 @@ export const ActivePricingRoute = meta.story({
 ActivePricingRoute.test(
 	'shows upgrade banner in sidebar and pricing page content simultaneously',
 	async () => {
-		await I.see(upgradeToProBannerAppears)
+		await I.see(upgradeToProBanner)
 		await I.see((canvas) => canvas.findByRole('heading', { name: 'Pricing' }))
 	},
 )

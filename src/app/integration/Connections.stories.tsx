@@ -2,6 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { connectionDetail, connectionList } from '#entities/connection/mocks/handlers'
 import { connectionsActor as I, connectionsLoc as loc } from '#pages/connections/testing'
+import { heading, link, role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Connections',
@@ -19,23 +20,27 @@ Default.test('renders connection list with all connections', async () => {
 })
 
 Default.test('shows no-selection message when no connection selected', async () => {
-	await I.see(loc.noSelectionMessageAppears)
+	await I.see(text('No connection selected').wait())
 })
 
 Default.test('shows connection detail when connection is clicked', async () => {
-	await I.clickItem('Stripe API')
-	await I.seeDetail('Stripe API')
+	await I.click(link(/Stripe API/i).wait())
+	await I.see(heading('Stripe API').wait())
 })
 
 Default.test('shows all detail paragraphs in connection detail', async () => {
-	await I.clickItem('Stripe API')
+	await I.click(link(/Stripe API/i).wait())
 
-	const detail = await I.see(loc.detailRegionAppears)
-	await I.see(loc.connectionHeading('Stripe API').within(detail))
-	await I.seeText(/Connected to Stripe API v2023-10-16/, detail)
-	await I.seeText(/Webhook endpoint configured/, detail)
-	await I.seeText(/Average response latency/, detail)
-	await I.seeText(/Rate limit headroom/, detail)
+	const detail = await I.see(role('main'))
+	await I.see(
+		heading(/Stripe API/i)
+			.wait()
+			.within(detail),
+	)
+	await I.see(text(/Connected to Stripe API v2023-10-16/).within(detail))
+	await I.see(text(/Webhook endpoint configured/).within(detail))
+	await I.see(text(/Average response latency/).within(detail))
+	await I.see(text(/Rate limit headroom/).within(detail))
 })
 
 Default.test('displays correct status badges for all statuses', async () => {
@@ -47,11 +52,11 @@ Default.test('displays correct type badges for all types', async () => {
 })
 
 Default.test('can select different connections', async () => {
-	await I.clickItem('Stripe API')
-	await I.seeDetail('Stripe API')
+	await I.click(link(/Stripe API/i).wait())
+	await I.see(heading('Stripe API').wait())
 
-	await I.clickItem('Analytics DB')
-	await I.seeDetail('Analytics DB')
+	await I.click(link(/Analytics DB/i).wait())
+	await I.see(heading('Analytics DB').wait())
 })
 
 export const DefaultMobile = meta.story({
@@ -68,19 +73,23 @@ DefaultMobile.test('[mobile] shows connection list when no connection is selecte
 })
 
 DefaultMobile.test('[mobile] shows connection detail when connection is clicked', async () => {
-	await I.clickItem('Stripe API')
-	await I.seeDetail('Stripe API')
+	await I.click(link(/Stripe API/i).wait())
+	await I.see(heading('Stripe API').wait())
 })
 
 DefaultMobile.test('[mobile] shows all detail paragraphs in connection detail', async () => {
-	await I.clickItem('Stripe API')
+	await I.click(link(/Stripe API/i).wait())
 
-	const detail = await I.see(loc.detailRegionAppears)
-	await I.see(loc.connectionHeading('Stripe API').within(detail))
-	await I.seeText(/Connected to Stripe API v2023-10-16/, detail)
-	await I.seeText(/Webhook endpoint configured/, detail)
-	await I.seeText(/Average response latency/, detail)
-	await I.seeText(/Rate limit headroom/, detail)
+	const detail = await I.see(role('main'))
+	await I.see(
+		heading(/Stripe API/i)
+			.wait()
+			.within(detail),
+	)
+	await I.see(text(/Connected to Stripe API v2023-10-16/).within(detail))
+	await I.see(text(/Webhook endpoint configured/).within(detail))
+	await I.see(text(/Average response latency/).within(detail))
+	await I.see(text(/Rate limit headroom/).within(detail))
 })
 
 DefaultMobile.test('[mobile] displays correct status badges for all statuses', async () => {
@@ -92,13 +101,13 @@ DefaultMobile.test('[mobile] displays correct type badges for all types', async 
 })
 
 DefaultMobile.test('[mobile] can select different connections', async () => {
-	await I.clickItem('Stripe API')
-	await I.seeDetail('Stripe API')
+	await I.click(link(/Stripe API/i).wait())
+	await I.see(heading('Stripe API').wait())
 
 	await I.goBack()
 
-	await I.clickItem('Analytics DB')
-	await I.seeDetail('Analytics DB')
+	await I.click(link(/Analytics DB/i).wait())
+	await I.see(heading('Analytics DB').wait())
 })
 
 export const HandlesConnectionsLoadServerError = meta.story({
@@ -114,7 +123,7 @@ HandlesConnectionsLoadServerError.test(
 	'shows error state when connections request fails',
 	async () => {
 		await I.seeError()
-		await I.seeText("We couldn't load the connection list. Try again in a moment.")
+		await I.see(text("We couldn't load the connection list. Try again in a moment."))
 	},
 )
 
@@ -128,7 +137,7 @@ HandlesConnectionsLoadServerErrorMobile.test(
 	'[mobile] shows error state when connections request fails',
 	async () => {
 		await I.seeError()
-		await I.seeText("We couldn't load the connection list. Try again in a moment.")
+		await I.see(text("We couldn't load the connection list. Try again in a moment."))
 	},
 )
 
@@ -173,11 +182,11 @@ export const HandlesConnectionDetailServerError = meta.story({
 HandlesConnectionDetailServerError.test(
 	'shows not found when connection detail request fails',
 	async () => {
-		await I.clickItem('Stripe API')
+		await I.click(link(/Stripe API/i).wait())
 
-		const detail = await I.see(loc.detailRegionAppears)
-		await I.see(loc.connectionHeading('Connection not found').within(detail))
-		await I.seeText(/No connection exists for id/, detail)
+		const detail = await I.see(role('main'))
+		await I.see(heading('Connection not found').wait().within(detail))
+		await I.see(text(/No connection exists for id/).within(detail))
 	},
 )
 
@@ -190,11 +199,11 @@ export const HandlesConnectionDetailServerErrorMobile = meta.story({
 HandlesConnectionDetailServerErrorMobile.test(
 	'[mobile] shows not found when connection detail request fails',
 	async () => {
-		await I.clickItem('Stripe API')
+		await I.click(link(/Stripe API/i).wait())
 
-		const detail = await I.see(loc.detailRegionAppears)
-		await I.see(loc.connectionHeading('Connection not found').within(detail))
-		await I.seeText(/No connection exists for id/, detail)
+		const detail = await I.see(role('main'))
+		await I.see(heading('Connection not found').wait().within(detail))
+		await I.see(text(/No connection exists for id/).within(detail))
 	},
 )
 
@@ -210,12 +219,12 @@ export const KeepsLoadingWhenConnectionDetailNeverResolves = meta.story({
 KeepsLoadingWhenConnectionDetailNeverResolves.test(
 	'shows detail loading state while connection detail is pending',
 	async () => {
-		await I.clickItem('Stripe API')
+		await I.click(link(/Stripe API/i).wait())
 
-		const detail = await I.see(loc.detailRegionAppears)
-		await I.see(loc.connectionDetailLoading.within(detail))
-		await I.dontSee(loc.maybeConnectionHeading('Stripe API').within(detail))
-		await I.dontSeeText('Connection not found', detail)
+		const detail = await I.see(role('main'))
+		await I.see(loc.detailLoading.within(detail))
+		await I.dontSee(heading('Stripe API').within(detail))
+		await I.dontSee(text('Connection not found').within(detail))
 	},
 )
 
@@ -228,11 +237,11 @@ export const KeepsLoadingWhenConnectionDetailNeverResolvesMobile = meta.story({
 KeepsLoadingWhenConnectionDetailNeverResolvesMobile.test(
 	'[mobile] shows detail loading state while connection detail is pending',
 	async () => {
-		await I.clickItem('Stripe API')
+		await I.click(link(/Stripe API/i).wait())
 
-		const detail = await I.see(loc.detailRegionAppears)
-		await I.see(loc.connectionDetailLoading.within(detail))
-		await I.dontSee(loc.maybeConnectionHeading('Stripe API').within(detail))
-		await I.dontSeeText('Connection not found', detail)
+		const detail = await I.see(role('main'))
+		await I.see(loc.detailLoading.within(detail))
+		await I.dontSee(heading('Stripe API').within(detail))
+		await I.dontSee(text('Connection not found').within(detail))
 	},
 )

@@ -14,18 +14,18 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders usage heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 Default.test('renders storage reset note', async () => {
-	await I.see(loc.storageResetNoteAppears)
+	await I.see(loc.storageResetNote)
 })
 
 Default.test('renders breakdown section', async () => {
-	await I.see(loc.breakdownHeadingAppears)
-	await I.see(loc.documentsRowAppears)
-	await I.see(loc.mediaRowAppears)
-	await I.see(loc.otherRowAppears)
+	await I.see(loc.breakdownHeading)
+	await I.see(loc.documentsRow)
+	await I.see(loc.mediaRow)
+	await I.see(loc.otherRow)
 })
 
 export const DefaultMobile = meta.story({
@@ -34,7 +34,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders usage heading', async () => {
-	await I.see(loc.headingAppears)
+	await I.see(loc.heading.wait())
 })
 
 DefaultMobile.test('[mobile] renders usage content', async () => {

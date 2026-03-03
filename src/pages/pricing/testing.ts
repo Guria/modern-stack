@@ -1,17 +1,17 @@
 import { createActor, heading, text } from '#shared/test'
 
 export const pricingLoc = {
-	headingAppears: heading('Pricing'),
-	freePlanPriceAppears: text('$0/mo'),
-	proPlanPriceAppears: text('$12/mo'),
-	teamPlanPriceAppears: text('$29/mo'),
+	heading: heading('Pricing'),
+	freePlanPrice: text('$0/mo'),
+	proPlanPrice: text('$12/mo'),
+	teamPlanPrice: text('$29/mo'),
 }
 
 export const pricingActor = createActor().extend((I) => ({
 	seePricingContent: async () => {
-		await I.see(pricingLoc.headingAppears)
-		await I.see(pricingLoc.freePlanPriceAppears)
-		await I.see(pricingLoc.proPlanPriceAppears)
-		await I.see(pricingLoc.teamPlanPriceAppears)
+		await I.see(pricingLoc.heading)
+		await I.see(pricingLoc.freePlanPrice)
+		await I.see(pricingLoc.proPlanPrice)
+		await I.see(pricingLoc.teamPlanPrice)
 	},
 }))
