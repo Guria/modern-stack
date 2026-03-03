@@ -2,12 +2,12 @@ import { backButton, button, createActor, heading, link, role, text } from '#sha
 
 export const articlesActor = createActor().extend((I) => ({
 	seeError: async () => {
-		await I.see(heading('Could not load articles').wait())
+		await I.see(heading('Could not load articles'))
 		await I.see(role('alert'))
 		await I.see(button('Try again'))
 	},
 	seeLoading: async () => {
-		await I.see(role('status', 'Loading articles page').wait())
+		await I.see(role('status', 'Loading articles page'))
 		await I.dontSee(role('alert'))
 	},
 	goBack: async () => {

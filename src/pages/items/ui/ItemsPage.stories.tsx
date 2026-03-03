@@ -73,13 +73,9 @@ Default.test('filters by stock: Out of Stock', async () => {
 Default.test('sorts by price: Ascending', async () => {
 	await I.selectSort('Price')
 	// Default is Ascending
-	const items = (await I.resolveLocator(text(/^\$/).all().wait())) as HTMLElement[]
-	const prices = await Promise.all(
-		items.map((el: unknown) => {
-			assert(el instanceof HTMLElement, 'Expected HTMLElement')
-			return (el.textContent ?? '').replace('$', '')
-		}),
-	)
+	const items = await I.resolveLocator(text(/^\$/).all())
+	assert(Array.isArray(items), 'Expected an array of elements')
+	const prices = await Promise.all(items.map((el) => (el.textContent ?? '').replace('$', '')))
 	const numericPrices = prices.map(Number)
 	const sortedPrices = [...numericPrices].sort((a, b) => a - b)
 	expect(numericPrices).toEqual(sortedPrices)
@@ -88,13 +84,9 @@ Default.test('sorts by price: Ascending', async () => {
 Default.test('sorts by price: Descending', async () => {
 	await I.selectSort('Price')
 	await I.toggleSortDirection()
-	const items = (await I.resolveLocator(text(/^\$/).all().wait())) as HTMLElement[]
-	const prices = await Promise.all(
-		items.map((el: unknown) => {
-			assert(el instanceof HTMLElement, 'Expected HTMLElement')
-			return (el.textContent ?? '').replace('$', '')
-		}),
-	)
+	const items = await I.resolveLocator(text(/^\$/).all())
+	assert(Array.isArray(items), 'Expected an array of elements')
+	const prices = await Promise.all(items.map((el) => (el.textContent ?? '').replace('$', '')))
 	const numericPrices = prices.map(Number)
 	const sortedPrices = [...numericPrices].sort((a, b) => b - a)
 	expect(numericPrices).toEqual(sortedPrices)

@@ -32,7 +32,7 @@ export const ScopeBasic = meta.story({ name: 'scope() basic usage' })
 
 ScopeBasic.test('finds elements within scoped parent', async () => {
 	// Without scope - searches from document root
-	await I.see(heading('Page Title').wait())
+	await I.see(heading('Page Title'))
 
 	// With scope - searches within main element
 	await I.scope(role('main'), async () => {
@@ -67,7 +67,7 @@ ScopeNested.test('nested scopes resolve relative to outer scope', async () => {
 export const ScopeErrors = meta.story({ name: 'scope() error handling' })
 
 ScopeErrors.test('restores scope when callback throws', async () => {
-	await I.see(heading('Page Title').wait())
+	await I.see(heading('Page Title'))
 
 	let errorThrown = false
 	try {

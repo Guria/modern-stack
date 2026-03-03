@@ -2,11 +2,30 @@
 
 ## Overview
 
-All tests are integration tests written as Storybook stories with inline `.test()` assertions. There are no standalone `*.test.ts` files — every test is co-located with the component it verifies and runs inside a real browser via Playwright.
+All tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` files.
 
-**Stack:** Vitest · Storybook 10 · Playwright · MSW (Mock Service Worker)
+The default stabilization strategy is:
+
+- Loaded-state stories: `play: () => I.waitExit(role('status'))`
+- Loading-state stories: do not wait for exit; assert loading UI directly
+- `.wait()` exists and is still supported, but should be rare and used for edge cases
 
 ## Running tests
+
+Preferred command for a specific file:
+
+```bash
+mise run test:run <file>
+```
+
+Examples:
+
+```bash
+mise run test:run src/app/integration/Articles.stories.tsx
+mise run test:run src/app/integration/Connections.stories.tsx
+```
+
+Project-wide commands:
 
 ```bash
 bun run test           # watch mode
@@ -14,403 +33,96 @@ bun run test:run       # single run (CI)
 bun run test:coverage  # single run + coverage report
 ```
 
-To run tests for a specific file pattern:
-
-```bash
-mise run test:run Articles    # runs all files matching "Articles"
-mise run test:run Dashboard   # runs all files matching "Dashboard"
-```
-
-## Architecture
-
-```
-src/
-├── shared/
-│   ├── test/
-│   │   ├── loc.ts                 # Locator types, fluent API, shorthand factories
-│   │   ├── actor.ts               # Actor framework (createActor, I.see, I.click, etc.)
-│   │   └── index.ts               # Barrel re-export
-│   └── mocks/
-│       ├── utils.ts               # HTTP error classes, neverResolve(), getParam()
-│       └── index.ts               # Barrel re-export
-├── entities/
-│   └── <entity>/mocks/
-│       ├── data.ts                # Typed mock data arrays
-│       └── handlers.ts            # MSW handlers (.default, .error, .loading)
-├── app/
-│   ├── mocks/handlers.ts          # Central handler registry
-│   ├── mocks/browser.ts           # MSW browser worker setup
-│   └── integration/*.stories.tsx  # Integration test stories
-└── pages/
-    └── <page>/testing.ts          # Per-page locators + actor extensions
-```
-
-## Story file structure
-
-Every integration story follows the same pattern:
-
-```tsx
-import preview from '#.storybook/preview'
-import { App } from '#app/App'
-import { dashboardStats } from '#entities/dashboard/mocks/handlers'
-import { dashboardActor as I, dashboardLoc as loc } from '#pages/dashboard/testing'
-import { text } from '#shared/test'
-
-const meta = preview.meta({
-	title: 'Integration/Dashboard',
-	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'dashboard' },
-	loaders: [(ctx) => void I.init(ctx)],
-})
-
-export default meta
-
-export const Default = meta.story({ name: 'Default' })
-
-Default.test('renders dashboard heading', async () => {
-	await I.see(loc.heading.wait())
-	await I.see(text('Total Revenue'))
-})
-```
-
-Key points:
-
-- Use `preview.meta()` — not raw Storybook `Meta` objects.
-- Set `initialPath` to the route the page renders at.
-- Initialize the actor in `loaders` so it has access to the Storybook context.
-- Call `meta.story()` to create story variants, then chain `.test()` for assertions.
-
-### Story naming conventions
-
-| Variant                | Name pattern                               | Example                                  |
-| ---------------------- | ------------------------------------------ | ---------------------------------------- |
-| Happy path (desktop)   | `Default`                                  | `meta.story({ name: 'Default' })`        |
-| Happy path (mobile)    | `Default (Mobile)`                         | `globals: { viewport: { value: 'sm' } }` |
-| Error state            | `<Feature> Load Server Error`              | `Articles Load Server Error`             |
-| Error state (mobile)   | `<Feature> Load Server Error (Mobile)`     | —                                        |
-| Loading state          | `<Feature> Request Loading State`          | `Dashboard Request Loading State`        |
-| Loading state (mobile) | `<Feature> Request Loading State (Mobile)` | —                                        |
-
-The title passed to `.test('name', ...)` for mobile variants must be prefixed with `[mobile]`. The story display name passed to `meta.story({ name: '...' })` uses a `(Mobile)` suffix instead — the `[mobile]` prefix does **not** apply there.
-
-```ts
-// Test title — use [mobile] prefix
-DefaultMobile.test('[mobile] shows article list when no article is selected', async () => { ... })
-
-// Story display name — use (Mobile) suffix, no [mobile] prefix
-export const DefaultMobile = meta.story({ name: 'Default (Mobile)', globals: { viewport: { value: 'sm' } } })
-```
-
-## Actor pattern
-
-Tests use an actor-based API inspired by [CodeceptJS](https://codecept.io/). The actor (`I`) provides a fluent, human-readable interface.
-
-### Built-in actor methods
-
-The base actor (`createActor()`) provides:
-
-| Method                           | Purpose                                                |
-| -------------------------------- | ------------------------------------------------------ |
-| `I.see(locator)`                 | Assert element is in the document                      |
-| `I.dontSee(locator)`             | Assert element is absent (calls `.maybe()` internally) |
-| `I.seeInField(locator, value)`   | Assert input has value                                 |
-| `I.click(locator)`               | Click an element                                       |
-| `I.fill(locator, value)`         | Type into an input (replaces existing value)           |
-| `I.selectOption(locator, value)` | Open a select and choose an option                     |
-| `I.clear(locator)`               | Clear an input field                                   |
+## Read The Source First
 
-**Deprecated methods** (do not use):
-
-- `I.seeText()` / `I.dontSeeText()` — use `I.see(text(...))` instead
-
-### Extending actors
-
-Each page defines its own actor by extending the base with domain-specific methods:
-
-```tsx
-// src/pages/dashboard/testing.ts
-import { button, createActor, heading, role, text } from '#shared/test'
+Use these files as the primary documentation.
 
-export const dashboardLoc = {
-	heading: heading('Dashboard'),
-}
+| File                                          | Why read it                                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `src/shared/test/actor.ts`                    | Base actor API (`I.see`, `I.click`, `I.waitExit`, `I.scope`, `I.resolveLocator`)      |
+| `src/shared/test/loc.ts`                      | Locator DSL (`role`, `text`, `heading`, `.wait()`, `.maybe()`, `.all()`, `.within()`) |
+| `src/shared/test/actor.test.stories.tsx`      | Focused examples of scoping and locator behavior                                      |
+| `src/app/integration/Articles.stories.tsx`    | Canonical master-detail integration patterns (default, error, loading, detail states) |
+| `src/app/integration/Connections.stories.tsx` | Advanced master-detail and mobile navigation coverage                                 |
+| `src/app/integration/Dashboard.stories.tsx`   | Simple page with success/error/loading variants                                       |
+| `src/pages/articles/testing.ts`               | Page actor style for master-detail pages                                              |
+| `src/pages/dashboard/testing.ts`              | Page actor style for simple pages                                                     |
+| `src/entities/article/mocks/handlers.ts`      | `default` / `error` / `loading` handler variants                                      |
+| `src/app/mocks/handlers.ts`                   | Central default MSW handler registry                                                  |
+| `src/shared/mocks/utils.ts`                   | Shared mock helpers (`to500`, `neverResolve`, etc.)                                   |
 
-export const dashboardActor = createActor().extend((I) => ({
-	seeError: async () => {
-		await I.see(heading('Could not load dashboard').wait())
-		await I.see(role('alert'))
-		await I.see(button('Try again'))
-	},
-	seeLoading: async () => {
-		await I.see(role('status', 'Loading dashboard page').wait())
-		await I.dontSee(role('alert'))
-	},
-	seeDashboardContent: async () => {
-		await I.see(dashboardLoc.heading.wait())
-		await I.see(text('Total Revenue'))
-		await I.see(text('Active Users'))
-	},
-}))
-```
+## Story Conventions
 
-**Guidelines:**
+### Naming
 
-- Use `.wait()` only on the **first** locator in each method to ensure the page has loaded
-- Subsequent locators in the same method can be synchronous (no `.wait()`)
-- Only define locators in the `Loc` object if they are:
-  - Used multiple times across methods, OR
-  - Exported and used in story files
-- Simple shortcuts like `role('main')` or `button('Submit')` should be inlined directly — no need to extract to `Loc`
+| Variant                | Name pattern                               |
+| ---------------------- | ------------------------------------------ |
+| Happy path (desktop)   | `Default`                                  |
+| Happy path (mobile)    | `Default (Mobile)`                         |
+| Error state            | `<Feature> Load Server Error`              |
+| Error state (mobile)   | `<Feature> Load Server Error (Mobile)`     |
+| Loading state          | `<Feature> Request Loading State`          |
+| Loading state (mobile) | `<Feature> Request Loading State (Mobile)` |
 
-## Locators
+Mobile test titles still use `[mobile]` prefix in `.test(...)` names.
 
-### Fluent locator API
+### Stabilization rules
 
-All locators support a fluent API with `.wait()`, `.maybe()`, and `.all()` modifiers:
+1. For loaded-state stories, add `play: () => I.waitExit(role('status'))`.
+2. Apply the same rule to async error stories where UI appears after initial request resolution.
+3. For stories that intentionally keep loading visible (`*.loading` handlers), do not use `waitExit` for that loading target.
+4. For detail requests triggered by user action, click first, then wait for the relevant status to exit, then assert detail content.
 
-```tsx
-import { text, role, heading } from '#shared/test'
+## Actor and Locator Guidance
 
-// Synchronous (getBy) - throws if not found
-text('Dashboard')
-role('heading', 'Dashboard')
+The actor is codecept-style and should stay declarative. Extend per-page actors in `src/pages/<page>/testing.ts`.
 
-// Async (findBy) - waits for element
-text('Dashboard').wait()
-role('heading', 'Dashboard').wait()
+Key base methods:
 
-// Maybe (queryBy) - returns null if not found
-text('Dashboard').maybe()
+- `I.see(locator)`
+- `I.dontSee(locator)`
+- `I.waitExit(locator)`
+- `I.click(locator)`
+- `I.fill(locator, value)`
+- `I.selectOption(locator, value)`
+- `I.scope(locator, callback)`
+- `I.resolveLocator(locator)`
 
-// All (getAllBy/findAllBy) - returns array
-text('Active').all()
-text('Active').all().wait()
-```
+### When to use `.wait()`
 
-**Pattern for loading checks:**
+Use `.wait()` only for edge cases where `I.waitExit(role('status'))` is not the right tool.
 
-```tsx
-await I.see(role('status', 'Loading page').wait()) // First check: wait for page
-await I.dontSee(role('alert')) // Subsequent: no .wait() needed
-```
+Common valid cases:
 
-### Shorthand factories
+- Asserting loading UI appears: `await I.see(role('status', 'Loading ...').wait())`
+- Local async transitions without a stable status-exit contract
+- Targeted component stories that intentionally wait for post-interaction async recalculation (for example, price list extraction in `src/pages/items/ui/ItemsPage.stories.tsx`)
 
-Common patterns have shorthand factories in `#shared/test`:
+If a loaded-state integration story can be stabilized with `play: () => I.waitExit(role('status'))`, prefer that over locator `.wait()` calls.
 
-| Factory                  | Equivalent                                               |
-| ------------------------ | -------------------------------------------------------- |
-| `heading('Dashboard')`   | `role('heading', 'Dashboard')`                           |
-| `button('Submit')`       | `role('button', 'Submit')`                               |
-| `link(/Settings/i)`      | `role('link', /Settings/i)`                              |
-| `text('$0/mo')`          | Direct text matcher                                      |
-| `backButton('articles')` | `(canvas) => canvas.findByLabelText('Back to articles')` |
+## MSW Structure
 
-All factories accept `string | RegExp`.
-
-**Examples:**
+Each entity exposes handlers in `src/entities/<entity>/mocks/handlers.ts`:
 
-```tsx
-import { button, heading, link, text, role } from '#shared/test'
-
-export const articlesActor = createActor().extend((I) => ({
-	seeArticleList: async () => {
-		await I.see(link(/Quarterly report/i).wait()) // First: .wait()
-		await I.see(link(/Hiring plan/i)) // Rest: no .wait()
-	},
-	seeStatusBadges: async () => {
-		await I.see(text('Done').all().wait()) // First .all(): .wait()
-		await I.see(text('In Progress').all()) // Rest: no .wait()
-	},
-}))
-```
-
-### Using `loc()` for custom locators
-
-For queries not covered by shortcuts, use `loc()` directly:
-
-```tsx
-import { loc } from '#shared/test'
-
-const customLocator = loc((canvas) => canvas.findByRole('status', { name: 'Custom' }))
-```
+- `.default`: successful response (usually with delay)
+- `.error`: failing response
+- `.loading`: never resolves
 
-**When to use `loc()`:**
+Default handlers are aggregated in `src/app/mocks/handlers.ts` and used by Storybook preview. Story-level overrides replace only specific keys.
 
-- Custom roles or uncommon ARIA patterns
-- Queries needing extra options (`{ selector }`, `{ current }`)
-- One-off locators that don't warrant a factory
-
-### Scoping with `.within()`
-
-Locators can be scoped to a parent element:
-
-```tsx
-const detail = await I.see(role('main'))
-await I.see(heading('Quarterly report').wait().within(detail))
-await I.see(text(/Regional performance/).within(detail))
-```
+## Responsive Testing
 
-## Locator organization
+Mobile stories use Storybook viewport globals:
 
-**Only export locators used multiple times or in stories:**
+- `globals: { viewport: { value: 'sm', isRotated: false } }`
 
-```tsx
-// Good: used in stories
-export const dashboardLoc = {
-	heading: heading('Dashboard'), // Used in multiple stories
-}
-
-// Bad: single-use locators
-export const dashboardLoc = {
-	loadingState: role('status', 'Loading dashboard page'), // Only used once in seeLoading()
-	errorHeading: heading('Could not load dashboard'), // Only used once in seeError()
-}
-```
-
-**Inline single-use locators:**
-
-```tsx
-export const dashboardActor = createActor().extend((I) => ({
-	seeError: async () => {
-		await I.see(heading('Could not load dashboard').wait()) // Inline
-		await I.see(role('alert')) // Inline
-		await I.see(button('Try again')) // Inline
-	},
-}))
-```
-
-**Simple shortcuts don't add semantic value:**
-
-```tsx
-// Bad: wrapper adds no meaning
-export const articlesLoc = {
-	detailRegion: role('main'), // Just use role('main') directly
-}
-
-// Good: inline it
-const detail = await I.see(role('main'))
-```
-
-## MSW mock handlers
-
-Each entity provides mock handlers in `src/entities/<entity>/mocks/handlers.ts` with three variants:
-
-```tsx
-import { HttpResponse, delay, http } from 'msw'
-
-export const articleList = {
-	default: http.get(url, async () => {
-		await delay()
-		return HttpResponse.json(articlesMockData)
-	}),
-	error: http.get(url, () => to500()),
-	loading: http.get(url, neverResolve),
-}
-```
-
-| Variant    | Behavior                                           |
-| ---------- | -------------------------------------------------- |
-| `.default` | Returns mock data after a realistic delay          |
-| `.error`   | Returns HTTP 500 (or 404, 400) immediately         |
-| `.loading` | Never resolves — keeps the request pending forever |
-
-### Central handler registry
-
-All default handlers are aggregated in `src/app/mocks/handlers.ts`:
-
-```tsx
-export const handlers = {
-	articleList: articleList.default,
-	articleDetail: articleDetail.default,
-	dashboardStats: dashboardStats.default,
-	// ...
-} satisfies Record<string, RequestHandler | RequestHandler[]>
-```
-
-This object is used as the default MSW configuration for all stories via `parameters.msw.handlers` in the Storybook preview.
-
-### Per-story handler overrides
-
-Override specific handlers to test error or loading states:
-
-```tsx
-export const HandlesArticlesLoadServerError = meta.story({
-	name: 'Articles Load Server Error',
-	parameters: {
-		msw: {
-			handlers: { articleList: articleList.error },
-		},
-	},
-})
-```
-
-Only the overridden key is replaced — all other handlers keep their defaults.
-
-### Mock data
-
-Mock data lives in `src/entities/<entity>/mocks/data.ts` as typed arrays:
-
-```tsx
-import type { Article } from '#entities/article/model/types'
-
-export const articlesMockData = [
-  { id: '1', title: 'Quarterly report', status: 'done', content: [...] },
-  // ...
-] satisfies Article[]
-```
-
-### Mock utilities (`src/shared/mocks/utils.ts`)
-
-| Export            | Purpose                                       |
-| ----------------- | --------------------------------------------- |
-| `to400(msg?)`     | Throw an HTTP 400 error                       |
-| `to404(msg?)`     | Throw an HTTP 404 error                       |
-| `to500(msg?)`     | Throw an HTTP 500 error                       |
-| `neverResolve()`  | Return a promise that never settles           |
-| `getParam(param)` | Extract a single path param from MSW's params |
-
-## Responsive testing
-
-Mobile variants set a viewport via Storybook globals:
-
-```tsx
-export const DefaultMobile = meta.story({
-	name: 'Default (Mobile)',
-	globals: { viewport: { value: 'sm', isRotated: false } },
-})
-```
-
-Available breakpoints match Panda CSS defaults:
-
-| Name  | Width            |
-| ----- | ---------------- |
-| `sm`  | 640px            |
-| `md`  | 768px            |
-| `lg`  | 1024px           |
-| `xl`  | 1280px (default) |
-| `2xl` | 1536px           |
-
-To share parameters between desktop and mobile variants of the same state, define the desktop story first and reference its `.input.parameters` in the mobile variant:
-
-```tsx
-export const Error = meta.story({
-	name: 'Feature Load Server Error',
-	parameters: {
-		msw: { handlers: { feature: featureMock.error } },
-	},
-})
-
-export const ErrorMobile = meta.story({
-	name: 'Feature Load Server Error (Mobile)',
-	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: Error.input.parameters, // reuse the desktop story's MSW handlers
-})
-```
+To reuse desktop configuration in mobile variants, pass `parameters: DesktopStory.input.parameters`.
 
 ## Coverage
 
-Coverage uses v8 provider via `@vitest/coverage-v8`. Thresholds are configured via environment variables and enforced in CI:
+Coverage uses `@vitest/coverage-v8`.
+
+Thresholds:
 
 | Metric     | Threshold |
 | ---------- | --------- |
@@ -421,19 +133,17 @@ Coverage uses v8 provider via `@vitest/coverage-v8`. Thresholds are configured v
 
 Excluded from coverage:
 
-- `*.stories.tsx` files
-- `*.test.{ts,tsx}` files
-- `src/shared/styled-system/` (generated by Panda CSS)
-- `src/shared/components/ui/` (managed by Park UI)
+- `*.stories.tsx`
+- `*.test.{ts,tsx}`
+- `src/shared/styled-system/`
+- `src/shared/components/ui/`
 - `src/main.tsx`
 
-## Adding a new page test
+## Adding a New Page Test
 
-1. **Create mock data** in `src/entities/<entity>/mocks/data.ts` — typed array matching the entity type.
-2. **Create mock handlers** in `src/entities/<entity>/mocks/handlers.ts` — export `{ default, error, loading }` variants.
-3. **Register handlers** in `src/app/mocks/handlers.ts` — add default handlers to the `handlers` object.
-4. **Create a testing module** in `src/pages/<page>/testing.ts`:
-   - Define actor extensions with domain methods (`seeError`, `seeLoading`, page-specific methods)
-   - Only export locators used multiple times or in stories
-   - Inline single-use locators directly in methods
-5. **Create the story** in `src/app/integration/<Page>.stories.tsx` — define `Default`, `Default (Mobile)`, error, and loading variants with `.test()` assertions.
+1. Create typed mock data in `src/entities/<entity>/mocks/data.ts`.
+2. Add `default` / `error` / `loading` handlers in `src/entities/<entity>/mocks/handlers.ts`.
+3. Register defaults in `src/app/mocks/handlers.ts`.
+4. Create `src/pages/<page>/testing.ts` with page actor methods.
+5. Add `src/app/integration/<Page>.stories.tsx` with `Default`, `Default (Mobile)`, error, and loading variants.
+6. Add `play: () => I.waitExit(role('status'))` to loaded-state and async error variants, but not to persistent-loading stories.

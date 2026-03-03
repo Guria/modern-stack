@@ -1,9 +1,9 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { createActor, text } from '#shared/test'
+import { createActor, role, text } from '#shared/test'
 
-const storageProgressNote = text(/GB \/ \d+ GB/).wait()
-const upgradeToProBanner = text('Unlimited storage & more').wait()
+const storageProgressNote = text(/GB \/ \d+ GB/)
+const upgradeToProBanner = text('Unlimited storage & more')
 
 const I = createActor()
 
@@ -16,7 +16,10 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('shows usage storage card in sidebar footer', async () => {
 	await I.see(storageProgressNote)
@@ -29,6 +32,7 @@ Default.test('shows upgrade to pro banner in sidebar footer', async () => {
 export const ActiveUsageRoute = meta.story({
 	name: 'Active Usage Route',
 	parameters: { initialPath: 'usage' },
+	play: () => I.waitExit(role('status')),
 })
 
 ActiveUsageRoute.test(
@@ -46,6 +50,7 @@ ActiveUsageRoute.test('marks usage card as current page in sidebar', async () =>
 export const ActivePricingRoute = meta.story({
 	name: 'Active Pricing Route',
 	parameters: { initialPath: 'pricing' },
+	play: () => I.waitExit(role('status')),
 })
 
 ActivePricingRoute.test(

@@ -14,7 +14,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders settings heading', async () => {
-	await I.see(loc.heading.wait())
+	await I.see(loc.heading)
 })
 
 Default.test('renders Profile section', async () => {
@@ -35,7 +35,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders settings heading', async () => {
-	await I.see(loc.heading.wait())
+	await I.see(loc.heading)
 })
 
 DefaultMobile.test('[mobile] renders all sections', async () => {

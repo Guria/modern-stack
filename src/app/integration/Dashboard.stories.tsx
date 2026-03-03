@@ -2,7 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { dashboardActor as I, dashboardLoc as loc } from '#pages/dashboard/testing'
-import { text } from '#shared/test'
+import { role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Dashboard',
@@ -13,10 +13,13 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('renders dashboard heading', async () => {
-	await I.see(loc.heading.wait())
+	await I.see(loc.heading)
 })
 
 Default.test('renders stat cards', async () => {
@@ -28,10 +31,11 @@ Default.test('renders stat cards', async () => {
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
+	play: () => I.waitExit(role('status')),
 })
 
 DefaultMobile.test('[mobile] renders dashboard heading', async () => {
-	await I.see(loc.heading.wait())
+	await I.see(loc.heading)
 })
 
 DefaultMobile.test('[mobile] renders stat cards', async () => {
@@ -40,6 +44,7 @@ DefaultMobile.test('[mobile] renders stat cards', async () => {
 
 export const HandlesDashboardLoadServerError = meta.story({
 	name: 'Dashboard Load Server Error',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { dashboardStats: dashboardStats.error },
@@ -56,6 +61,7 @@ export const HandlesDashboardLoadServerErrorMobile = meta.story({
 	name: 'Dashboard Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesDashboardLoadServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesDashboardLoadServerErrorMobile.test(

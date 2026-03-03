@@ -32,8 +32,10 @@ Default.test('shows article detail when article is clicked', async () => {
 
 Default.test('shows all content paragraphs in article detail', async () => {
 	await I.click(link(/Quarterly report/i))
+	await I.waitExit(role('status'))
+
 	await I.scope(role('main'), async () => {
-		await I.see(heading('Quarterly report').wait())
+		await I.see(heading('Quarterly report'))
 		await I.see(text(/Regional performance remained strongest/))
 		await I.see(text(/EMEA showed stable retention/))
 		await I.see(text(/APAC growth accelerated/))
@@ -43,19 +45,19 @@ Default.test('shows all content paragraphs in article detail', async () => {
 })
 
 Default.test('can select different articles', async () => {
-	await I.click(link(/Quarterly report/i).wait())
-	await I.see(heading('Quarterly report').wait())
+	await I.click(link(/Quarterly report/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Quarterly report'))
 
 	await I.click(link(/Hiring plan/i))
-	await I.see(heading('Hiring plan').wait())
+	await I.waitExit(role('status'))
+	await I.see(heading('Hiring plan'))
 })
 
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	play: async () => {
-		await I.see(link(/Quarterly report/i).wait())
-	},
+	play: () => I.waitExit(role('status')),
 })
 
 DefaultMobile.test('[mobile] shows article list when no article is selected', async () => {
@@ -64,14 +66,16 @@ DefaultMobile.test('[mobile] shows article list when no article is selected', as
 
 DefaultMobile.test('[mobile] shows article detail when article is clicked', async () => {
 	await I.click(link(/Quarterly report/i))
-	await I.see(heading('Quarterly report').wait())
+	await I.waitExit(role('status'))
+	await I.see(heading('Quarterly report'))
 })
 
 DefaultMobile.test('[mobile] shows all content paragraphs in article detail', async () => {
 	await I.click(link(/Quarterly report/i))
+	await I.waitExit(role('status'))
 
-	await I.scope(role('main').wait(), async () => {
-		await I.see(heading('Quarterly report').wait())
+	await I.scope(role('main'), async () => {
+		await I.see(heading('Quarterly report'))
 		await I.see(text(/Regional performance remained strongest/))
 		await I.see(text(/EMEA showed stable retention/))
 		await I.see(text(/APAC growth accelerated/))
@@ -86,12 +90,14 @@ DefaultMobile.test('[mobile] displays correct status badges for different status
 
 DefaultMobile.test('[mobile] can select different articles', async () => {
 	await I.click(link(/Quarterly report/i))
-	await I.see(heading('Quarterly report').wait())
+	await I.waitExit(role('status'))
+	await I.see(heading('Quarterly report'))
 
 	await I.goBack()
 
 	await I.click(link(/Hiring plan/i))
-	await I.see(heading('Hiring plan').wait())
+	await I.waitExit(role('status'))
+	await I.see(heading('Hiring plan'))
 })
 
 export const HandlesArticlesLoadServerError = meta.story({
@@ -101,6 +107,7 @@ export const HandlesArticlesLoadServerError = meta.story({
 			handlers: { articleList: articleList.error },
 		},
 	},
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesArticlesLoadServerError.test('shows error state when articles request fails', async () => {
@@ -112,6 +119,7 @@ export const HandlesArticlesLoadServerErrorMobile = meta.story({
 	name: 'Articles Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesArticlesLoadServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesArticlesLoadServerErrorMobile.test(
@@ -153,6 +161,7 @@ KeepsLoadingWhenArticlesRequestNeverResolvesMobile.test(
 
 export const HandlesArticleDetailServerError = meta.story({
 	name: 'Article Detail Server Error',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { articleDetail: articleDetail.error },
@@ -163,10 +172,11 @@ export const HandlesArticleDetailServerError = meta.story({
 HandlesArticleDetailServerError.test(
 	'shows not found when article detail request fails',
 	async () => {
-		await I.click(link(/Quarterly report/i).wait())
+		await I.click(link(/Quarterly report/i))
+		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Article not found').wait())
+			await I.see(heading('Article not found'))
 			await I.see(text(/No article exists for id/))
 		})
 	},
@@ -176,15 +186,17 @@ export const HandlesArticleDetailServerErrorMobile = meta.story({
 	name: 'Article Detail Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesArticleDetailServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesArticleDetailServerErrorMobile.test(
 	'[mobile] shows not found when article detail request fails',
 	async () => {
-		await I.click(link(/Quarterly report/i).wait())
+		await I.click(link(/Quarterly report/i))
+		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Article not found').wait())
+			await I.see(heading('Article not found'))
 			await I.see(text(/No article exists for id/))
 		})
 	},
@@ -192,6 +204,7 @@ HandlesArticleDetailServerErrorMobile.test(
 
 export const KeepsLoadingWhenArticleDetailNeverResolves = meta.story({
 	name: 'Article Detail Loading State',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { articleDetail: articleDetail.loading },
@@ -202,7 +215,7 @@ export const KeepsLoadingWhenArticleDetailNeverResolves = meta.story({
 KeepsLoadingWhenArticleDetailNeverResolves.test(
 	'shows detail loading state while article detail is pending',
 	async () => {
-		await I.click(link(/Quarterly report/i).wait())
+		await I.click(link(/Quarterly report/i))
 
 		const detail = await I.see(role('main'))
 		await I.see(role('status', 'Loading article detail').within(detail))
@@ -215,12 +228,13 @@ export const KeepsLoadingWhenArticleDetailNeverResolvesMobile = meta.story({
 	name: 'Article Detail Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: KeepsLoadingWhenArticleDetailNeverResolves.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 KeepsLoadingWhenArticleDetailNeverResolvesMobile.test(
 	'[mobile] shows detail loading state while article detail is pending',
 	async () => {
-		await I.click(link(/Quarterly report/i).wait())
+		await I.click(link(/Quarterly report/i))
 
 		const detail = await I.see(role('main'))
 		await I.see(role('status', 'Loading article detail').within(detail))

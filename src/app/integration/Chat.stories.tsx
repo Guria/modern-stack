@@ -13,49 +13,57 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('renders conversation list', async () => {
-	await I.see(link(/Engineering/i).wait())
+	await I.see(link(/Engineering/i))
 })
 
 Default.test('shows no-selection message when no conversation selected', async () => {
-	await I.see(text('No conversation selected').wait())
+	await I.see(text('No conversation selected'))
 })
 
 Default.test('shows message thread when conversation is clicked', async () => {
-	await I.click(link(/Engineering/).wait())
+	await I.click(link(/Engineering/))
+	await I.waitExit(role('status'))
 
 	await I.scope(role('main'), async () => {
-		await I.see(text('Has anyone looked at the failing CI on main?').wait())
+		await I.see(text('Has anyone looked at the failing CI on main?'))
 	})
 })
 
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
+	play: () => I.waitExit(role('status')),
 })
 
 DefaultMobile.test('[mobile] renders conversation list', async () => {
-	await I.see(link(/Engineering/).wait())
+	await I.see(link(/Engineering/))
 })
 
 DefaultMobile.test('[mobile] shows message thread when conversation is clicked', async () => {
-	await I.click(link(/Engineering/).wait())
+	await I.click(link(/Engineering/))
+	await I.waitExit(role('status'))
 
 	await I.scope(role('main'), async () => {
-		await I.see(text('Has anyone looked at the failing CI on main?').wait())
+		await I.see(text('Has anyone looked at the failing CI on main?'))
 	})
 })
 
 DefaultMobile.test('[mobile] can navigate back to conversation list', async () => {
-	await I.click(link(/Engineering/).wait())
+	await I.click(link(/Engineering/))
+	await I.waitExit(role('status'))
 	await I.goBack()
-	await I.see(link(/Engineering/).wait())
+	await I.see(link(/Engineering/))
 })
 
 export const HandlesChatLoadServerError = meta.story({
 	name: 'Conversations Load Server Error',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { conversationList: conversationList.error },
@@ -72,6 +80,7 @@ export const HandlesChatLoadServerErrorMobile = meta.story({
 	name: 'Conversations Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesChatLoadServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesChatLoadServerErrorMobile.test(
@@ -113,6 +122,7 @@ KeepsLoadingWhenChatRequestNeverResolvesMobile.test(
 
 export const HandlesConversationDetailServerError = meta.story({
 	name: 'Conversation Detail Server Error',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { conversationDetail: conversationDetail.error },
@@ -123,10 +133,11 @@ export const HandlesConversationDetailServerError = meta.story({
 HandlesConversationDetailServerError.test(
 	'shows not found when conversation detail request fails',
 	async () => {
-		await I.click(link(/Engineering/).wait())
+		await I.click(link(/Engineering/))
+		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(loc.conversationNotFoundHeading.wait())
+			await I.see(loc.conversationNotFoundHeading)
 			await I.see(text(/No conversation exists for id/))
 		})
 	},
@@ -136,15 +147,17 @@ export const HandlesConversationDetailServerErrorMobile = meta.story({
 	name: 'Conversation Detail Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesConversationDetailServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesConversationDetailServerErrorMobile.test(
 	'[mobile] shows not found when conversation detail request fails',
 	async () => {
-		await I.click(link(/Engineering/).wait())
+		await I.click(link(/Engineering/))
+		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(loc.conversationNotFoundHeading.wait())
+			await I.see(loc.conversationNotFoundHeading)
 			await I.see(text(/No conversation exists for id/))
 		})
 	},
@@ -152,6 +165,7 @@ HandlesConversationDetailServerErrorMobile.test(
 
 export const KeepsLoadingWhenConversationDetailNeverResolves = meta.story({
 	name: 'Conversation Detail Loading State',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { conversationDetail: conversationDetail.loading },
@@ -162,7 +176,7 @@ export const KeepsLoadingWhenConversationDetailNeverResolves = meta.story({
 KeepsLoadingWhenConversationDetailNeverResolves.test(
 	'shows message thread loading state while conversation detail is pending',
 	async () => {
-		await I.click(link(/Engineering/).wait())
+		await I.click(link(/Engineering/))
 
 		const detail = await I.see(role('main'))
 		await I.see(loc.messageThreadLoading.within(detail))
@@ -174,12 +188,13 @@ export const KeepsLoadingWhenConversationDetailNeverResolvesMobile = meta.story(
 	name: 'Conversation Detail Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: KeepsLoadingWhenConversationDetailNeverResolves.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 KeepsLoadingWhenConversationDetailNeverResolvesMobile.test(
 	'[mobile] shows message thread loading state while conversation detail is pending',
 	async () => {
-		await I.click(link(/Engineering/).wait())
+		await I.click(link(/Engineering/))
 
 		const detail = await I.see(role('main'))
 		await I.see(loc.messageThreadLoading.within(detail))

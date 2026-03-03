@@ -1,19 +1,18 @@
 import { backButton, button, createActor, heading, link, role } from '#shared/test'
 
 export const chatLoc = {
-	detailLoading: role('status', 'Loading conversation detail'),
 	conversationNotFoundHeading: heading('Conversation not found'),
-	messageThreadLoading: role('status', 'Loading message thread').wait(),
+	messageThreadLoading: role('status', 'Loading message thread'),
 }
 
 export const chatActor = createActor().extend((I) => ({
 	seeError: async () => {
-		await I.see(heading('Could not load conversations').wait())
+		await I.see(heading('Could not load conversations'))
 		await I.see(role('alert'))
 		await I.see(button('Try again'))
 	},
 	seeLoading: async () => {
-		await I.see(role('status', 'Loading conversations page').wait())
+		await I.see(role('status', 'Loading conversations page'))
 		await I.dontSee(role('alert'))
 	},
 	goBack: async () => {

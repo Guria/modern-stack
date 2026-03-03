@@ -13,26 +13,31 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('renders connection list with all connections', async () => {
 	await I.seeConnectionList()
 })
 
 Default.test('shows no-selection message when no connection selected', async () => {
-	await I.see(text('No connection selected').wait())
+	await I.see(text('No connection selected'))
 })
 
 Default.test('shows connection detail when connection is clicked', async () => {
-	await I.click(link(/Stripe API/i).wait())
-	await I.see(heading('Stripe API').wait())
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Stripe API'))
 })
 
 Default.test('shows all detail paragraphs in connection detail', async () => {
-	await I.click(link(/Stripe API/i).wait())
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
 
 	await I.scope(role('main'), async () => {
-		await I.see(heading(/Stripe API/i).wait())
+		await I.see(heading(/Stripe API/i))
 		await I.see(text(/Connected to Stripe API v2023-10-16/))
 		await I.see(text(/Webhook endpoint configured/))
 		await I.see(text(/Average response latency/))
@@ -49,16 +54,19 @@ Default.test('displays correct type badges for all types', async () => {
 })
 
 Default.test('can select different connections', async () => {
-	await I.click(link(/Stripe API/i).wait())
-	await I.see(heading('Stripe API').wait())
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Stripe API'))
 
-	await I.click(link(/Analytics DB/i).wait())
-	await I.see(heading('Analytics DB').wait())
+	await I.click(link(/Analytics DB/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Analytics DB'))
 })
 
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
+	play: () => I.waitExit(role('status')),
 })
 
 DefaultMobile.test('[mobile] renders connection list with all connections', async () => {
@@ -70,15 +78,17 @@ DefaultMobile.test('[mobile] shows connection list when no connection is selecte
 })
 
 DefaultMobile.test('[mobile] shows connection detail when connection is clicked', async () => {
-	await I.click(link(/Stripe API/i).wait())
-	await I.see(heading('Stripe API').wait())
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Stripe API'))
 })
 
 DefaultMobile.test('[mobile] shows all detail paragraphs in connection detail', async () => {
-	await I.click(link(/Stripe API/i).wait())
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
 
 	await I.scope(role('main'), async () => {
-		await I.see(heading(/Stripe API/i).wait())
+		await I.see(heading(/Stripe API/i))
 		await I.see(text(/Connected to Stripe API v2023-10-16/))
 		await I.see(text(/Webhook endpoint configured/))
 		await I.see(text(/Average response latency/))
@@ -95,17 +105,20 @@ DefaultMobile.test('[mobile] displays correct type badges for all types', async 
 })
 
 DefaultMobile.test('[mobile] can select different connections', async () => {
-	await I.click(link(/Stripe API/i).wait())
-	await I.see(heading('Stripe API').wait())
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Stripe API'))
 
 	await I.goBack()
 
-	await I.click(link(/Analytics DB/i).wait())
-	await I.see(heading('Analytics DB').wait())
+	await I.click(link(/Analytics DB/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Analytics DB'))
 })
 
 export const HandlesConnectionsLoadServerError = meta.story({
 	name: 'Connections Load Server Error',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { connectionList: connectionList.error },
@@ -125,6 +138,7 @@ export const HandlesConnectionsLoadServerErrorMobile = meta.story({
 	name: 'Connections Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesConnectionsLoadServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesConnectionsLoadServerErrorMobile.test(
@@ -166,6 +180,7 @@ KeepsLoadingWhenConnectionsRequestNeverResolvesMobile.test(
 
 export const HandlesConnectionDetailServerError = meta.story({
 	name: 'Connection Detail Server Error',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { connectionDetail: connectionDetail.error },
@@ -176,10 +191,11 @@ export const HandlesConnectionDetailServerError = meta.story({
 HandlesConnectionDetailServerError.test(
 	'shows not found when connection detail request fails',
 	async () => {
-		await I.click(link(/Stripe API/i).wait())
+		await I.click(link(/Stripe API/i))
+		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Connection not found').wait())
+			await I.see(heading('Connection not found'))
 			await I.see(text(/No connection exists for id/))
 		})
 	},
@@ -189,15 +205,17 @@ export const HandlesConnectionDetailServerErrorMobile = meta.story({
 	name: 'Connection Detail Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesConnectionDetailServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesConnectionDetailServerErrorMobile.test(
 	'[mobile] shows not found when connection detail request fails',
 	async () => {
-		await I.click(link(/Stripe API/i).wait())
+		await I.click(link(/Stripe API/i))
+		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Connection not found').wait())
+			await I.see(heading('Connection not found'))
 			await I.see(text(/No connection exists for id/))
 		})
 	},
@@ -205,6 +223,7 @@ HandlesConnectionDetailServerErrorMobile.test(
 
 export const KeepsLoadingWhenConnectionDetailNeverResolves = meta.story({
 	name: 'Connection Detail Loading State',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { connectionDetail: connectionDetail.loading },
@@ -215,7 +234,7 @@ export const KeepsLoadingWhenConnectionDetailNeverResolves = meta.story({
 KeepsLoadingWhenConnectionDetailNeverResolves.test(
 	'shows detail loading state while connection detail is pending',
 	async () => {
-		await I.click(link(/Stripe API/i).wait())
+		await I.click(link(/Stripe API/i))
 
 		const detail = await I.see(role('main'))
 		await I.see(loc.detailLoading.within(detail))
@@ -228,12 +247,13 @@ export const KeepsLoadingWhenConnectionDetailNeverResolvesMobile = meta.story({
 	name: 'Connection Detail Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: KeepsLoadingWhenConnectionDetailNeverResolves.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 KeepsLoadingWhenConnectionDetailNeverResolvesMobile.test(
 	'[mobile] shows detail loading state while connection detail is pending',
 	async () => {
-		await I.click(link(/Stripe API/i).wait())
+		await I.click(link(/Stripe API/i))
 
 		const detail = await I.see(role('main'))
 		await I.see(loc.detailLoading.within(detail))

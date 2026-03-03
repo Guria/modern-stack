@@ -2,7 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { itemList } from '#entities/item/mocks/handlers'
 import { itemsActor as I } from '#pages/items/testing'
-import { text } from '#shared/test'
+import { role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Items',
@@ -13,7 +13,10 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('renders items list', async () => {
 	await I.seeItemsList()
@@ -30,6 +33,7 @@ Default.test('shows Out of Stock badge', async () => {
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
+	play: () => I.waitExit(role('status')),
 })
 
 DefaultMobile.test('[mobile] renders items list', async () => {
@@ -42,6 +46,7 @@ DefaultMobile.test('[mobile] shows category badges', async () => {
 
 export const HandlesItemsLoadServerError = meta.story({
 	name: 'Items Load Server Error',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { itemList: itemList.error },
@@ -58,6 +63,7 @@ export const HandlesItemsLoadServerErrorMobile = meta.story({
 	name: 'Items Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesItemsLoadServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesItemsLoadServerErrorMobile.test(

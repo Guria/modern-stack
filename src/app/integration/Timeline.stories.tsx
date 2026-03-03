@@ -2,7 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { timelineEventList } from '#entities/timeline-event/mocks/handlers'
 import { timelineActor as I } from '#pages/timeline/testing'
-import { text } from '#shared/test'
+import { role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Timeline',
@@ -13,7 +13,10 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('renders timeline events', async () => {
 	await I.seeTimelineEvents()
@@ -26,6 +29,7 @@ Default.test('shows date groups', async () => {
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
+	play: () => I.waitExit(role('status')),
 })
 
 DefaultMobile.test('[mobile] renders timeline events', async () => {
@@ -38,6 +42,7 @@ DefaultMobile.test('[mobile] shows date groups', async () => {
 
 export const HandlesTimelineLoadServerError = meta.story({
 	name: 'Timeline Load Server Error',
+	play: () => I.waitExit(role('status')),
 	parameters: {
 		msw: {
 			handlers: { timelineEventList: timelineEventList.error },
@@ -54,6 +59,7 @@ export const HandlesTimelineLoadServerErrorMobile = meta.story({
 	name: 'Timeline Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	parameters: HandlesTimelineLoadServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesTimelineLoadServerErrorMobile.test(
