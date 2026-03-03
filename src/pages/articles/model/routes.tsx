@@ -1,7 +1,8 @@
-import { retryComputed, wrap } from '@reatom/core'
+import { abortVar, effect, retryComputed, wrap } from '@reatom/core'
 
 import { fetchArticles, fetchArticleById } from '#entities/article'
 import { m } from '#paraglide/messages.js'
+import { setBreadcrumb } from '#shared/model'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
@@ -15,7 +16,17 @@ import { ArticleNotFound } from '../ui/detail/ArticleNotFound'
 export const articlesRoute = rootRoute.reatomRoute(
 	{
 		path: 'articles',
-		loader: fetchArticles,
+		loader: () => {
+			effect(() => {
+				const dispose = setBreadcrumb(1, {
+					label: () => m.nav_articles(),
+					href: articlesRoute.path(),
+					backLabel: () => m.article_back_to_articles(),
+				})
+				abortVar.subscribe(dispose)
+			})
+			return fetchArticles()
+		},
 		render: (self) => {
 			const selectedArticleId = articleDetailRoute()?.articleId
 			const { isFirstPending, isPending, data: articles } = self.loader.status()
@@ -49,7 +60,16 @@ export const articlesRoute = rootRoute.reatomRoute(
 export const articleDetailRoute = articlesRoute.reatomRoute(
 	{
 		path: ':articleId',
-		loader: ({ articleId }) => fetchArticleById(articleId),
+		loader: ({ articleId }) => {
+			effect(() => {
+				const dispose = setBreadcrumb(2, {
+					label: () => articleDetailRoute.loader.data()?.title ?? m.article_not_found(),
+					isLoading: () => articleDetailRoute.loader.pending() > 0,
+				})
+				abortVar.subscribe(dispose)
+			})
+			return fetchArticleById(articleId)
+		},
 		render: (self) => {
 			const { isPending, data: article } = self.loader.status()
 			if (isPending) return <ArticleDetailLoadingState />

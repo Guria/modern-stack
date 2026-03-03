@@ -1,7 +1,8 @@
-import { retryComputed, wrap } from '@reatom/core'
+import { abortVar, effect, retryComputed, wrap } from '@reatom/core'
 
 import { fetchDashboardData } from '#entities/dashboard'
 import { m } from '#paraglide/messages.js'
+import { setBreadcrumb } from '#shared/model'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
@@ -11,7 +12,13 @@ import { DashboardPageLoading } from '../ui/DashboardPageLoading'
 export const dashboardRoute = rootRoute.reatomRoute(
 	{
 		path: 'dashboard',
-		loader: fetchDashboardData,
+		loader: () => {
+			effect(() => {
+				const dispose = setBreadcrumb(1, { label: () => m.nav_dashboard() })
+				abortVar.subscribe(dispose)
+			})
+			return fetchDashboardData()
+		},
 		render: (self) => {
 			const { isFirstPending, isPending, data } = self.loader.status()
 			if (isFirstPending || (isPending && !data)) {

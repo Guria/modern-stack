@@ -1,7 +1,8 @@
-import { retryComputed, wrap } from '@reatom/core'
+import { abortVar, effect, retryComputed, wrap } from '@reatom/core'
 
 import { fetchItems, fetchItemById } from '#entities/item'
 import { m } from '#paraglide/messages.js'
+import { setBreadcrumb } from '#shared/model'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
@@ -14,7 +15,16 @@ import { ItemsPageLoading } from '../ui/ItemsPageLoading'
 export const itemsRoute = rootRoute.reatomRoute(
 	{
 		path: 'items',
-		loader: fetchItems,
+		loader: () => {
+			effect(() => {
+				const dispose = setBreadcrumb(1, {
+					label: () => m.nav_items(),
+					href: itemsRoute.path(),
+				})
+				abortVar.subscribe(dispose)
+			})
+			return fetchItems()
+		},
 		render: (self) => {
 			const { isFirstPending, isPending, data: items } = self.loader.status()
 			if (isFirstPending || (isPending && !items)) {
@@ -43,7 +53,17 @@ export const itemsRoute = rootRoute.reatomRoute(
 export const itemDetailRoute = itemsRoute.reatomRoute(
 	{
 		path: ':itemId',
-		loader: ({ itemId }) => fetchItemById(itemId),
+		loader: ({ itemId }) => {
+			effect(() => {
+				const dispose = setBreadcrumb(2, {
+					label: () =>
+						itemDetailRoute.loader.data()?.name ?? itemDetailRoute()?.itemId ?? m.nav_items(),
+					isLoading: () => itemDetailRoute.loader.pending() > 0,
+				})
+				abortVar.subscribe(dispose)
+			})
+			return fetchItemById(itemId)
+		},
 		render: (self) => {
 			const { isPending, data: item } = self.loader.status()
 			if (isPending) return <ItemDetailLoadingState />

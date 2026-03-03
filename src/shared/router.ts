@@ -1,25 +1,10 @@
-import type { RouteChild } from '@reatom/core'
-import { reatomRoute } from '@reatom/core'
+import { assert, reatomRoute } from '@reatom/core'
 import { createElement, Fragment } from 'react'
 
-type OutletHost<TChild> = {
-	outlet: () => Iterable<TChild | false | null | undefined>
-}
-
-export function getFirstOutletChild(
-	host: OutletHost<RouteChild>,
-	fallback: RouteChild = createElement(Fragment),
-): RouteChild {
-	for (const child of host.outlet()) {
-		if (child) return child
-	}
-	return fallback
-}
-
-// @ts-expect-error - Vite replaces this with the actual value at build time
-const base = import.meta.env.BASE_URL?.replace(/^\//, '') ?? ''
+assert(import.meta.env['BASE_URL'], 'BASE_URL must be set in the environment variables')
+const base = import.meta.env['BASE_URL'].replace(/^\//, '')
 
 export const rootRoute = reatomRoute(
-	{ path: base, render: (self) => getFirstOutletChild(self, createElement(Fragment)) },
+	{ path: base, render: (self) => self.outlet().at(0) ?? createElement(Fragment) },
 	'rootRoute',
 )
