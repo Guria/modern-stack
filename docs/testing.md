@@ -1,5 +1,7 @@
 # Testing
 
+This doc follows the source-first approach in `docs/README.md`.
+
 ## Overview
 
 All tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` files.
