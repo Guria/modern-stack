@@ -72,6 +72,8 @@ export const AppShell = reatomComponent(
 					display="flex"
 					flexDirection="column"
 					gap="1"
+					p={2}
+					m={-2}
 				>
 					{sidebarContent}
 				</styled.div>
