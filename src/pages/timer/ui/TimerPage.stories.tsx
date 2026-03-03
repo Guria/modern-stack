@@ -1,9 +1,9 @@
 import preview from '#.storybook/preview'
-import { button, createActor, loc, text } from '#shared/test'
+import { button, createActor, heading, text } from '#shared/test'
 
 import { TimerPage } from './TimerPage'
 
-const heading = loc((canvas) => canvas.findByRole('heading', { name: 'Timer' }))
+const timerHeading = heading('Timer')
 const startBtn = button('Start')
 const pauseBtn = button('Pause')
 const resetBtn = button('Reset')
@@ -23,7 +23,7 @@ export default meta
 export const Default = meta.story({ name: 'Default' })
 
 Default.test('renders timer and starts/pauses/resets', async () => {
-	await I.see(heading)
+	await I.see(timerHeading)
 	await I.see(text('05:00'))
 
 	await I.click(startBtn)
