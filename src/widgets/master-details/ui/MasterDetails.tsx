@@ -32,6 +32,7 @@ export function MasterDetails({
 						borderColor: 'border',
 						overflowY: 'auto',
 					}}
+					p={0.5}
 				>
 					{master}
 				</styled.section>
