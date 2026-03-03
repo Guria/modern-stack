@@ -4,7 +4,6 @@ export {
 	button,
 	heading,
 	link,
-	loc,
 	role,
 	text,
 	type ArrayLocator,

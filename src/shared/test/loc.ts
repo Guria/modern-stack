@@ -10,21 +10,6 @@ export type AnyLocator = Locator | DefiniteLocator | ArrayLocator
 
 type WithinScope = HTMLElement | 'global'
 
-type Refined<L extends AnyLocator> = L & {
-	within: (element: WithinScope) => Refined<L>
-	__within?: WithinScope
-}
-
-export function loc(fn: DefiniteLocator, scope?: WithinScope): Refined<DefiniteLocator>
-export function loc(fn: ArrayLocator, scope?: WithinScope): Refined<ArrayLocator>
-export function loc(fn: Locator, scope?: WithinScope): Refined<Locator>
-export function loc(fn: AnyLocator, scope?: WithinScope): Refined<AnyLocator> {
-	return Object.assign(((canvas: Canvas) => fn(canvas)) as AnyLocator, {
-		within: (element: WithinScope) => loc(fn as Locator, element),
-		__within: scope,
-	}) as Refined<AnyLocator>
-}
-
 type NameOption = string | RegExp
 
 export type ByRoleOptions = NonNullable<Parameters<Canvas['getByRole']>[1]>
@@ -134,5 +119,7 @@ export const text = (value: NameOption) => createFluentLocator('text', value) as
 export const heading = (name: NameOption): FluentLocator => role('heading', name)
 export const button = (name: NameOption): FluentLocator => role('button', name)
 export const link = (name: NameOption): FluentLocator => role('link', name)
-export const backButton = (entityPlural: string): DefiniteLocator =>
-	(canvas) => canvas.findByLabelText(`Back to ${entityPlural}`)
+export const backButton =
+	(entityPlural: string): DefiniteLocator =>
+	(canvas) =>
+		canvas.findByLabelText(`Back to ${entityPlural}`)
