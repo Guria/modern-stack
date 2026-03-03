@@ -1,10 +1,10 @@
 import preview from '#.storybook/preview'
-import { button, createActor, loc } from '#shared/test'
+import { button, createActor, text } from '#shared/test'
 
 import { CalculatorPage } from './CalculatorPage'
 
 const btn = (name: string | RegExp) => button(name)
-const display = (value: string) => loc((canvas) => canvas.findByText(value, { selector: 'span' }))
+const display = (value: string) => text(value).options({ selector: 'span' })
 
 const I = createActor().extend((I) => ({
 	press: async (label: string | RegExp) => {
