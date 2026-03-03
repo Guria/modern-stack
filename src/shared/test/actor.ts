@@ -10,10 +10,18 @@ type Refined<L> = L & { __within?: HTMLElement | 'global' }
 
 // Inspired by codecept.js
 function createBase(ctx: () => StoryContext) {
+	const scopeStack: HTMLElement[] = []
+
 	function canvasFor(locator: AnyLocator): Canvas {
-		const scope = (locator as Refined<AnyLocator>).__within
-		if (scope === 'global') return withinElement(ctx().canvasElement.ownerDocument.body)
-		if (scope) return withinElement(scope)
+		const explicitScope = (locator as Refined<AnyLocator>).__within
+		if (explicitScope === 'global') return withinElement(ctx().canvasElement.ownerDocument.body)
+		if (explicitScope) return withinElement(explicitScope)
+
+		// Check if we're inside a scope() call
+		if (scopeStack.length > 0) {
+			return withinElement(scopeStack[scopeStack.length - 1]!)
+		}
+
 		return ctx().canvas
 	}
 
@@ -73,6 +81,16 @@ function createBase(ctx: () => StoryContext) {
 				await userEvent.clear(el)
 				expect(el.value).toBe('')
 			})
+		},
+		scope: async (locator: DefiniteLocator, callback: () => Promise<void>) => {
+			const element = await resolveLocator(locator)
+			assert(element instanceof HTMLElement, 'Expected scope locator to resolve to an HTMLElement')
+			scopeStack.push(element)
+			try {
+				await callback()
+			} finally {
+				scopeStack.pop()
+			}
 		},
 	}
 }
