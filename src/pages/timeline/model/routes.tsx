@@ -1,7 +1,8 @@
-import { retryComputed, wrap } from '@reatom/core'
+import { abortVar, effect, retryComputed, wrap } from '@reatom/core'
 
 import { fetchTimelineEvents } from '#entities/timeline-event'
 import { m } from '#paraglide/messages.js'
+import { setBreadcrumb } from '#shared/model'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
@@ -11,7 +12,13 @@ import { TimelinePageLoading } from '../ui/TimelinePageLoading'
 export const timelineRoute = rootRoute.reatomRoute(
 	{
 		path: 'timeline',
-		loader: fetchTimelineEvents,
+		loader: () => {
+			effect(() => {
+				const dispose = setBreadcrumb(1, { label: () => m.nav_timeline() })
+				abortVar.subscribe(dispose)
+			})
+			return fetchTimelineEvents()
+		},
 		render: (self) => {
 			const { isFirstPending, isPending, data: events } = self.loader.status()
 			if (isFirstPending || (isPending && !events)) {

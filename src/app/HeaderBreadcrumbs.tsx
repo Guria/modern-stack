@@ -1,36 +1,42 @@
 import { reatomComponent } from '@reatom/react'
+import { Fragment } from 'react'
 
-import { ArticleDetailBreadcrumbs } from '#pages/articles'
-import { ChatConversationBreadcrumbs } from '#pages/chat'
-import { ConnectionDetailBreadcrumbs } from '#pages/connections'
-import { ItemDetailBreadcrumbs } from '#pages/items'
-import { Breadcrumb } from '#shared/components'
+import { Breadcrumb, Skeleton } from '#shared/components'
+import { breadcrumbsAtom, breadcrumbsOverrideAtom } from '#shared/model'
 
-import { getCurrentTopLevelNavLabel } from './getCurrentTopLevelNavLabel'
-import {
-	articleDetailRoute,
-	chatConversationRoute,
-	connectionDetailRoute,
-	itemDetailRoute,
-} from './routes'
+export const HeaderBreadcrumbs = reatomComponent(() => {
+	const Override = breadcrumbsOverrideAtom()
+	if (Override) return <Override />
 
-function SimpleBreadcrumb({ label }: { label: string }) {
+	const descriptors = breadcrumbsAtom()
+	if (descriptors.size === 0) return null
+
+	const entries = [...descriptors.entries()].sort(([a], [b]) => a - b)
+
 	return (
 		<Breadcrumb.Root size="sm">
 			<Breadcrumb.List>
-				<Breadcrumb.Item aria-current="page" fontWeight="semibold" color="fg.default">
-					{label}
-				</Breadcrumb.Item>
+				{entries.map(([level, descriptor], index) => {
+					const isLast = index === entries.length - 1
+					const isLoading = descriptor.isLoading?.()
+					return (
+						<Fragment key={level}>
+							{index > 0 && <Breadcrumb.Separator />}
+							{isLast ? (
+								<Breadcrumb.Item aria-current="page" fontWeight="semibold" color="fg.default">
+									{isLoading ? <Skeleton h="4" w="20" borderRadius="sm" /> : descriptor.label()}
+								</Breadcrumb.Item>
+							) : (
+								<Breadcrumb.Item>
+									<Breadcrumb.Link href={descriptor.href} color="fg.muted">
+										{descriptor.label()}
+									</Breadcrumb.Link>
+								</Breadcrumb.Item>
+							)}
+						</Fragment>
+					)
+				})}
 			</Breadcrumb.List>
 		</Breadcrumb.Root>
 	)
-}
-
-export const HeaderBreadcrumbs = reatomComponent(() => {
-	if (articleDetailRoute.match()) return <ArticleDetailBreadcrumbs />
-	if (connectionDetailRoute.match()) return <ConnectionDetailBreadcrumbs />
-	if (chatConversationRoute.match()) return <ChatConversationBreadcrumbs />
-	if (itemDetailRoute.match()) return <ItemDetailBreadcrumbs />
-	const label = getCurrentTopLevelNavLabel()
-	return label ? <SimpleBreadcrumb label={label} /> : null
 }, 'HeaderBreadcrumbs')
