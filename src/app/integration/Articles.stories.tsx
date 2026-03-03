@@ -29,13 +29,14 @@ Default.test('shows article detail when article is clicked', async () => {
 Default.test('shows all content paragraphs in article detail', async () => {
 	await I.click(link(/Quarterly report/i).wait())
 
-	const detail = await I.see(role('main'))
-	await I.see(heading('Quarterly report').wait().within(detail))
-	await I.see(text(/Regional performance remained strongest/).within(detail))
-	await I.see(text(/EMEA showed stable retention/).within(detail))
-	await I.see(text(/APAC growth accelerated/).within(detail))
-	await I.see(text(/Gross margin improved/).within(detail))
-	await I.see(text(/next planning cycle should prioritize/).within(detail))
+	await I.scope(role('main'), async () => {
+		await I.see(heading('Quarterly report').wait())
+		await I.see(text(/Regional performance remained strongest/))
+		await I.see(text(/EMEA showed stable retention/))
+		await I.see(text(/APAC growth accelerated/))
+		await I.see(text(/Gross margin improved/))
+		await I.see(text(/next planning cycle should prioritize/))
+	})
 })
 
 Default.test('can select different articles', async () => {
@@ -66,13 +67,14 @@ DefaultMobile.test('[mobile] shows article detail when article is clicked', asyn
 DefaultMobile.test('[mobile] shows all content paragraphs in article detail', async () => {
 	await I.click(link(/Quarterly report/i))
 
-	const detail = await I.see(role('main').wait())
-	await I.see(heading('Quarterly report').wait().within(detail))
-	await I.see(text(/Regional performance remained strongest/).within(detail))
-	await I.see(text(/EMEA showed stable retention/).within(detail))
-	await I.see(text(/APAC growth accelerated/).within(detail))
-	await I.see(text(/Gross margin improved/).within(detail))
-	await I.see(text(/next planning cycle should prioritize/).within(detail))
+	await I.scope(role('main').wait(), async () => {
+		await I.see(heading('Quarterly report').wait())
+		await I.see(text(/Regional performance remained strongest/))
+		await I.see(text(/EMEA showed stable retention/))
+		await I.see(text(/APAC growth accelerated/))
+		await I.see(text(/Gross margin improved/))
+		await I.see(text(/next planning cycle should prioritize/))
+	})
 })
 
 DefaultMobile.test('[mobile] displays correct status badges for different statuses', async () => {
@@ -160,9 +162,10 @@ HandlesArticleDetailServerError.test(
 	async () => {
 		await I.click(link(/Quarterly report/i).wait())
 
-		const detail = await I.see(role('main'))
-		await I.see(heading('Article not found').wait().within(detail))
-		await I.see(text(/No article exists for id/).within(detail))
+		await I.scope(role('main'), async () => {
+			await I.see(heading('Article not found').wait())
+			await I.see(text(/No article exists for id/))
+		})
 	},
 )
 
@@ -177,9 +180,10 @@ HandlesArticleDetailServerErrorMobile.test(
 	async () => {
 		await I.click(link(/Quarterly report/i).wait())
 
-		const detail = await I.see(role('main'))
-		await I.see(heading('Article not found').wait().within(detail))
-		await I.see(text(/No article exists for id/).within(detail))
+		await I.scope(role('main'), async () => {
+			await I.see(heading('Article not found').wait())
+			await I.see(text(/No article exists for id/))
+		})
 	},
 )
 
