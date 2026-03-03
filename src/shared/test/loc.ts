@@ -8,7 +8,7 @@ export type DefiniteLocator = (canvas: Canvas) => HTMLElement | Promise<HTMLElem
 export type ArrayLocator = (canvas: Canvas) => Array<HTMLElement> | Promise<Array<HTMLElement>>
 export type AnyLocator = Locator | DefiniteLocator | ArrayLocator
 
-type WithinScope = HTMLElement | 'global'
+export type WithinScope = HTMLElement | DefiniteLocator | 'global'
 
 type NameOption = string | RegExp
 

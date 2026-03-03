@@ -14,14 +14,14 @@ export const articlesActor = createActor().extend((I) => ({
 		await I.click(backButton('articles'))
 	},
 	seeArticleList: async () => {
-		await I.see(link(/Quarterly report/i).wait())
+		await I.see(link(/Quarterly report/i))
 		await I.see(link(/Hiring plan/i))
 		await I.see(link(/Roadmap draft/i))
 		await I.see(link(/Security audit/i))
 		await I.see(link(/Design system update/i))
 	},
 	seeStatusBadges: async () => {
-		await I.see(text('Done').all().wait())
+		await I.see(text('Done').all())
 		await I.see(text('In Progress').all())
 		await I.see(text('Draft').all())
 	},

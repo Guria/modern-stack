@@ -2,22 +2,21 @@ import { assert } from '@reatom/core'
 import type { StoryContext } from '@storybook/react-vite'
 import { expect, waitFor, within as withinElement } from 'storybook/test'
 
-import type { AnyLocator, Canvas, DefiniteLocator, FluentLocator } from './loc'
+import type { AnyLocator, Canvas, DefiniteLocator, FluentLocator, WithinScope } from './loc'
 
 export { assert, waitFor }
 
-type Refined<L> = L & { __within?: HTMLElement | 'global' }
+type RefinedLocator = AnyLocator & { __within?: WithinScope }
 
 // Inspired by codecept.js
 function createBase(ctx: () => StoryContext) {
 	const scopeStack: HTMLElement[] = []
 
-	function canvasFor(locator: AnyLocator): Canvas {
-		const explicitScope = (locator as Refined<AnyLocator>).__within
-		if (explicitScope === 'global') return withinElement(ctx().canvasElement.ownerDocument.body)
-		if (explicitScope) return withinElement(explicitScope)
+	function rootCanvas(): Canvas {
+		return withinElement(ctx().canvasElement.ownerDocument.body)
+	}
 
-		// Check if we're inside a scope() call
+	function activeCanvas(): Canvas {
 		if (scopeStack.length > 0) {
 			return withinElement(scopeStack[scopeStack.length - 1]!)
 		}
@@ -25,8 +24,43 @@ function createBase(ctx: () => StoryContext) {
 		return ctx().canvas
 	}
 
-	async function resolveLocator(locator: AnyLocator) {
-		return await locator(canvasFor(locator))
+	async function resolveScopeLocator(
+		scopeLocator: DefiniteLocator,
+		resolvingScopes: Set<DefiniteLocator>,
+	): Promise<HTMLElement> {
+		if (resolvingScopes.has(scopeLocator)) {
+			throw new Error('Circular locator scope detected in .within(...)')
+		}
+
+		resolvingScopes.add(scopeLocator)
+		try {
+			const result = await resolveLocator(scopeLocator, resolvingScopes)
+			assert(
+				result instanceof HTMLElement,
+				'Expected .within(locator) to resolve to an HTMLElement',
+			)
+			return result
+		} finally {
+			resolvingScopes.delete(scopeLocator)
+		}
+	}
+
+	async function canvasFor(
+		locator: AnyLocator,
+		resolvingScopes: Set<DefiniteLocator>,
+	): Promise<Canvas> {
+		const explicitScope = (locator as RefinedLocator).__within
+		if (!explicitScope) return activeCanvas()
+		if (explicitScope === 'global') return rootCanvas()
+		if (explicitScope instanceof HTMLElement) return withinElement(explicitScope)
+		return withinElement(await resolveScopeLocator(explicitScope, resolvingScopes))
+	}
+
+	async function resolveLocator(
+		locator: AnyLocator,
+		resolvingScopes: Set<DefiniteLocator> = new Set(),
+	) {
+		return await locator(await canvasFor(locator, resolvingScopes))
 	}
 
 	const click = async (locator: DefiniteLocator) => {
@@ -46,6 +80,9 @@ function createBase(ctx: () => StoryContext) {
 		},
 		dontSee: async (locator: FluentLocator) => {
 			expect(await resolveLocator(locator.maybe())).toBeNull()
+		},
+		waitExit: async (locator: FluentLocator) => {
+			await waitFor(async () => void expect(await resolveLocator(locator.maybe())).toBeNull())
 		},
 		seeInField: async (locator: DefiniteLocator, value: string | number) => {
 			const el = await resolveLocator(locator)

@@ -13,22 +13,25 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('renders article list with no selection message', async () => {
-	await I.see(text('No article selected').wait())
+	await I.see(text('No article selected').within(role('main')))
 	await I.seeArticleList()
 	await I.seeStatusBadges()
 })
 
 Default.test('shows article detail when article is clicked', async () => {
-	await I.click(link(/Quarterly report/i).wait())
-	await I.see(heading('Quarterly report').wait())
+	await I.click(link(/Quarterly report/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Quarterly report'))
 })
 
 Default.test('shows all content paragraphs in article detail', async () => {
-	await I.click(link(/Quarterly report/i).wait())
-
+	await I.click(link(/Quarterly report/i))
 	await I.scope(role('main'), async () => {
 		await I.see(heading('Quarterly report').wait())
 		await I.see(text(/Regional performance remained strongest/))
