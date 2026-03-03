@@ -1,3 +1,5 @@
+import { expect } from 'storybook/test'
+
 import preview from '#.storybook/preview'
 
 import { createActor, heading, role, text } from '.'
@@ -60,4 +62,43 @@ ScopeNested.test('nested scopes resolve relative to outer scope', async () => {
 		// Back to outer scope: can see section content again
 		await I.see(text('Section content'))
 	})
+})
+
+export const ScopeErrors = meta.story({ name: 'scope() error handling' })
+
+ScopeErrors.test('restores scope when callback throws', async () => {
+	await I.see(heading('Page Title').wait())
+
+	let errorThrown = false
+	try {
+		await I.scope(role('main'), async () => {
+			// Verify we're in scope first
+			await I.see(heading('Section Heading'))
+			// This will throw
+			await I.see(text('Does not exist'))
+		})
+	} catch {
+		errorThrown = true
+		// Scope should be restored - can search from root again
+		await I.see(heading('Page Title'))
+	}
+
+	expect(errorThrown).toBe(true)
+})
+
+ScopeErrors.test('throws immediately if scope locator fails', async () => {
+	let callbackExecuted = false
+	let errorThrown = false
+
+	try {
+		await I.scope(role('nonexistent'), async () => {
+			callbackExecuted = true
+		})
+	} catch {
+		errorThrown = true
+		// Callback should never execute
+		expect(callbackExecuted).toBe(false)
+	}
+
+	expect(errorThrown).toBe(true)
 })
