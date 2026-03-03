@@ -17,28 +17,37 @@ export function MasterDetails({
 }: MasterDetailsProps) {
 	return (
 		<styled.div>
-			<styled.div display={{ base: 'none', md: 'flex' }}>
+			<styled.div display={{ base: 'block', md: 'flex' }}>
 				<styled.section
-					style={{ width: masterWidth }}
-					flexShrink={0}
-					alignSelf="flex-start"
-					position="sticky"
-					top="var(--app-header-h, 0px)"
-					h="calc(100dvh - var(--app-header-h, 0px))"
-					borderRightWidth="1px"
-					borderColor="border"
-					overflowY="auto"
+					display={isDetailVisible ? 'none' : 'unset'}
+					md={{
+						display: 'unset',
+						width: masterWidth,
+						flexShrink: 0,
+						alignSelf: 'flex-start',
+						position: 'sticky',
+						top: 'var(--app-header-h, 0px)',
+						h: 'calc(100dvh - var(--app-header-h, 0px))',
+						borderRightWidth: '1px',
+						borderColor: 'border',
+						overflowY: 'auto',
+					}}
 				>
 					{master}
 				</styled.section>
-				<styled.main flex="1" minW="0" maxW="4xl" mx="auto">
+				<styled.main
+					display={isDetailVisible ? 'unset' : 'none'}
+					md={{
+						display: 'unset',
+						flex: '1',
+						minW: '0',
+						maxW: '4xl',
+						mx: 'auto',
+					}}
+				>
 					{detail}
 				</styled.main>
 			</styled.div>
-
-			<styled.main display={{ base: 'block', md: 'none' }}>
-				{isDetailVisible ? detail : master}
-			</styled.main>
 		</styled.div>
 	)
 }

@@ -21,6 +21,10 @@ export default defineMain({
 	staticDirs: ['../public'],
 	viteFinal: (config) => {
 		config.base = base
+		config.server = {
+			...config.server,
+			hmr: false,
+		}
 		return config
 	},
 })
