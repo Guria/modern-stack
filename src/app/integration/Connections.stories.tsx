@@ -31,16 +31,13 @@ Default.test('shows connection detail when connection is clicked', async () => {
 Default.test('shows all detail paragraphs in connection detail', async () => {
 	await I.click(link(/Stripe API/i).wait())
 
-	const detail = await I.see(role('main'))
-	await I.see(
-		heading(/Stripe API/i)
-			.wait()
-			.within(detail),
-	)
-	await I.see(text(/Connected to Stripe API v2023-10-16/).within(detail))
-	await I.see(text(/Webhook endpoint configured/).within(detail))
-	await I.see(text(/Average response latency/).within(detail))
-	await I.see(text(/Rate limit headroom/).within(detail))
+	await I.scope(role('main'), async () => {
+		await I.see(heading(/Stripe API/i).wait())
+		await I.see(text(/Connected to Stripe API v2023-10-16/))
+		await I.see(text(/Webhook endpoint configured/))
+		await I.see(text(/Average response latency/))
+		await I.see(text(/Rate limit headroom/))
+	})
 })
 
 Default.test('displays correct status badges for all statuses', async () => {
@@ -80,16 +77,13 @@ DefaultMobile.test('[mobile] shows connection detail when connection is clicked'
 DefaultMobile.test('[mobile] shows all detail paragraphs in connection detail', async () => {
 	await I.click(link(/Stripe API/i).wait())
 
-	const detail = await I.see(role('main'))
-	await I.see(
-		heading(/Stripe API/i)
-			.wait()
-			.within(detail),
-	)
-	await I.see(text(/Connected to Stripe API v2023-10-16/).within(detail))
-	await I.see(text(/Webhook endpoint configured/).within(detail))
-	await I.see(text(/Average response latency/).within(detail))
-	await I.see(text(/Rate limit headroom/).within(detail))
+	await I.scope(role('main'), async () => {
+		await I.see(heading(/Stripe API/i).wait())
+		await I.see(text(/Connected to Stripe API v2023-10-16/))
+		await I.see(text(/Webhook endpoint configured/))
+		await I.see(text(/Average response latency/))
+		await I.see(text(/Rate limit headroom/))
+	})
 })
 
 DefaultMobile.test('[mobile] displays correct status badges for all statuses', async () => {
@@ -184,9 +178,10 @@ HandlesConnectionDetailServerError.test(
 	async () => {
 		await I.click(link(/Stripe API/i).wait())
 
-		const detail = await I.see(role('main'))
-		await I.see(heading('Connection not found').wait().within(detail))
-		await I.see(text(/No connection exists for id/).within(detail))
+		await I.scope(role('main'), async () => {
+			await I.see(heading('Connection not found').wait())
+			await I.see(text(/No connection exists for id/))
+		})
 	},
 )
 
@@ -201,9 +196,10 @@ HandlesConnectionDetailServerErrorMobile.test(
 	async () => {
 		await I.click(link(/Stripe API/i).wait())
 
-		const detail = await I.see(role('main'))
-		await I.see(heading('Connection not found').wait().within(detail))
-		await I.see(text(/No connection exists for id/).within(detail))
+		await I.scope(role('main'), async () => {
+			await I.see(heading('Connection not found').wait())
+			await I.see(text(/No connection exists for id/))
+		})
 	},
 )
 
