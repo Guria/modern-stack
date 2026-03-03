@@ -1,4 +1,4 @@
-import { backButton, button, createActor, heading, link, role, text } from '#shared/test'
+import { button, createActor, heading, link, role, text } from '#shared/test'
 
 export const connectionsLoc = {
 	detailLoading: role('status', 'Loading connection detail'),
@@ -15,7 +15,7 @@ export const connectionsActor = createActor().extend((I) => ({
 		await I.dontSee(role('alert'))
 	},
 	goBack: async () => {
-		await I.click(backButton('connections'))
+		await I.click((canvas) => canvas.findByLabelText('Back to connections'))
 	},
 	seeConnectionList: async () => {
 		await I.see(link(/Stripe API/i))

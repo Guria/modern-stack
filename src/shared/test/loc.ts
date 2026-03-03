@@ -23,6 +23,7 @@ type OptsMap = {
 export interface BaseFluentLocator {
 	within(element: WithinScope): this
 	__within?: WithinScope
+	// TODO: can we make it type safe?
 	options(opts: any): this
 }
 
@@ -116,10 +117,6 @@ export const role = (role: AriaRole | (string & {}), name?: NameOption) =>
 
 export const text = (value: NameOption) => createFluentLocator('text', value) as FluentLocator
 
-export const heading = (name: NameOption): FluentLocator => role('heading', name)
-export const button = (name: NameOption): FluentLocator => role('button', name)
-export const link = (name: NameOption): FluentLocator => role('link', name)
-export const backButton =
-	(entityPlural: string): DefiniteLocator =>
-	(canvas) =>
-		canvas.findByLabelText(`Back to ${entityPlural}`)
+export const heading = (name?: NameOption) => role('heading', name)
+export const button = (name?: NameOption) => role('button', name)
+export const link = (name?: NameOption) => role('link', name)

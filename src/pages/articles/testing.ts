@@ -1,4 +1,4 @@
-import { backButton, button, createActor, heading, link, role, text } from '#shared/test'
+import { button, createActor, heading, link, role, text } from '#shared/test'
 
 export const articlesActor = createActor().extend((I) => ({
 	seeError: async () => {
@@ -11,7 +11,7 @@ export const articlesActor = createActor().extend((I) => ({
 		await I.dontSee(role('alert'))
 	},
 	goBack: async () => {
-		await I.click(backButton('articles'))
+		await I.click((canvas) => canvas.findByLabelText('Back to articles'))
 	},
 	seeArticleList: async () => {
 		await I.see(link(/Quarterly report/i))

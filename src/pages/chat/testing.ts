@@ -1,4 +1,4 @@
-import { backButton, button, createActor, heading, link, role } from '#shared/test'
+import { button, createActor, heading, link, role } from '#shared/test'
 
 export const chatLoc = {
 	conversationNotFoundHeading: heading('Conversation not found'),
@@ -16,7 +16,7 @@ export const chatActor = createActor().extend((I) => ({
 		await I.dontSee(role('alert'))
 	},
 	goBack: async () => {
-		await I.click(backButton('conversations'))
+		await I.click((canvas) => canvas.findByLabelText('Back to conversations'))
 	},
 	seeConversationList: async () => {
 		await I.see(link(/Engineering/i))

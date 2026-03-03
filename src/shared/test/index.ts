@@ -1,6 +1,5 @@
 export { assert, createActor, waitFor, type BaseActor } from './actor'
 export {
-	backButton,
 	button,
 	heading,
 	link,

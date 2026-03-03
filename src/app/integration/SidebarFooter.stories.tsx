@@ -1,6 +1,6 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { createActor, role, text } from '#shared/test'
+import { createActor, heading, role, text, link } from '#shared/test'
 
 const storageProgressNote = text(/GB \/ \d+ GB/)
 const upgradeToProBanner = text('Unlimited storage & more')
@@ -39,12 +39,13 @@ ActiveUsageRoute.test(
 	'shows storage card in sidebar and usage page content simultaneously',
 	async () => {
 		await I.see(storageProgressNote)
-		await I.see((canvas) => canvas.findByRole('heading', { name: 'Usage' }))
+		await I.see(heading('Usage'))
 	},
 )
 
 ActiveUsageRoute.test('marks usage card as current page in sidebar', async () => {
-	await I.see((canvas) => canvas.findByRole('link', { current: 'page' }))
+	// TODO: more specific
+	await I.see(link().options({ current: 'page' }))
 })
 
 export const ActivePricingRoute = meta.story({
@@ -57,10 +58,11 @@ ActivePricingRoute.test(
 	'shows upgrade banner in sidebar and pricing page content simultaneously',
 	async () => {
 		await I.see(upgradeToProBanner)
-		await I.see((canvas) => canvas.findByRole('heading', { name: 'Pricing' }))
+		await I.see(heading('Pricing'))
 	},
 )
 
 ActivePricingRoute.test('marks pricing banner as current page in sidebar', async () => {
-	await I.see((canvas) => canvas.findByRole('link', { current: 'page' }))
+	// TODO: more specific
+	await I.see(link().options({ current: 'page' }))
 })
