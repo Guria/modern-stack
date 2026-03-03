@@ -1,9 +1,5 @@
 import { backButton, button, createActor, heading, link, role, text } from '#shared/test'
 
-export const articlesLoc = {
-	detailLoading: role('status', 'Loading article detail'),
-}
-
 export const articlesActor = createActor().extend((I) => ({
 	seeError: async () => {
 		await I.see(heading('Could not load articles').wait())

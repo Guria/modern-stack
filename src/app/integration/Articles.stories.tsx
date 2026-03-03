@@ -1,7 +1,7 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { articleDetail, articleList } from '#entities/article/mocks/handlers'
-import { articlesActor as I, articlesLoc } from '#pages/articles/testing'
+import { articlesActor as I } from '#pages/articles/testing'
 import { heading, link, role, text } from '#shared/test'
 
 const meta = preview.meta({
@@ -202,7 +202,7 @@ KeepsLoadingWhenArticleDetailNeverResolves.test(
 		await I.click(link(/Quarterly report/i).wait())
 
 		const detail = await I.see(role('main'))
-		await I.see(articlesLoc.detailLoading.within(detail))
+		await I.see(role('status', 'Loading article detail').within(detail))
 		await I.dontSee(heading('Quarterly report').within(detail))
 		await I.dontSee(text('Article not found').within(detail))
 	},
@@ -220,7 +220,7 @@ KeepsLoadingWhenArticleDetailNeverResolvesMobile.test(
 		await I.click(link(/Quarterly report/i).wait())
 
 		const detail = await I.see(role('main'))
-		await I.see(articlesLoc.detailLoading.within(detail))
+		await I.see(role('status', 'Loading article detail').within(detail))
 		await I.dontSee(heading('Quarterly report').within(detail))
 		await I.dontSee(text('Article not found').within(detail))
 	},
