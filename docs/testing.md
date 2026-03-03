@@ -109,17 +109,18 @@ Tests use an actor-based API inspired by [CodeceptJS](https://codecept.io/). The
 
 The base actor (`createActor()`) provides:
 
-| Method                           | Purpose                                      |
-| -------------------------------- | -------------------------------------------- |
-| `I.see(locator)`                 | Assert element is in the document            |
+| Method                           | Purpose                                                |
+| -------------------------------- | ------------------------------------------------------ |
+| `I.see(locator)`                 | Assert element is in the document                      |
 | `I.dontSee(locator)`             | Assert element is absent (calls `.maybe()` internally) |
-| `I.seeInField(locator, value)`   | Assert input has value                       |
-| `I.click(locator)`               | Click an element                             |
-| `I.fill(locator, value)`         | Type into an input (replaces existing value) |
-| `I.selectOption(locator, value)` | Open a select and choose an option           |
-| `I.clear(locator)`               | Clear an input field                         |
+| `I.seeInField(locator, value)`   | Assert input has value                                 |
+| `I.click(locator)`               | Click an element                                       |
+| `I.fill(locator, value)`         | Type into an input (replaces existing value)           |
+| `I.selectOption(locator, value)` | Open a select and choose an option                     |
+| `I.clear(locator)`               | Clear an input field                                   |
 
 **Deprecated methods** (do not use):
+
 - `I.seeText()` / `I.dontSeeText()` — use `I.see(text(...))` instead
 
 ### Extending actors
@@ -153,6 +154,7 @@ export const dashboardActor = createActor().extend((I) => ({
 ```
 
 **Guidelines:**
+
 - Use `.wait()` only on the **first** locator in each method to ensure the page has loaded
 - Subsequent locators in the same method can be synchronous (no `.wait()`)
 - Only define locators in the `Loc` object if they are:
@@ -186,37 +188,39 @@ text('Active').all().wait()
 ```
 
 **Pattern for loading checks:**
+
 ```tsx
-await I.see(role('status', 'Loading page').wait())  // First check: wait for page
-await I.dontSee(role('alert'))                      // Subsequent: no .wait() needed
+await I.see(role('status', 'Loading page').wait()) // First check: wait for page
+await I.dontSee(role('alert')) // Subsequent: no .wait() needed
 ```
 
 ### Shorthand factories
 
 Common patterns have shorthand factories in `#shared/test`:
 
-| Factory                   | Equivalent                                                             |
-| ------------------------- | ---------------------------------------------------------------------- |
-| `heading('Dashboard')`    | `role('heading', 'Dashboard')`                                         |
-| `button('Submit')`        | `role('button', 'Submit')`                                             |
-| `link(/Settings/i)`       | `role('link', /Settings/i)`                                            |
-| `text('$0/mo')`           | Direct text matcher                                                    |
-| `backButton('articles')`  | `(canvas) => canvas.findByLabelText('Back to articles')`               |
+| Factory                  | Equivalent                                               |
+| ------------------------ | -------------------------------------------------------- |
+| `heading('Dashboard')`   | `role('heading', 'Dashboard')`                           |
+| `button('Submit')`       | `role('button', 'Submit')`                               |
+| `link(/Settings/i)`      | `role('link', /Settings/i)`                              |
+| `text('$0/mo')`          | Direct text matcher                                      |
+| `backButton('articles')` | `(canvas) => canvas.findByLabelText('Back to articles')` |
 
 All factories accept `string | RegExp`.
 
 **Examples:**
+
 ```tsx
 import { button, heading, link, text, role } from '#shared/test'
 
 export const articlesActor = createActor().extend((I) => ({
 	seeArticleList: async () => {
-		await I.see(link(/Quarterly report/i).wait())  // First: .wait()
-		await I.see(link(/Hiring plan/i))              // Rest: no .wait()
+		await I.see(link(/Quarterly report/i).wait()) // First: .wait()
+		await I.see(link(/Hiring plan/i)) // Rest: no .wait()
 	},
 	seeStatusBadges: async () => {
-		await I.see(text('Done').all().wait())   // First .all(): .wait()
-		await I.see(text('In Progress').all())   // Rest: no .wait()
+		await I.see(text('Done').all().wait()) // First .all(): .wait()
+		await I.see(text('In Progress').all()) // Rest: no .wait()
 	},
 }))
 ```
@@ -232,6 +236,7 @@ const customLocator = loc((canvas) => canvas.findByRole('status', { name: 'Custo
 ```
 
 **When to use `loc()`:**
+
 - Custom roles or uncommon ARIA patterns
 - Queries needing extra options (`{ selector }`, `{ current }`)
 - One-off locators that don't warrant a factory
@@ -253,13 +258,13 @@ await I.see(text(/Regional performance/).within(detail))
 ```tsx
 // Good: used in stories
 export const dashboardLoc = {
-	heading: heading('Dashboard'),  // Used in multiple stories
+	heading: heading('Dashboard'), // Used in multiple stories
 }
 
 // Bad: single-use locators
 export const dashboardLoc = {
-	loadingState: role('status', 'Loading dashboard page'),  // Only used once in seeLoading()
-	errorHeading: heading('Could not load dashboard'),       // Only used once in seeError()
+	loadingState: role('status', 'Loading dashboard page'), // Only used once in seeLoading()
+	errorHeading: heading('Could not load dashboard'), // Only used once in seeError()
 }
 ```
 
@@ -268,9 +273,9 @@ export const dashboardLoc = {
 ```tsx
 export const dashboardActor = createActor().extend((I) => ({
 	seeError: async () => {
-		await I.see(heading('Could not load dashboard').wait())  // Inline
-		await I.see(role('alert'))                               // Inline
-		await I.see(button('Try again'))                         // Inline
+		await I.see(heading('Could not load dashboard').wait()) // Inline
+		await I.see(role('alert')) // Inline
+		await I.see(button('Try again')) // Inline
 	},
 }))
 ```
@@ -280,7 +285,7 @@ export const dashboardActor = createActor().extend((I) => ({
 ```tsx
 // Bad: wrapper adds no meaning
 export const articlesLoc = {
-	detailRegion: role('main'),  // Just use role('main') directly
+	detailRegion: role('main'), // Just use role('main') directly
 }
 
 // Good: inline it
