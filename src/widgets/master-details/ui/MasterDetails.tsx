@@ -14,9 +14,9 @@ export function MasterDetails({ master, detail, isDetailVisible, masterWidth = '
 		<styled.div>
 			<styled.div display={{ base: 'block', md: 'flex' }}>
 				<styled.section
-					display={isDetailVisible ? 'none' : 'unset'}
+					display={isDetailVisible ? 'none' : 'block'}
 					md={{
-						display: 'unset',
+						display: 'block',
 						width: masterWidth,
 						flexShrink: 0,
 						alignSelf: 'flex-start',
@@ -32,9 +32,9 @@ export function MasterDetails({ master, detail, isDetailVisible, masterWidth = '
 					{master}
 				</styled.section>
 				<styled.main
-					display={isDetailVisible ? 'unset' : 'none'}
+					display={isDetailVisible ? 'block' : 'none'}
 					md={{
-						display: 'unset',
+						display: 'block',
 						flex: '1',
 						minW: '0',
 						mx: 'auto',
