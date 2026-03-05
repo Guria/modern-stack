@@ -6,17 +6,17 @@ import { Avatar, Badge, IconButton } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 import { ListToolbar } from '#widgets/data-page'
 
-type ConversationListProps = {
-	conversations: Conversation[]
-	selectedId: string | undefined
-	getConversationHref: (conversationId: string) => string
+export type ConversationListRow = {
+	conversation: Conversation
+	href: string
 }
 
-export function ConversationList({
-	conversations,
-	selectedId,
-	getConversationHref,
-}: ConversationListProps) {
+type Props = {
+	conversations: ConversationListRow[]
+	selectedId: string | undefined
+}
+
+export function ConversationList({ conversations, selectedId }: Props) {
 	return (
 		<styled.div>
 			<ListToolbar placeholder={m.chat_search_placeholder()}>
@@ -24,10 +24,10 @@ export function ConversationList({
 					<SquarePen />
 				</IconButton>
 			</ListToolbar>
-			{conversations.map((conversation) => (
+			{conversations.map(({ conversation, href }) => (
 				<styled.a
 					key={conversation.id}
-					href={getConversationHref(conversation.id)}
+					href={href}
 					display="flex"
 					alignItems="center"
 					gap="3"

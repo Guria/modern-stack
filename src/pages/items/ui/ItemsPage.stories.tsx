@@ -31,8 +31,7 @@ const meta = preview.meta({
 	title: 'Pages/Items',
 	component: ItemsPage,
 	args: {
-		items: itemsMockData,
-		getItemHref: (itemId: string) => `/items/${itemId}`,
+		items: itemsMockData.map((item) => ({ item, href: `/items/${item.id}` })),
 	},
 	parameters: { layout: 'fullscreen' },
 	loaders: [(ctx) => void I.init(ctx)],

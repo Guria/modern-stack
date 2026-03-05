@@ -1,20 +1,18 @@
 import { reatomComponent } from '@reatom/react'
 import { type ReactNode } from 'react'
 
-import type { Conversation } from '#entities/conversation'
 import { MasterDetails } from '#widgets/master-details'
 
-import { ConversationList } from './conversations/ConversationList'
+import { ConversationList, type ConversationListRow } from './conversations/ConversationList'
 
-type ChatPageProps = {
-	conversations: Conversation[]
+type Props = {
+	conversations: ConversationListRow[]
 	selectedConversationId: string | undefined
-	getConversationHref: (conversationId: string) => string
 	detail: ReactNode
 }
 
 export const ChatPage = reatomComponent(
-	({ conversations, selectedConversationId, getConversationHref, detail }: ChatPageProps) => {
+	({ conversations, selectedConversationId, detail }: Props) => {
 		const hasDetail = selectedConversationId !== undefined
 
 		return (
@@ -22,11 +20,7 @@ export const ChatPage = reatomComponent(
 				isDetailVisible={hasDetail}
 				masterWidth="320px"
 				master={
-					<ConversationList
-						conversations={conversations}
-						selectedId={selectedConversationId}
-						getConversationHref={getConversationHref}
-					/>
+					<ConversationList conversations={conversations} selectedId={selectedConversationId} />
 				}
 				detail={detail}
 			/>

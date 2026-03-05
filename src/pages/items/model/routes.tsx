@@ -34,7 +34,14 @@ export const itemsRoute = rootRoute.reatomRoute(
 				return self.outlet().at(0) ?? <ItemNotFound itemId={itemDetailRoute()?.itemId ?? ''} />
 			}
 			// Otherwise render the full-width list
-			return <ItemsPage items={items} getItemHref={(itemId) => itemDetailRoute.path({ itemId })} />
+			return (
+				<ItemsPage
+					items={items.map((item) => ({
+						item,
+						href: itemDetailRoute.path({ itemId: item.id }),
+					}))}
+				/>
+			)
 		},
 	},
 	'items',

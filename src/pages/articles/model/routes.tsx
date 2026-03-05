@@ -35,9 +35,11 @@ export const articlesRoute = rootRoute.reatomRoute(
 
 			return (
 				<ArticlesPage
-					articles={articles}
+					articles={articles.map((article) => ({
+						article,
+						href: articleDetailRoute.path({ articleId: article.id }),
+					}))}
 					selectedArticleId={selectedArticleId}
-					getArticleHref={(articleId: string) => articleDetailRoute.path({ articleId })}
 					detail={self.outlet().at(0) ?? <ArticleNoSelection />}
 				/>
 			)

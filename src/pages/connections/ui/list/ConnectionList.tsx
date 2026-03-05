@@ -9,17 +9,17 @@ import { ListToolbar } from '#widgets/data-page'
 import { ConnectionStatusBadge } from '../ConnectionStatusBadge'
 import { ConnectionTypeBadge } from '../ConnectionTypeBadge'
 
-type ConnectionListProps = {
-	connections: Connection[]
-	selectedId: string | undefined
-	getConnectionHref: (connectionId: string) => string
+export type ConnectionListRow = {
+	connection: Connection
+	href: string
 }
 
-export function ConnectionList({
-	connections,
-	selectedId,
-	getConnectionHref,
-}: ConnectionListProps) {
+type Props = {
+	connections: ConnectionListRow[]
+	selectedId: string | undefined
+}
+
+export function ConnectionList({ connections, selectedId }: Props) {
 	return (
 		<>
 			<ListToolbar placeholder={m.connection_search_placeholder()}>
@@ -27,10 +27,10 @@ export function ConnectionList({
 					<Plus />
 				</IconButton>
 			</ListToolbar>
-			{connections.map((connection) => (
+			{connections.map(({ connection, href }) => (
 				<styled.a
 					key={connection.id}
-					href={getConnectionHref(connection.id)}
+					href={href}
 					display="block"
 					w="100%"
 					textAlign="left"

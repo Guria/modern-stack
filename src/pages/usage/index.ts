@@ -1,2 +1,9 @@
-export { usageRoute } from './model/routes'
+import { m } from '#paraglide/messages.js'
+import { withMatchHeaderTrail } from '#shared/model'
+
+import { usageRoute } from './model/routes'
+
+usageRoute.match.extend(withMatchHeaderTrail(1, { label: () => m.nav_usage() }))
+
+export { usageRoute }
 export { UsageSidebarItem } from './ui/UsageSidebarItem'

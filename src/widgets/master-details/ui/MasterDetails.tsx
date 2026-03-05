@@ -2,19 +2,14 @@ import { type ReactNode } from 'react'
 
 import { styled } from '#styled-system/jsx'
 
-type MasterDetailsProps = {
+type Props = {
 	master: ReactNode
 	detail: ReactNode
 	isDetailVisible: boolean
 	masterWidth?: string
 }
 
-export function MasterDetails({
-	master,
-	detail,
-	isDetailVisible,
-	masterWidth = '300px',
-}: MasterDetailsProps) {
+export function MasterDetails({ master, detail, isDetailVisible, masterWidth = '300px' }: Props) {
 	return (
 		<styled.div>
 			<styled.div display={{ base: 'block', md: 'flex' }}>
@@ -42,7 +37,6 @@ export function MasterDetails({
 						display: 'unset',
 						flex: '1',
 						minW: '0',
-						maxW: '4xl',
 						mx: 'auto',
 					}}
 				>

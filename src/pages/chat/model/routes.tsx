@@ -34,11 +34,11 @@ export const chatRoute = rootRoute.reatomRoute(
 
 			return (
 				<ChatPage
-					conversations={conversations}
+					conversations={conversations.map((conversation) => ({
+						conversation,
+						href: chatConversationRoute.path({ conversationId: conversation.id }),
+					}))}
 					selectedConversationId={selectedConversationId}
-					getConversationHref={(conversationId: string) =>
-						chatConversationRoute.path({ conversationId })
-					}
 					detail={self.outlet().at(0) ?? <MessageThreadNoSelection />}
 				/>
 			)

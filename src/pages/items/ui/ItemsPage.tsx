@@ -77,18 +77,17 @@ const stockFilterAtom = reatomEnum(['all', 'in-stock', 'out-of-stock'], 'items.s
 	withSearchParams('stock'),
 )
 
-type ItemsPageProps = {
-	items: Item[]
-	getItemHref: (itemId: string) => string
+type Props = {
+	items: { item: Item; href: string }[]
 }
 
-export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps) => {
+export const ItemsPage = reatomComponent(({ items }: Props) => {
 	const sortField = sortFieldAtom()
 	const sortDir = sortDirAtom()
 	const categoryFilter = categoryFilterAtom()
 	const stockFilter = stockFilterAtom()
 
-	let filtered = items.filter((item) => {
+	let filtered = items.filter(({ item }) => {
 		if (categoryFilter !== 'all' && item.category !== categoryFilter) return false
 		if (stockFilter === 'in-stock' && !item.inStock) return false
 		if (stockFilter === 'out-of-stock' && item.inStock) return false
@@ -97,8 +96,10 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 
 	filtered = [...filtered].sort((left, right) => {
 		const directionMultiplier = sortDir === 'asc' ? 1 : -1
-		if (sortField === 'name') return directionMultiplier * left.name.localeCompare(right.name)
-		return directionMultiplier * (left.price - right.price)
+		if (sortField === 'name') {
+			return directionMultiplier * left.item.name.localeCompare(right.item.name)
+		}
+		return directionMultiplier * (left.item.price - right.item.price)
 	})
 
 	return (
@@ -213,10 +214,10 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 			</styled.p>
 
 			<styled.div display="grid" gap="3">
-				{filtered.map((item) => (
+				{filtered.map(({ item, href }) => (
 					<styled.a
 						key={item.id}
-						href={getItemHref(item.id)}
+						href={href}
 						display="flex"
 						alignItems="center"
 						justifyContent="space-between"
@@ -259,4 +260,4 @@ export const ItemsPage = reatomComponent(({ items, getItemHref }: ItemsPageProps
 			</styled.div>
 		</styled.div>
 	)
-})
+}, 'ItemsPage')

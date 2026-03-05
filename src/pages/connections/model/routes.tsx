@@ -35,9 +35,11 @@ export const connectionsRoute = rootRoute.reatomRoute(
 
 			return (
 				<ConnectionsPage
-					connections={connections}
+					connections={connections.map((connection) => ({
+						connection,
+						href: connectionDetailRoute.path({ connectionId: connection.id }),
+					}))}
 					selectedConnectionId={selectedConnectionId}
-					getConnectionHref={(connectionId: string) => connectionDetailRoute.path({ connectionId })}
 					detail={self.outlet().at(0) ?? <ConnectionNoSelection />}
 				/>
 			)

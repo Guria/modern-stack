@@ -3,7 +3,7 @@ import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
 import { Toaster } from '#shared/components'
-import { localeAtom } from '#shared/model'
+import { documentTitleAtom, localeAtom } from '#shared/model'
 import { styled } from '#styled-system/jsx'
 import { AppShell } from '#widgets/app-shell'
 
@@ -24,6 +24,7 @@ urlAtom.extend(
 
 export const App = reatomComponent(() => {
 	localeAtom()
+	documentTitleAtom()
 	return (
 		<>
 			<AppShell

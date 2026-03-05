@@ -7,13 +7,17 @@ import { ListToolbar } from '#widgets/data-page'
 
 import { ArticleListItem } from './ArticleListItem'
 
-type ArticleListProps = {
-	articles: Article[]
-	selectedId: string | undefined
-	getArticleHref: (articleId: string) => string
+export type ArticleListRow = {
+	article: Article
+	href: string
 }
 
-export function ArticleList({ articles, selectedId, getArticleHref }: ArticleListProps) {
+type Props = {
+	articles: ArticleListRow[]
+	selectedId: string | undefined
+}
+
+export function ArticleList({ articles, selectedId }: Props) {
 	return (
 		<>
 			<ListToolbar placeholder={m.article_search_placeholder()}>
@@ -21,11 +25,11 @@ export function ArticleList({ articles, selectedId, getArticleHref }: ArticleLis
 					<Plus />
 				</IconButton>
 			</ListToolbar>
-			{articles.map((article) => (
+			{articles.map(({ article, href }) => (
 				<ArticleListItem
 					key={article.id}
 					article={article}
-					href={getArticleHref(article.id)}
+					href={href}
 					isSelected={selectedId === article.id}
 				/>
 			))}

@@ -1,36 +1,27 @@
 import { reatomComponent } from '@reatom/react'
 import { type ReactNode } from 'react'
 
-import type { Connection } from '#entities/connection'
 import { MasterDetails } from '#widgets/master-details'
 
-import { ConnectionList } from './list/ConnectionList'
+import { ConnectionList, type ConnectionListRow } from './list/ConnectionList'
 
-type ConnectionsPageProps = {
-	connections: Connection[]
+type Props = {
+	connections: ConnectionListRow[]
 	selectedConnectionId: string | undefined
-	getConnectionHref: (connectionId: string) => string
 	detail: ReactNode
 }
 
 export const ConnectionsPage = reatomComponent(function ConnectionsPage({
 	connections,
 	selectedConnectionId,
-	getConnectionHref,
 	detail,
-}: ConnectionsPageProps) {
+}: Props) {
 	const hasDetail = selectedConnectionId !== undefined
 
 	return (
 		<MasterDetails
 			isDetailVisible={hasDetail}
-			master={
-				<ConnectionList
-					connections={connections}
-					selectedId={selectedConnectionId}
-					getConnectionHref={getConnectionHref}
-				/>
-			}
+			master={<ConnectionList connections={connections} selectedId={selectedConnectionId} />}
 			detail={detail}
 		/>
 	)
