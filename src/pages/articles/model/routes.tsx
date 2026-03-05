@@ -4,13 +4,14 @@ import { fetchArticles, fetchArticleById } from '#entities/article'
 import { m } from '#paraglide/messages.js'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
+import { MasterDetails } from '#widgets/master-details'
 
-import { ArticlesPage } from '../ui/ArticlesPage'
 import { ArticlesPageLoading } from '../ui/ArticlesPageLoading'
 import { ArticleDetail } from '../ui/detail/ArticleDetail'
 import { ArticleDetailLoadingState } from '../ui/detail/ArticleDetailLoadingState'
 import { ArticleNoSelection } from '../ui/detail/ArticleNoSelection'
 import { ArticleNotFound } from '../ui/detail/ArticleNotFound'
+import { ArticleList } from '../ui/list/ArticleList'
 
 export const articlesRoute = rootRoute.reatomRoute(
 	{
@@ -34,12 +35,17 @@ export const articlesRoute = rootRoute.reatomRoute(
 			}
 
 			return (
-				<ArticlesPage
-					articles={articles.map((article) => ({
-						article,
-						href: articleDetailRoute.path({ articleId: article.id }),
-					}))}
-					selectedArticleId={selectedArticleId}
+				<MasterDetails
+					isDetailVisible={selectedArticleId !== undefined}
+					master={
+						<ArticleList
+							articles={articles.map((article) => ({
+								article,
+								href: articleDetailRoute.path({ articleId: article.id }),
+							}))}
+							selectedId={selectedArticleId}
+						/>
+					}
 					detail={self.outlet().at(0) ?? <ArticleNoSelection />}
 				/>
 			)

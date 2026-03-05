@@ -3,17 +3,13 @@ import { Plus } from 'lucide-react'
 import type { Article } from '#entities/article'
 import { m } from '#paraglide/messages.js'
 import { IconButton } from '#shared/components'
+import { styled } from '#styled-system/jsx'
 import { ListToolbar } from '#widgets/data-page'
 
 import { ArticleListItem } from './ArticleListItem'
 
-export type ArticleListRow = {
-	article: Article
-	href: string
-}
-
 type Props = {
-	articles: ArticleListRow[]
+	articles: { article: Article; href: string }[]
 	selectedId: string | undefined
 }
 
@@ -25,14 +21,13 @@ export function ArticleList({ articles, selectedId }: Props) {
 					<Plus />
 				</IconButton>
 			</ListToolbar>
-			{articles.map(({ article, href }) => (
-				<ArticleListItem
-					key={article.id}
-					article={article}
-					href={href}
-					isSelected={selectedId === article.id}
-				/>
-			))}
+			<styled.ul role="list" aria-label={m.nav_articles()}>
+				{articles.map(({ article, href }) => (
+					<styled.li key={article.id}>
+						<ArticleListItem article={article} href={href} isSelected={selectedId === article.id} />
+					</styled.li>
+				))}
+			</styled.ul>
 		</>
 	)
 }

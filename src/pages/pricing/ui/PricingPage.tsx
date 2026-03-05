@@ -80,7 +80,7 @@ function PlanCard({
 					{price}
 				</styled.div>
 			</styled.div>
-			<styled.ul listStyleType="none" p="0" m="0" display="flex" flexDirection="column" gap="2">
+			<styled.ul display="flex" flexDirection="column" gap="2">
 				{features.map((f) => (
 					<styled.li key={f} fontSize="sm" color="muted" display="flex" alignItems="center" gap="2">
 						<styled.span color="green.9">✓</styled.span>

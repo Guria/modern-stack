@@ -19,7 +19,9 @@ export const chatActor = createActor().extend((I) => ({
 		await I.click((canvas) => canvas.findByLabelText('Back to conversations'))
 	},
 	seeConversationList: async () => {
-		await I.see(link(/Engineering/i))
-		await I.see(link(/Alex Johnson/i))
+		await I.scope(role('list', 'Chat'), async () => {
+			await I.see(link(/Engineering/i))
+			await I.see(link(/Alex Johnson/i))
+		})
 	},
 }))

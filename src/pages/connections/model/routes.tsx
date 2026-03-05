@@ -4,13 +4,14 @@ import { fetchConnectionById, fetchConnections } from '#entities/connection'
 import { m } from '#paraglide/messages.js'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
+import { MasterDetails } from '#widgets/master-details'
 
-import { ConnectionsPage } from '../ui/ConnectionsPage'
 import { ConnectionsPageLoading } from '../ui/ConnectionsPageLoading'
 import { ConnectionDetail } from '../ui/detail/ConnectionDetail'
 import { ConnectionDetailLoadingState } from '../ui/detail/ConnectionDetailLoadingState'
 import { ConnectionNoSelection } from '../ui/detail/ConnectionNoSelection'
 import { ConnectionNotFound } from '../ui/detail/ConnectionNotFound'
+import { ConnectionList } from '../ui/list/ConnectionList'
 
 export const connectionsRoute = rootRoute.reatomRoute(
 	{
@@ -34,12 +35,17 @@ export const connectionsRoute = rootRoute.reatomRoute(
 			}
 
 			return (
-				<ConnectionsPage
-					connections={connections.map((connection) => ({
-						connection,
-						href: connectionDetailRoute.path({ connectionId: connection.id }),
-					}))}
-					selectedConnectionId={selectedConnectionId}
+				<MasterDetails
+					isDetailVisible={selectedConnectionId !== undefined}
+					master={
+						<ConnectionList
+							connections={connections.map((connection) => ({
+								connection,
+								href: connectionDetailRoute.path({ connectionId: connection.id }),
+							}))}
+							selectedId={selectedConnectionId}
+						/>
+					}
 					detail={self.outlet().at(0) ?? <ConnectionNoSelection />}
 				/>
 			)

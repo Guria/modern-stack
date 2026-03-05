@@ -4,9 +4,10 @@ import { fetchConversationById, fetchConversations } from '#entities/conversatio
 import { m } from '#paraglide/messages.js'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
+import { MasterDetails } from '#widgets/master-details'
 
-import { ChatPage } from '../ui/ChatPage'
 import { ChatPageLoading } from '../ui/ChatPageLoading'
+import { ConversationList } from '../ui/conversations/ConversationList'
 import { MessageThread } from '../ui/thread/MessageThread'
 import { MessageThreadLoadingState } from '../ui/thread/MessageThreadLoadingState'
 import { MessageThreadNoSelection } from '../ui/thread/MessageThreadNoSelection'
@@ -33,12 +34,18 @@ export const chatRoute = rootRoute.reatomRoute(
 			}
 
 			return (
-				<ChatPage
-					conversations={conversations.map((conversation) => ({
-						conversation,
-						href: chatConversationRoute.path({ conversationId: conversation.id }),
-					}))}
-					selectedConversationId={selectedConversationId}
+				<MasterDetails
+					isDetailVisible={selectedConversationId !== undefined}
+					masterWidth="320px"
+					master={
+						<ConversationList
+							conversations={conversations.map((conversation) => ({
+								conversation,
+								href: chatConversationRoute.path({ conversationId: conversation.id }),
+							}))}
+							selectedId={selectedConversationId}
+						/>
+					}
 					detail={self.outlet().at(0) ?? <MessageThreadNoSelection />}
 				/>
 			)

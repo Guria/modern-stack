@@ -18,11 +18,13 @@ export const connectionsActor = createActor().extend((I) => ({
 		await I.click((canvas) => canvas.findByLabelText('Back to connections'))
 	},
 	seeConnectionList: async () => {
-		await I.see(link(/Stripe API/i))
-		await I.see(link(/Analytics DB/i))
-		await I.see(link(/Slack Notifications/i))
-		await I.see(link(/Auth0 SSO/i))
-		await I.see(link(/S3 Data Lake/i))
+		await I.scope(role('list', 'Connections'), async () => {
+			await I.see(link(/Stripe API/i))
+			await I.see(link(/Analytics DB/i))
+			await I.see(link(/Slack Notifications/i))
+			await I.see(link(/Auth0 SSO/i))
+			await I.see(link(/S3 Data Lake/i))
+		})
 	},
 	seeStatusBadges: async () => {
 		await I.see(text('Active').all())
