@@ -8,7 +8,6 @@ export const setupStorybookUrl = (initialPath = '') => {
 		// the iframe URL stays fixed so Storybook remains happy.
 		urlAtom.sync.set(() => noop)
 		urlAtom.extend(withChangeHook(() => void window.history.replaceState({}, '', originalHref)))
-		// @ts-expect-error - Vite replaces this with the actual value at build time
 		const base = import.meta.env.BASE_URL ?? ''
 		urlAtom.go(base + initialPath)
 	})

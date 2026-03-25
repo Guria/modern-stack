@@ -29,7 +29,7 @@ export const ChatNavItem = reatomComponent(() => {
 		) : null
 
 	return (
-		<a href={chatRoute.path({})}>
+		<a href={chatRoute.path()}>
 			<SideNavButton active={chatRoute.match()}>
 				<SideNavItemContent Icon={MessageCircle} label={m.nav_chat()} trailing={unreadBadge} />
 			</SideNavButton>

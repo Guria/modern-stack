@@ -6,7 +6,6 @@
 		"allowJs": true,
 		"allowImportingTsExtensions": true,
 		"composite": true,
-		"baseUrl": ".",
 		"paths": {
 			"#.storybook/*": ["./.storybook/*"],
 			"#styled-system/*": ["./src/shared/styled-system/*"],
