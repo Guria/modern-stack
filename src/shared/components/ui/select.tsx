@@ -1,9 +1,7 @@
 'use client'
-import type { Assign, SelectRootProps } from '@ark-ui/react'
 import { ark } from '@ark-ui/react/factory'
-import { Select, useSelectItemContext } from '@ark-ui/react/select'
+import { Select, type SelectRootComponentProps, useSelectItemContext } from '@ark-ui/react/select'
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
-import { type RefAttributes } from 'react'
 
 import { createStyleContext } from '#styled-system/jsx'
 import { type SelectVariantProps, select } from '#styled-system/recipes'
@@ -13,7 +11,7 @@ const { withProvider, withContext } = createStyleContext(select)
 
 type StyleProps = SelectVariantProps & HTMLStyledProps<'div'>
 
-export type RootProps<T> = Assign<SelectRootProps<T>, StyleProps> & RefAttributes<HTMLDivElement>
+export type RootProps<T> = SelectRootComponentProps<T, StyleProps>
 
 export const Root = withProvider(Select.Root, 'root') as Select.RootComponent<StyleProps>
 

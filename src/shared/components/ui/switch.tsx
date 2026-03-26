@@ -1,5 +1,5 @@
 'use client'
-import { ark } from '@ark-ui/react'
+import { ark } from '@ark-ui/react/factory'
 import { Switch, useSwitchContext } from '@ark-ui/react/switch'
 import { type ComponentProps, type ReactNode } from 'react'
 
