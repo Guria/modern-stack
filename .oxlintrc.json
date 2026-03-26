@@ -1,5 +1,7 @@
 {
+	"plugins": ["import"],
 	"rules": {
+		"import/no-cycle": "error",
 		"eslint/no-restricted-imports": [
 			"error",
 			{

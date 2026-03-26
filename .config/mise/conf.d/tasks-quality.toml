@@ -21,10 +21,6 @@ description = "Type check with TypeScript"
 alias = "tc"
 run = "tsc -b"
 
-[tasks."lint:circular"]
-description = "Check for circular dependencies with madge"
-run = "madge -c ./src/main.tsx --ts-config ./tsconfig.app.json --exclude styled-system"
-
 [tasks."lint:steiger"]
 description = "Check FSD architecture with steiger"
 run = "bun scripts/steiger.ts"
@@ -41,7 +37,7 @@ run = [ #
 	{ task = "prepare" },
 	{ task = "format" },
 	{ task = "lint:fix" },
-	{ tasks = ["typecheck", "test:run", "lint:circular", "lint:steiger"] },
+	{ tasks = ["typecheck", "test:run", "lint:steiger"] },
 	{ task = "lint:paraglide-tree-shaking" },
 ]
 
@@ -57,7 +53,6 @@ run = [
 	{ task = "lint" },
 	{ tasks = [
 		"typecheck",
-		"lint:circular",
 		"lint:steiger",
 	] },
 	{ task = "test:coverage" },
