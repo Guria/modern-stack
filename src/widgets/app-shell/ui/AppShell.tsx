@@ -1,6 +1,7 @@
+import { SiGithub } from '@icons-pack/react-simple-icons'
 import { atom, computed, memo, reatomBoolean, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
-import { Github, Languages, Monitor, Moon, PanelLeft, Search, Sun } from 'lucide-react'
+import { Languages, Monitor, Moon, PanelLeft, Search, Sun } from 'lucide-react'
 import { type CSSProperties, type ReactNode } from 'react'
 
 import { m } from '#paraglide/messages.js'
@@ -203,7 +204,7 @@ export const AppShell = reatomComponent(
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										<Github />
+										<SiGithub />
 									</a>
 								</IconButton>
 							)}

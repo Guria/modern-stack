@@ -25,10 +25,11 @@
 	},
 	"dependencies": {
 		"@ark-ui/react": "^5.34.0",
+		"@icons-pack/react-simple-icons": "^13.13.0",
 		"@inlang/paraglide-js": "^2.13.1",
 		"@reatom/core": "^1000.15.1",
 		"@reatom/react": "^1000.2.2",
-		"lucide-react": "^0.576.0",
+		"lucide-react": "^1.7.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4"
 	},
@@ -53,7 +54,7 @@
 		"madge": "^8.0.0",
 		"msw": "^2.12.10",
 		"msw-storybook-addon": "^2.0.6",
-		"oxfmt": "^0.36.0",
+		"oxfmt": "^0.42.0",
 		"oxlint": "^1.51.0",
 		"playwright": "^1.58.2",
 		"storybook": "^10.2.14",
