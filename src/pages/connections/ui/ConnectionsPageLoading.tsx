@@ -14,6 +14,8 @@ export function ConnectionsPageLoading({ showDetail }: ConnectionsPageLoadingPro
 			<div inert>
 				<MasterDetails
 					isDetailVisible={showDetail}
+					masterLabel={m.nav_connections()}
+					detailLabel={m.connection_detail()}
 					master={<ConnectionListLoading />}
 					detail={<ConnectionDetailLoadingState />}
 				/>

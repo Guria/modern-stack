@@ -75,6 +75,7 @@
 	"connection_reconnected_successfully": "Reconectado exitosamente",
 	"connection_reconnect": "Reconectar",
 	"connection_test": "Probar conexión",
+	"connection_detail": "Detalle de la conexión",
 	"connection_no_selection": "No se seleccionó ninguna conexión",
 	"connection_no_selection_desc": "Elige una conexión de la lista para ver sus detalles.",
 	"connection_loading_detail": "Cargando detalle de la conexión",
@@ -95,6 +96,7 @@
 	"article_no_selection": "Artículo no seleccionado",
 	"article_no_selection_desc": "Elige un artículo de la lista para ver su contenido.",
 	"article_edit": "Editar",
+	"article_detail": "Detalle del artículo",
 	"article_new": "Nuevo artículo",
 	"article_search_placeholder": "Buscar artículos...",
 	"article_loading_detail": "Cargando detalle del artículo",
@@ -117,6 +119,7 @@
 	"items_loading_page": "Cargando página de elementos",
 
 	"chat_no_selection": "Ninguna conversación seleccionada",
+	"chat_conversation_detail": "Detalle de la conversación",
 	"chat_no_selection_desc": "Elige una conversación de la lista para empezar a leer.",
 	"chat_not_found": "Conversación no encontrada",
 	"chat_not_found_description": "No existe ninguna conversación para el id \"{conversationId}\".",

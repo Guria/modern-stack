@@ -37,6 +37,8 @@ export const articlesRoute = rootRoute.reatomRoute(
 			return (
 				<MasterDetails
 					isDetailVisible={selectedArticleId !== undefined}
+					masterLabel={m.nav_articles()}
+					detailLabel={m.article_detail()}
 					master={
 						<ArticleList
 							articles={articles.map((article) => ({

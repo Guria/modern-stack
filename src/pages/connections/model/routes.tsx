@@ -37,6 +37,8 @@ export const connectionsRoute = rootRoute.reatomRoute(
 			return (
 				<MasterDetails
 					isDetailVisible={selectedConnectionId !== undefined}
+					masterLabel={m.nav_connections()}
+					detailLabel={m.connection_detail()}
 					master={
 						<ConnectionList
 							connections={connections.map((connection) => ({

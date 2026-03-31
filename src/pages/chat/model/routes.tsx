@@ -37,6 +37,8 @@ export const chatRoute = rootRoute.reatomRoute(
 				<MasterDetails
 					isDetailVisible={selectedConversationId !== undefined}
 					masterWidth="320px"
+					masterLabel={m.nav_chat()}
+					detailLabel={m.chat_conversation_detail()}
 					master={
 						<ConversationList
 							conversations={conversations.map((conversation) => ({

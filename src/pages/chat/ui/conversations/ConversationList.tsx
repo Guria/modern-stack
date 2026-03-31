@@ -36,6 +36,7 @@ export function ConversationList({ conversations, selectedId }: Props) {
 							_hover={{ bg: 'colorPalette.surface.bg.active' }}
 							borderBottomWidth="1px"
 							borderColor="border"
+							aria-current={selectedId === conversation.id ? 'page' : undefined}
 						>
 							<styled.div position="relative" flexShrink={0}>
 								<Avatar.Root w="10" h="10">

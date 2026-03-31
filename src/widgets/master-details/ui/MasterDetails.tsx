@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useId } from 'react'
 
 import { styled } from '#styled-system/jsx'
 
@@ -7,13 +7,29 @@ type Props = {
 	detail: ReactNode
 	isDetailVisible: boolean
 	masterWidth?: string
+	masterLabel: string
+	detailLabel: string
 }
 
-export function MasterDetails({ master, detail, isDetailVisible, masterWidth = '300px' }: Props) {
+export function MasterDetails({
+	master,
+	detail,
+	isDetailVisible,
+	masterWidth = '300px',
+	masterLabel,
+	detailLabel,
+}: Props) {
+	const uid = useId()
+	const masterId = `${uid}-master`
+	const detailId = `${uid}-detail`
+
 	return (
 		<styled.div>
 			<styled.div display={{ base: 'block', md: 'flex' }}>
-				<styled.section
+				<styled.nav
+					id={masterId}
+					aria-label={masterLabel}
+					aria-controls={detailId}
 					display={isDetailVisible ? 'none' : 'block'}
 					md={{
 						display: 'block',
@@ -30,8 +46,10 @@ export function MasterDetails({ master, detail, isDetailVisible, masterWidth = '
 					p={0.5}
 				>
 					{master}
-				</styled.section>
+				</styled.nav>
 				<styled.main
+					id={detailId}
+					aria-label={detailLabel}
 					display={isDetailVisible ? 'block' : 'none'}
 					md={{
 						display: 'block',

@@ -39,6 +39,7 @@ export function ConnectionList({ connections, selectedId }: Props) {
 							_hover={{ bg: 'gray.surface.bg.active' }}
 							borderBottomWidth="1px"
 							borderColor="border"
+							aria-current={selectedId === connection.id ? 'page' : undefined}
 						>
 							<styled.div display="flex" alignItems="center" justifyContent="space-between" gap="2">
 								<styled.span fontWeight="medium" fontSize="sm" truncate>

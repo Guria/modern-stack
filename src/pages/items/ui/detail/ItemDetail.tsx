@@ -26,40 +26,40 @@ export function ItemDetail({ item }: { item: Item }) {
 				)}
 			</styled.div>
 
-			<styled.div display="grid" gap="3">
+			<styled.dl display="grid" gap="3">
 				<styled.div display="flex" gap="2">
-					<styled.span fontSize="sm" color="muted" w="24">
+					<styled.dt fontSize="sm" color="muted" w="24">
 						{m.items_label_price()}
-					</styled.span>
-					<styled.span fontSize="sm" fontWeight="semibold" fontVariantNumeric="tabular-nums">
+					</styled.dt>
+					<styled.dd fontSize="sm" fontWeight="semibold" fontVariantNumeric="tabular-nums" m="0">
 						${item.price.toFixed(2)}
-					</styled.span>
+					</styled.dd>
 				</styled.div>
 				<styled.div display="flex" gap="2">
-					<styled.span fontSize="sm" color="muted" w="24">
+					<styled.dt fontSize="sm" color="muted" w="24">
 						{m.items_label_category()}
-					</styled.span>
-					<styled.span fontSize="sm" textTransform="capitalize">
+					</styled.dt>
+					<styled.dd fontSize="sm" textTransform="capitalize" m="0">
 						{item.category}
-					</styled.span>
+					</styled.dd>
 				</styled.div>
 				<styled.div display="flex" gap="2">
-					<styled.span fontSize="sm" color="muted" w="24">
+					<styled.dt fontSize="sm" color="muted" w="24">
 						{m.items_label_stock()}
-					</styled.span>
-					<styled.span fontSize="sm">
+					</styled.dt>
+					<styled.dd fontSize="sm" m="0">
 						{item.inStock ? m.items_stock_in_stock() : m.items_stock_out_of_stock()}
-					</styled.span>
+					</styled.dd>
 				</styled.div>
 				<styled.div display="flex" gap="2">
-					<styled.span fontSize="sm" color="muted" w="24">
+					<styled.dt fontSize="sm" color="muted" w="24">
 						{m.items_label_id()}
-					</styled.span>
-					<styled.span fontSize="sm" color="muted" fontVariantNumeric="tabular-nums">
+					</styled.dt>
+					<styled.dd fontSize="sm" color="muted" fontVariantNumeric="tabular-nums" m="0">
 						{item.id}
-					</styled.span>
+					</styled.dd>
 				</styled.div>
-			</styled.div>
+			</styled.dl>
 		</styled.div>
 	)
 }

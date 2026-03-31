@@ -14,6 +14,8 @@ export function ArticlesPageLoading({ showDetail }: ArticlesPageLoadingProps) {
 			<div inert>
 				<MasterDetails
 					isDetailVisible={showDetail}
+					masterLabel={m.nav_articles()}
+					detailLabel={m.article_detail()}
 					master={<ArticleListLoading />}
 					detail={<ArticleDetailLoadingState />}
 				/>

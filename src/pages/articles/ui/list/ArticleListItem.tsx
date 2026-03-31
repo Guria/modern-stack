@@ -27,6 +27,7 @@ export function ArticleListItem({
 			_hover={{ bg: 'colorPalette.surface.bg.active' }}
 			borderBottomWidth="1px"
 			borderColor="border"
+			aria-current={isSelected ? 'page' : undefined}
 		>
 			<styled.div display="flex" alignItems="center" justifyContent="space-between" gap="2">
 				<styled.span fontWeight="medium" fontSize="sm" truncate>

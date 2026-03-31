@@ -23,7 +23,14 @@ export function MessageThread({ conversation }: { conversation: Conversation }) 
 			</styled.div>
 
 			<styled.div flex="1" overflowY="auto" p="6" display="flex" flexDirection="column">
-				<styled.div mt="auto" display="flex" flexDirection="column" gap="4">
+				<styled.div
+					role="log"
+					aria-label={conversation.name}
+					mt="auto"
+					display="flex"
+					flexDirection="column"
+					gap="4"
+				>
 					{conversation.messages.map((message) => (
 						<styled.div
 							key={message.id}
@@ -59,14 +66,21 @@ export function MessageThread({ conversation }: { conversation: Conversation }) 
 				</styled.div>
 			</styled.div>
 
-			<styled.div px="4" py="3" borderTopWidth="1px" borderColor="border" flexShrink={0}>
+			<styled.form
+				px="4"
+				py="3"
+				borderTopWidth="1px"
+				borderColor="border"
+				flexShrink={0}
+				onSubmit={(e) => e.preventDefault()}
+			>
 				<styled.div display="flex" gap="2" alignItems="center">
 					<Input placeholder={m.chat_message_placeholder()} size="sm" flex="1" />
 					<Button size="sm" variant="solid">
 						<Send />
 					</Button>
 				</styled.div>
-			</styled.div>
+			</styled.form>
 		</styled.div>
 	)
 }
