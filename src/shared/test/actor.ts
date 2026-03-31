@@ -2,14 +2,12 @@ import { assert } from '@reatom/core'
 import type { StoryContext } from '@storybook/react-vite'
 import { expect, waitFor, within as withinElement } from 'storybook/test'
 
-import type { AnyLocator, Canvas, DefiniteLocator, FluentLocator, WithinScope } from './loc'
+import type { AnyLocator, Canvas, DefiniteLocator, FluentLocator } from './loc'
 
 export { assert, waitFor }
 
-type RefinedLocator = AnyLocator & { __within?: WithinScope }
-
 // Inspired by codecept.js
-function createBase(ctx: () => StoryContext) {
+function createBase(ctx: () => StoryContext): BaseActor {
 	const scopeStack: HTMLElement[] = []
 
 	function rootCanvas(): Canvas {
@@ -20,7 +18,6 @@ function createBase(ctx: () => StoryContext) {
 		if (scopeStack.length > 0) {
 			return withinElement(scopeStack[scopeStack.length - 1]!)
 		}
-
 		return ctx().canvas
 	}
 
@@ -31,7 +28,6 @@ function createBase(ctx: () => StoryContext) {
 		if (resolvingScopes.has(scopeLocator)) {
 			throw new Error('Circular locator scope detected in .within(...)')
 		}
-
 		resolvingScopes.add(scopeLocator)
 		try {
 			const result = await resolveLocator(scopeLocator, resolvingScopes)
@@ -49,7 +45,8 @@ function createBase(ctx: () => StoryContext) {
 		locator: AnyLocator,
 		resolvingScopes: Set<DefiniteLocator>,
 	): Promise<Canvas> {
-		const explicitScope = (locator as RefinedLocator).__within
+		// __within is part of every locator type via LocatorMeta — no cast needed
+		const explicitScope = locator.__within
 		if (!explicitScope) return activeCanvas()
 		if (explicitScope === 'global') return rootCanvas()
 		if (explicitScope instanceof HTMLElement) return withinElement(explicitScope)
@@ -59,11 +56,11 @@ function createBase(ctx: () => StoryContext) {
 	async function resolveLocator(
 		locator: AnyLocator,
 		resolvingScopes: Set<DefiniteLocator> = new Set(),
-	) {
+	): Promise<HTMLElement | HTMLElement[] | null> {
 		return await locator(await canvasFor(locator, resolvingScopes))
 	}
 
-	const click = async (locator: DefiniteLocator) => {
+	const click = async (locator: DefiniteLocator): Promise<void> => {
 		const el = await resolveLocator(locator)
 		assert(el instanceof HTMLElement, 'Expected locator to resolve to an HTMLElement')
 		await ctx().userEvent.click(el)
@@ -71,26 +68,26 @@ function createBase(ctx: () => StoryContext) {
 
 	return {
 		resolveLocator,
-		see: async (locator: AnyLocator) => {
+		see: async (locator: AnyLocator): Promise<HTMLElement> => {
 			const result = await resolveLocator(locator)
 			const el = Array.isArray(result) ? result[0] : result
 			expect(el).toBeInTheDocument()
 			assert(el instanceof HTMLElement, 'Expected locator to resolve to an HTMLElement')
 			return el
 		},
-		dontSee: async (locator: FluentLocator) => {
+		dontSee: async (locator: FluentLocator): Promise<void> => {
 			expect(await resolveLocator(locator.maybe())).toBeNull()
 		},
-		waitExit: async (locator: FluentLocator) => {
+		waitExit: async (locator: FluentLocator): Promise<void> => {
 			await waitFor(async () => void expect(await resolveLocator(locator.maybe())).toBeNull())
 		},
-		seeInField: async (locator: DefiniteLocator, value: string | number) => {
+		seeInField: async (locator: DefiniteLocator, value: string | number): Promise<void> => {
 			const el = await resolveLocator(locator)
 			assert(el instanceof HTMLElement, 'Expected locator to resolve to an HTMLElement')
 			expect(el).toHaveValue(value)
 		},
 		click,
-		fill: async (locator: DefiniteLocator, value: string) => {
+		fill: async (locator: DefiniteLocator, value: string): Promise<void> => {
 			const { userEvent } = ctx()
 			await waitFor(async () => {
 				const el = await resolveLocator(locator)
@@ -104,12 +101,12 @@ function createBase(ctx: () => StoryContext) {
 			})
 			await userEvent.tab()
 		},
-		selectOption: async (locator: DefiniteLocator, value: string | RegExp) => {
-			const rootCanvas = withinElement(ctx().canvasElement.ownerDocument.body)
+		selectOption: async (locator: DefiniteLocator, value: string | RegExp): Promise<void> => {
+			const global = withinElement(ctx().canvasElement.ownerDocument.body)
 			await click(locator)
-			await click((_canvas) => rootCanvas.getByRole('option', { name: value }))
+			await click(() => global.getByRole('option', { name: value }))
 		},
-		clear: async (locator: DefiniteLocator) => {
+		clear: async (locator: DefiniteLocator): Promise<void> => {
 			const { userEvent } = ctx()
 			await waitFor(async () => {
 				const el = await resolveLocator(locator)
@@ -119,7 +116,7 @@ function createBase(ctx: () => StoryContext) {
 				expect(el.value).toBe('')
 			})
 		},
-		scope: async (locator: DefiniteLocator, callback: () => Promise<void>) => {
+		scope: async (locator: DefiniteLocator, callback: () => Promise<void>): Promise<void> => {
 			const element = await resolveLocator(locator)
 			assert(element instanceof HTMLElement, 'Expected scope locator to resolve to an HTMLElement')
 			scopeStack.push(element)
@@ -132,37 +129,51 @@ function createBase(ctx: () => StoryContext) {
 	}
 }
 
-export type BaseActor = ReturnType<typeof createBase>
+export interface BaseActor {
+	resolveLocator(locator: AnyLocator): Promise<HTMLElement | HTMLElement[] | null>
+	see(locator: AnyLocator): Promise<HTMLElement>
+	dontSee(locator: FluentLocator): Promise<void>
+	waitExit(locator: FluentLocator): Promise<void>
+	seeInField(locator: DefiniteLocator, value: string | number): Promise<void>
+	click(locator: DefiniteLocator): Promise<void>
+	fill(locator: DefiniteLocator, value: string): Promise<void>
+	selectOption(locator: DefiniteLocator, value: string | RegExp): Promise<void>
+	clear(locator: DefiniteLocator): Promise<void>
+	scope(locator: DefiniteLocator, callback: () => Promise<void>): Promise<void>
+}
 
-type Actor<T extends Record<string, unknown>> = BaseActor &
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type Actor<T extends {} = {}> = BaseActor &
 	T & {
-		init: (context: StoryContext) => void
-		extend: <U extends Record<string, unknown>>(
-			extension: (current: BaseActor & T) => U,
-		) => Actor<T & U>
+		init(context: StoryContext): void
+		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+		extend<U extends {}>(extension: (current: BaseActor & T) => U): Actor<T & U>
 	}
 
-export const createActor = () => {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+function makeActor<M extends {}>(
+	methods: BaseActor & M,
+	initFn: (context: StoryContext) => void,
+): Actor<M> {
+	return Object.assign({}, methods, {
+		init: initFn,
+		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+		extend<U extends {}>(ext: (current: BaseActor & M) => U): Actor<M & U> {
+			const extra = ext(methods)
+			return makeActor<M & U>({ ...methods, ...extra } as BaseActor & M & U, initFn)
+		},
+	}) as Actor<M>
+}
+
+export const createActor = (): Actor => {
 	let _ctx: StoryContext | null = null
 
-	function ctx() {
+	function ctx(): StoryContext {
 		assert(_ctx !== null, 'I.init(ctx) must be called before using I methods')
 		return _ctx
 	}
 
-	function makeActor<M extends Record<string, unknown>>(methods: BaseActor & M): Actor<M> {
-		return Object.assign({}, methods, {
-			init: (context: StoryContext) => {
-				_ctx = context
-			},
-			extend: <U extends Record<string, unknown>>(
-				ext: (current: BaseActor & M) => U,
-			): Actor<M & U> => {
-				const extra = ext(methods)
-				return makeActor<M & U>({ ...methods, ...extra } as BaseActor & (M & U))
-			},
-		})
-	}
-
-	return makeActor(createBase(ctx))
+	return makeActor(createBase(ctx), (context) => {
+		_ctx = context
+	})
 }
