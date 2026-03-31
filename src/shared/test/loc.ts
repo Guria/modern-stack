@@ -118,21 +118,19 @@ function invokeSingle(canvas: Canvas, config: LocatorConfig, mode: QueryMode) {
 // Type-safe canvas dispatch — all elements
 function invokeAll(canvas: Canvas, config: LocatorConfig, mode: 'get'): HTMLElement[]
 function invokeAll(canvas: Canvas, config: LocatorConfig, mode: 'find'): Promise<HTMLElement[]>
-function invokeAll(canvas: Canvas, config: LocatorConfig, mode: QueryMode) {
+function invokeAll(canvas: Canvas, config: LocatorConfig, mode: 'get' | 'find') {
 	if (config.type === 'role') {
 		const opts = config.options
 			? { ...config.initialOptions, ...config.options }
 			: config.initialOptions
 		if (mode === 'get') return canvas.getAllByRole(config.arg, opts)
-		if (mode === 'find') return canvas.findAllByRole(config.arg, opts)
-		return canvas.queryAllByRole(config.arg, opts)
+		return canvas.findAllByRole(config.arg, opts)
 	}
 	const opts = config.options
 		? { ...config.initialOptions, ...config.options }
 		: config.initialOptions
 	if (mode === 'get') return canvas.getAllByText(config.arg, opts)
-	if (mode === 'find') return canvas.findAllByText(config.arg, opts)
-	return canvas.queryAllByText(config.arg, opts)
+	return canvas.findAllByText(config.arg, opts)
 }
 
 function invalidMaybeTransition(action: string): never {
