@@ -6,6 +6,8 @@ export {
 	role,
 	text,
 	type ArrayLocator,
+	type AnyLocator,
 	type DefiniteLocator,
+	type FluentLocator,
 	type Locator,
 } from './loc'
