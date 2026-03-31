@@ -208,7 +208,7 @@ export const role = (role: AriaRole | (string & {}), name?: NameOption): FluentL
 	createLocator({
 		type: 'role',
 		arg: role,
-		initialOptions: name ? { name } : undefined,
+		initialOptions: name !== undefined ? { name } : undefined,
 		options: undefined,
 		scope: undefined,
 	})
