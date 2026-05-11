@@ -25,6 +25,30 @@ run = "tsgo -b"
 description = "Check FSD architecture with steiger"
 run = "bun scripts/steiger.ts"
 
+[tasks."lint:fallow"]
+description = "Check dead code, duplication, and complexity with Fallow"
+run = [{ tasks = ["lint:fallow:dead-code", "lint:fallow:dupes", "lint:fallow:health"] }]
+
+[tasks."lint:fallow:dead-code"]
+description = "Check for new dead-code findings against the Fallow baseline"
+run = "fallow dead-code --format json --quiet --baseline fallow-baselines/dead-code.json --fail-on-issues"
+
+[tasks."lint:fallow:dupes"]
+description = "Check for new duplicate-code findings against the Fallow baseline"
+run = "fallow dupes --format json --quiet --baseline fallow-baselines/dupes.json --fail-on-issues"
+
+[tasks."lint:fallow:health"]
+description = "Check for new complexity findings against the Fallow baseline"
+run = "fallow health --complexity --format json --quiet --baseline fallow-baselines/health.json --fail-on-issues"
+
+[tasks."lint:fallow:fix:preview"]
+description = "Preview Fallow's unused-export and dependency autofixes"
+run = "fallow fix --dry-run --format json --quiet"
+
+[tasks."lint:fallow:fix"]
+description = "Apply Fallow's unused-export and dependency autofixes"
+run = "fallow fix --yes --format json --quiet"
+
 [tasks."lint:paraglide-tree-shaking"]
 description = "Verify unused translations are tree-shaken from the production bundle"
 depends = ["build:webapp"]
@@ -37,7 +61,7 @@ run = [ #
 	{ task = "prepare" },
 	{ task = "format" },
 	{ task = "lint:fix" },
-	{ tasks = ["typecheck", "test:run", "lint:steiger"] },
+	{ tasks = ["typecheck", "test:run", "lint:steiger", "lint:fallow"] },
 	{ task = "lint:paraglide-tree-shaking" },
 ]
 
@@ -54,6 +78,7 @@ run = [
 	{ tasks = [
 		"typecheck",
 		"lint:steiger",
+		"lint:fallow",
 	] },
 	{ task = "test:coverage" },
 	{ task = "build" },
