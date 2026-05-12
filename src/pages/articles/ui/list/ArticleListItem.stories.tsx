@@ -7,29 +7,29 @@ import { ArticleListItem } from './ArticleListItem'
 
 const I = createActor()
 
-const doneArticle: Article = {
+const doneArticle = {
 	id: '1',
 	title: 'Quarterly report',
 	description: 'Revenue overview and growth metrics for Q3 across all regions.',
 	status: 'done',
 	content: ['First paragraph.'],
-}
+} satisfies Article
 
-const inProgressArticle: Article = {
+const inProgressArticle = {
 	id: '2',
 	title: 'Hiring plan',
 	description: 'Engineering headcount proposal for the next two quarters.',
 	status: 'in-progress',
 	content: ['First paragraph.'],
-}
+} satisfies Article
 
-const draftArticle: Article = {
+const draftArticle = {
 	id: '3',
 	title: 'Roadmap draft',
 	description: 'Feature priorities and timeline estimates for the next product cycle.',
 	status: 'draft',
 	content: ['First paragraph.'],
-}
+} satisfies Article
 
 const meta = preview.meta({
 	title: 'Pages/Articles/ArticleListItem',

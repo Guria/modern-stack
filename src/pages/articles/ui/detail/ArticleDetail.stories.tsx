@@ -7,7 +7,7 @@ import { ArticleDetail } from './ArticleDetail'
 
 const I = createActor()
 
-const doneArticle: Article = {
+const doneArticle = {
 	id: '1',
 	title: 'Quarterly report',
 	description: 'Revenue overview and growth metrics for Q3 across all regions.',
@@ -19,9 +19,9 @@ const doneArticle: Article = {
 		'Gross margin improved as infrastructure costs declined after database workload rebalancing in production.',
 		'The next planning cycle should prioritize conversion optimization in self-serve and pricing tests for annual plans.',
 	],
-}
+} satisfies Article
 
-const inProgressArticle: Article = {
+const inProgressArticle = {
 	id: '2',
 	title: 'Hiring plan',
 	description: 'Engineering headcount proposal for the next two quarters.',
@@ -30,9 +30,9 @@ const inProgressArticle: Article = {
 		'The proposal focuses on backend platform capacity first, then a second wave for product-facing full-stack teams.',
 		'Staffing assumptions are based on current attrition trends and expected onboarding throughput from the recruiting team.',
 	],
-}
+} satisfies Article
 
-const draftArticle: Article = {
+const draftArticle = {
 	id: '3',
 	title: 'Roadmap draft',
 	description: 'Feature priorities and timeline estimates for the next product cycle.',
@@ -40,7 +40,7 @@ const draftArticle: Article = {
 	content: [
 		'The roadmap draft groups work into reliability, onboarding, and collaboration themes to reduce parallel complexity.',
 	],
-}
+} satisfies Article
 
 const meta = preview.meta({
 	title: 'Pages/Articles/ArticleDetail',

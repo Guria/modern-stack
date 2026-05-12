@@ -48,13 +48,11 @@ async function request<TResponse>(path: string, options: RequestOptions = {}) {
 		requestHeaders.set('Content-Type', 'application/json')
 	}
 
-	const requestInit: RequestInit = {
+	const requestInit = {
 		...restOptions,
 		headers: requestHeaders,
-	}
-	if (body !== undefined) {
-		requestInit.body = JSON.stringify(body)
-	}
+		...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+	} satisfies RequestInit
 
 	const response = await fetch(composeApiUrl(path), requestInit)
 
