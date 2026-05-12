@@ -1,4 +1,13 @@
-import { button, createActor, heading, link, role, text, withRetryAndLoading } from '#shared/test'
+import {
+	createActor,
+	heading,
+	link,
+	role,
+	text,
+	withDetailError,
+	withPageError,
+	withRetryAndLoading,
+} from '#shared/test'
 
 const CONNECTION_LINKS = [
 	/Stripe API/i,
@@ -14,6 +23,18 @@ export const connectionsLoc = {
 
 export const connectionsActor = createActor()
 	.extend(withRetryAndLoading('Loading connections page'))
+	.extend(
+		withPageError({
+			title: 'Could not load connections',
+			description: "We couldn't load the connection list. Try again in a moment.",
+		}),
+	)
+	.extend(
+		withDetailError({
+			title: 'Could not load connection',
+			description: "We couldn't load this connection. Try again in a moment.",
+		}),
+	)
 	.extend((I) => ({
 		seeTestConnectionToast: async () => {
 			await I.see(role('status', /Testing connection/).within('global'))
@@ -24,17 +45,6 @@ export const connectionsActor = createActor()
 			await I.see(role('status', /Reconnecting/).within('global'))
 			await I.waitExit(role('status', /Reconnecting/).within('global'))
 			await I.see(role('status', 'Reconnected successfully').within('global'))
-		},
-		seeError: async () => {
-			await I.see(heading('Could not load connections'))
-			await I.see(role('alert'))
-			await I.see(button('Try again'))
-		},
-		seeDetailError: async () => {
-			await I.see(heading('Could not load connection'))
-			await I.see(text("We couldn't load this connection. Try again in a moment."))
-			await I.see(role('alert'))
-			await I.see(button('Try again'))
 		},
 		goBack: async () => {
 			await I.click((canvas) => canvas.findByLabelText('Back to connections'))

@@ -1,13 +1,9 @@
-import { button, createActor, heading, role, text, withRetryAndLoading } from '#shared/test'
+import { createActor, text, withPageError, withRetryAndLoading } from '#shared/test'
 
 export const timelineActor = createActor()
 	.extend(withRetryAndLoading('Loading timeline page'))
+	.extend(withPageError({ title: 'Could not load timeline' }))
 	.extend((I) => ({
-		seeError: async () => {
-			await I.see(heading('Could not load timeline'))
-			await I.see(role('alert'))
-			await I.see(button('Try again'))
-		},
 		seeTimelineEvents: async () => {
 			await I.see(text('Deployed v2.4.1 to production'))
 			await I.see(text('Merged PR #482 - Auth token refresh'))

@@ -1,3 +1,3 @@
 export { createActor } from './actor'
 export { button, heading, link, role, text } from './loc'
-export { withRetryAndLoading } from './pageActor'
+export { withDetailError, withPageError, withRetryAndLoading } from './pageActor'

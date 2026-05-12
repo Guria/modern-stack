@@ -1,4 +1,4 @@
-import { button, createActor, heading, role, text, withRetryAndLoading } from '#shared/test'
+import { createActor, heading, text, withPageError, withRetryAndLoading } from '#shared/test'
 
 export const dashboardLoc = {
 	heading: heading('Dashboard'),
@@ -6,12 +6,8 @@ export const dashboardLoc = {
 
 export const dashboardActor = createActor()
 	.extend(withRetryAndLoading('Loading dashboard page'))
+	.extend(withPageError({ title: 'Could not load dashboard' }))
 	.extend((I) => ({
-		seeError: async () => {
-			await I.see(heading('Could not load dashboard'))
-			await I.see(role('alert'))
-			await I.see(button('Try again'))
-		},
 		seeDashboardContent: async () => {
 			await I.see(dashboardLoc.heading)
 			await I.see(text('Total Revenue'))

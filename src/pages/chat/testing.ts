@@ -1,31 +1,34 @@
-import { button, createActor, heading, link, role, text, withRetryAndLoading } from '#shared/test'
+import {
+	createActor,
+	heading,
+	link,
+	role,
+	text,
+	withDetailError,
+	withPageError,
+	withRetryAndLoading,
+} from '#shared/test'
 
 export const chatLoc = {
-	conversationErrorHeading: heading('Could not load conversations'),
-	conversationErrorDescription: text("We couldn't load the conversations. Try again in a moment."),
-	conversationDetailErrorHeading: heading('Could not load conversation'),
-	conversationDetailErrorDescription: text(
-		"We couldn't load this conversation. Try again in a moment.",
-	),
 	conversationNotFoundHeading: heading('Conversation not found'),
 	messageThreadLoading: role('status', 'Loading message thread'),
 }
 
 export const chatActor = createActor()
 	.extend(withRetryAndLoading('Loading conversations page'))
+	.extend(
+		withPageError({
+			title: 'Could not load conversations',
+			description: "We couldn't load the conversations. Try again in a moment.",
+		}),
+	)
+	.extend(
+		withDetailError({
+			title: 'Could not load conversation',
+			description: "We couldn't load this conversation. Try again in a moment.",
+		}),
+	)
 	.extend((I) => ({
-		seeError: async () => {
-			await I.see(chatLoc.conversationErrorHeading)
-			await I.see(chatLoc.conversationErrorDescription)
-			await I.see(role('alert'))
-			await I.see(button('Try again'))
-		},
-		seeDetailError: async () => {
-			await I.see(chatLoc.conversationDetailErrorHeading)
-			await I.see(chatLoc.conversationDetailErrorDescription)
-			await I.see(role('alert'))
-			await I.see(button('Try again'))
-		},
 		goBack: async () => {
 			await I.click((canvas) => canvas.findByLabelText('Back to conversations'))
 		},
