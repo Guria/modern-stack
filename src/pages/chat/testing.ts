@@ -1,4 +1,4 @@
-import { button, createActor, heading, link, role, text } from '#shared/test'
+import { button, createActor, heading, link, role, text, withRetryAndLoading } from '#shared/test'
 
 export const chatLoc = {
 	conversationErrorHeading: heading('Could not load conversations'),
@@ -11,37 +11,32 @@ export const chatLoc = {
 	messageThreadLoading: role('status', 'Loading message thread'),
 }
 
-export const chatActor = createActor().extend((I) => ({
-	seeError: async () => {
-		await I.see(chatLoc.conversationErrorHeading)
-		await I.see(chatLoc.conversationErrorDescription)
-		await I.see(role('alert'))
-		await I.see(button('Try again'))
-	},
-	seeDetailError: async () => {
-		await I.see(chatLoc.conversationDetailErrorHeading)
-		await I.see(chatLoc.conversationDetailErrorDescription)
-		await I.see(role('alert'))
-		await I.see(button('Try again'))
-	},
-	retry: async () => {
-		await I.click(button('Try again'))
-	},
-	seeLoading: async () => {
-		await I.see(role('status', 'Loading conversations page'))
-		await I.dontSee(role('alert'))
-	},
-	goBack: async () => {
-		await I.click((canvas) => canvas.findByLabelText('Back to conversations'))
-	},
-	seeConversationNotFound: async (conversationId: string) => {
-		await I.see(chatLoc.conversationNotFoundHeading)
-		await I.see(text(`No conversation exists for id "${conversationId}".`))
-	},
-	seeConversationList: async () => {
-		await I.scope(role('list', 'Chat'), async () => {
-			await I.see(link(/Engineering/i))
-			await I.see(link(/Alex Johnson/i))
-		})
-	},
-}))
+export const chatActor = createActor()
+	.extend(withRetryAndLoading('Loading conversations page'))
+	.extend((I) => ({
+		seeError: async () => {
+			await I.see(chatLoc.conversationErrorHeading)
+			await I.see(chatLoc.conversationErrorDescription)
+			await I.see(role('alert'))
+			await I.see(button('Try again'))
+		},
+		seeDetailError: async () => {
+			await I.see(chatLoc.conversationDetailErrorHeading)
+			await I.see(chatLoc.conversationDetailErrorDescription)
+			await I.see(role('alert'))
+			await I.see(button('Try again'))
+		},
+		goBack: async () => {
+			await I.click((canvas) => canvas.findByLabelText('Back to conversations'))
+		},
+		seeConversationNotFound: async (conversationId: string) => {
+			await I.see(chatLoc.conversationNotFoundHeading)
+			await I.see(text(`No conversation exists for id "${conversationId}".`))
+		},
+		seeConversationList: async () => {
+			await I.scope(role('list', 'Chat'), async () => {
+				await I.see(link(/Engineering/i))
+				await I.see(link(/Alex Johnson/i))
+			})
+		},
+	}))

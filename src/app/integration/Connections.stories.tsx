@@ -2,7 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { connectionDetail, connectionList } from '#entities/connection/mocks/handlers'
 import { connectionsActor as I, connectionsLoc as loc } from '#pages/connections/testing'
-import { heading, link, role, text } from '#shared/test'
+import { button, heading, link, role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Connections',
@@ -336,3 +336,48 @@ KeepsLoadingWhenConnectionDetailNeverResolvesMobile.test(
 		await I.dontSee(text('Connection not found').within(detail))
 	},
 )
+
+export const TestConnectionButton = meta.story({
+	name: 'Test Connection Button',
+	play: () => I.waitExit(role('status')),
+})
+
+TestConnectionButton.test('clicking Test Connection shows success toast', async () => {
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+
+	await I.see(button('Test connection'))
+	await I.click(button('Test connection'))
+	await I.seeTestConnectionToast()
+})
+
+export const ReconnectErrorConnection = meta.story({
+	name: 'Reconnect Error Status Connection',
+	play: () => I.waitExit(role('status')),
+})
+
+ReconnectErrorConnection.test('error-status connection shows Reconnect button', async () => {
+	await I.click(link(/Auth0 SSO/i))
+	await I.waitExit(role('status'))
+
+	await I.scope(role('main'), async () => {
+		await I.see(button('Reconnect'))
+	})
+})
+
+ReconnectErrorConnection.test('clicking Reconnect shows success toast', async () => {
+	await I.click(link(/Auth0 SSO/i))
+	await I.waitExit(role('status'))
+
+	await I.click(button('Reconnect'))
+	await I.seeReconnectToast()
+})
+
+ReconnectErrorConnection.test('active connection does not show Reconnect button', async () => {
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+
+	await I.scope(role('main'), async () => {
+		await I.dontSee(button('Reconnect'))
+	})
+})

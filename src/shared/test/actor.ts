@@ -131,7 +131,6 @@ function createBase(ctx: () => StoryContext): BaseActor {
 	}
 }
 
-// fallow-ignore-next-line unused-type
 export interface BaseActor {
 	resolveLocator(locator: AnyLocator): Promise<HTMLElement | HTMLElement[] | null>
 	see(locator: AnyLocator): Promise<HTMLElement>

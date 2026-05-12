@@ -1,37 +1,16 @@
-import type { Connection } from '#entities/connection'
+import { wrap } from '@reatom/core'
+import { reatomComponent } from '@reatom/react'
+
 import { m } from '#paraglide/messages.js'
-import { Button, Heading, Text, toaster } from '#shared/components'
+import { Button, Heading, Text } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
+import type { ConnectionDetailModel } from '../../model/connectionDetailModel'
 import { ConnectionStatusBadge } from '../ConnectionStatusBadge'
 import { ConnectionTypeBadge } from '../ConnectionTypeBadge'
 
-export function ConnectionDetail({ connection }: { connection: Connection }) {
-	const handleTest = () => {
-		const id = toaster.create({ title: m.connection_testing(), type: 'loading', closable: false })
-		setTimeout(() => {
-			toaster.update(id, {
-				title: m.connection_successful(),
-				description: connection.name,
-				type: 'success',
-			})
-		}, 1500)
-	}
-
-	const handleReconnect = () => {
-		const id = toaster.create({
-			title: m.connection_reconnecting(),
-			type: 'loading',
-			closable: false,
-		})
-		setTimeout(() => {
-			toaster.update(id, {
-				title: m.connection_reconnected_successfully(),
-				description: connection.name,
-				type: 'success',
-			})
-		}, 1500)
-	}
+export const ConnectionDetail = reatomComponent(({ model }: { model: ConnectionDetailModel }) => {
+	const { connection, reconnect, testConnection } = model
 
 	return (
 		<styled.div p="8">
@@ -42,11 +21,11 @@ export function ConnectionDetail({ connection }: { connection: Connection }) {
 				<ConnectionTypeBadge type={connection.type} />
 				<ConnectionStatusBadge status={connection.status} />
 				{connection.status === 'error' && (
-					<Button size="sm" onClick={handleReconnect}>
+					<Button size="sm" onClick={wrap(() => reconnect())}>
 						{m.connection_reconnect()}
 					</Button>
 				)}
-				<Button size="sm" variant="outline" onClick={handleTest}>
+				<Button size="sm" variant="outline" onClick={wrap(() => testConnection())}>
 					{m.connection_test()}
 				</Button>
 			</styled.div>
@@ -62,4 +41,4 @@ export function ConnectionDetail({ connection }: { connection: Connection }) {
 			</styled.div>
 		</styled.div>
 	)
-}
+}, 'ConnectionDetail')

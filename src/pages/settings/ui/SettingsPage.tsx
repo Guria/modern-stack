@@ -12,6 +12,7 @@ import {
 	showThemeSwitcherInTopBarAtom,
 	themePreferenceAtom,
 } from '#shared/model'
+import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
 import type {
@@ -137,6 +138,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 				>
 					<CollectionSelect
 						collection={emailNotificationsCollection()}
+						label={m.settings_email_notifications()}
 						size="sm"
 						w="100%"
 						value={[notificationsForm.fields.emailNotif.value()]}
@@ -152,6 +154,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 				>
 					<CollectionSelect
 						collection={desktopNotificationsCollection()}
+						label={m.settings_desktop_notifications()}
 						size="sm"
 						w="100%"
 						value={[notificationsForm.fields.desktopNotif.value()]}
@@ -176,6 +179,9 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 					>
 						<Switch.HiddenInput />
 						<Switch.Control />
+						<Switch.Label className={css({ srOnly: true })}>
+							{m.settings_show_language_switcher()}
+						</Switch.Label>
 					</Switch.Root>
 				</FieldRow>
 				<FieldRow
@@ -188,6 +194,9 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 					>
 						<Switch.HiddenInput />
 						<Switch.Control />
+						<Switch.Label className={css({ srOnly: true })}>
+							{m.settings_show_github_link()}
+						</Switch.Label>
 					</Switch.Root>
 				</FieldRow>
 				<FieldRow
@@ -200,6 +209,9 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 					>
 						<Switch.HiddenInput />
 						<Switch.Control />
+						<Switch.Label className={css({ srOnly: true })}>
+							{m.settings_show_theme_switcher()}
+						</Switch.Label>
 					</Switch.Root>
 				</FieldRow>
 			</Section>
@@ -208,6 +220,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 				<FieldRow label={m.settings_theme()} description={m.settings_theme_desc()}>
 					<CollectionSelect
 						collection={themeCollection()}
+						label={m.settings_theme()}
 						size="sm"
 						w="100%"
 						value={[themePreferenceAtom()]}
@@ -218,6 +231,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 				<FieldRow label={m.settings_density()} description={m.settings_density_desc()}>
 					<CollectionSelect
 						collection={densityCollection()}
+						label={m.settings_density()}
 						size="sm"
 						w="100%"
 						value={[appearanceForm.fields.density.value()]}
@@ -230,6 +244,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 				<FieldRow label={m.settings_language()} description={m.settings_language_desc()}>
 					<CollectionSelect
 						collection={languageCollection()}
+						label={m.settings_language()}
 						size="sm"
 						w="100%"
 						value={[localeAtom()]}

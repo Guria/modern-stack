@@ -13,7 +13,7 @@ connectionsRoute.match.extend(
 
 connectionDetailRoute.match.extend(
 	withMatchHeaderTrail(2, {
-		label: () => connectionDetailRoute.loader.data()?.name ?? m.connection_not_found(),
+		label: () => connectionDetailRoute.loader.data()?.connection.name ?? m.connection_not_found(),
 		isLoading: () => connectionDetailRoute.loader.pending() > 0,
 	}),
 )
