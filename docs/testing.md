@@ -41,7 +41,7 @@ Use these files as the primary documentation.
 
 | File                                          | Why read it                                                                           |
 | --------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `src/shared/test/actor.ts`                    | Base actor API (`I.see`, `I.click`, `I.waitExit`, `I.scope`, `I.resolveLocator`)      |
+| `src/shared/test/actor.ts`                    | Base actor API (`I.see`, `I.click`, `I.waitExit`, `I.within`, grab/effect helpers)    |
 | `src/shared/test/loc.ts`                      | Locator DSL (`role`, `text`, `heading`, `.wait()`, `.maybe()`, `.all()`, `.within()`) |
 | `src/shared/test/actor.test.stories.tsx`      | Focused examples of scoping and locator behavior                                      |
 | `src/app/integration/Articles.stories.tsx`    | Canonical master-detail integration patterns (default, error, loading, detail states) |
@@ -111,11 +111,21 @@ Key base methods:
 - `I.see(locator)`
 - `I.dontSee(locator)`
 - `I.waitExit(locator)`
+- `I.seeInField(locator, value)` / `I.dontSeeInField(locator, value)`
+- `I.seeNumberOfElements(locator, count)`
+- `I.grabTextFrom(locator)` / `I.grabTextFromAll(locator)` / `I.grabValueFrom(locator)`
 - `I.click(locator)`
 - `I.fill(locator, value)`
 - `I.selectOption(locator, value)`
-- `I.scope(locator, callback)`
+- `I.scope(locator, callback)` / `I.within(locator, callback)`
+- `I.tryTo(callback)` / `I.retryTo(callback, maxTries, pollInterval)` / `I.hopeThat(callback)`
 - `I.resolveLocator(locator)`
+
+`I.within(...)` is a Codecept-style alias for `I.scope(...)`; both restore the previous scope in `finally` and return the callback value.
+
+`I.tryTo(...)`, `I.retryTo(...)`, and `I.hopeThat(...)` mirror CodeceptJS effects for optional flows, localized retries, and soft assertions. If any `hopeThat` call returns `false`, finish the test with `I.hopeThat.noErrors()` to fail once with all collected soft-assertion messages.
+
+Prefer grab helpers over raw `I.resolveLocator(...)` when extracting text or values. Keep `resolveLocator` as an escape hatch for uncommon DOM-level assertions.
 
 ### Page actor guidance
 

@@ -14,6 +14,14 @@ const TestComponent = () => (
 				<h3>Article Heading</h3>
 				<p>Article content</p>
 			</article>
+			<ul aria-label="Prices">
+				<li>$10</li>
+				<li>$20</li>
+			</ul>
+			<label>
+				Username
+				<input defaultValue="alex" />
+			</label>
 		</main>
 	</div>
 )
@@ -39,6 +47,9 @@ ScopeBasic.test('finds elements within scoped parent', async () => {
 		await I.see(heading('Section Heading'))
 		await I.see(text('Section content'))
 	})
+
+	const headingText = await I.within(role('main'), () => I.grabTextFrom(heading('Section Heading')))
+	expect(headingText).toBe('Section Heading')
 
 	// After scope - searches from root again
 	await I.see(heading('Page Title'))
@@ -101,4 +112,34 @@ ScopeErrors.test('throws immediately if scope locator fails', async () => {
 	}
 
 	expect(errorThrown).toBe(true)
+})
+
+export const CodeceptBorrowedHelpers = meta.story({ name: 'Codecept-inspired helpers' })
+
+CodeceptBorrowedHelpers.test('grabs text, checks counts, and reads fields', async () => {
+	await I.seeNumberOfElements(text(/^\$/).all(), 2)
+	await I.seeNumberOfElements(text('Missing price').all(), 0)
+	expect(await I.grabTextFromAll(text(/^\$/).all())).toEqual(['$10', '$20'])
+	expect(await I.grabValueFrom(role('textbox', 'Username'))).toBe('alex')
+	await I.dontSeeInField(role('textbox', 'Username'), 'sam')
+})
+
+CodeceptBorrowedHelpers.test('supports tryTo, retryTo, and soft assertions', async () => {
+	expect(await I.tryTo(() => I.see(text('Does not exist')))).toBe(false)
+
+	let attempts = 0
+	const result = await I.retryTo(
+		(tryNumber) => {
+			attempts = tryNumber
+			if (tryNumber < 2) throw new Error('not yet')
+			return 'done'
+		},
+		2,
+		0,
+	)
+	expect(result).toBe('done')
+	expect(attempts).toBe(2)
+
+	expect(await I.hopeThat(() => I.see(text('Still does not exist')))).toBe(false)
+	expect(() => I.hopeThat.noErrors()).toThrow(/soft assertion/)
 })

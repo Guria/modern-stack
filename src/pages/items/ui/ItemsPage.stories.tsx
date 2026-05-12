@@ -8,11 +8,8 @@ import { ItemsPage } from './ItemsPage'
 
 const I = createActor().extend((targetI) => ({
 	checkPrices: async () => {
-		const priceElements = await targetI.resolveLocator(text(/^\$/).all())
-		if (!Array.isArray(priceElements)) {
-			throw new Error('Expected price locator to resolve to an array of elements')
-		}
-		return priceElements.map((el) => Number((el.textContent ?? '').replace('$', '')))
+		const prices = await targetI.grabTextFromAll(text(/^\$/).all())
+		return prices.map((price) => Number(price.replace('$', '')))
 	},
 	seeItem: async (name: string) => {
 		await targetI.see(text(name))

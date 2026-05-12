@@ -1,12 +1,60 @@
-import type { AnyLocator, Canvas, DefiniteLocator, FluentLocator } from './loc'
+import type { AnyLocator, ArrayLocator, Canvas, DefiniteLocator, FluentLocator } from './loc'
 import type { StoryContext } from '@storybook/react-vite'
 
 import { assert } from '@reatom/core'
 import { expect, waitFor, within as withinElement } from 'storybook/test'
 
+type MaybePromise<T> = T | Promise<T>
+
+export interface HopeThat {
+	(callback: () => MaybePromise<unknown>): Promise<boolean>
+	noErrors(): void
+}
+
+const toError = (error: unknown): Error =>
+	error instanceof Error ? error : new Error(String(error))
+
+const sleep = (ms: number): Promise<void> =>
+	new Promise((resolve) => globalThis.setTimeout(resolve, ms))
+
+const isMissingElementError = (error: unknown): boolean =>
+	error instanceof Error &&
+	error.name === 'TestingLibraryElementError' &&
+	error.message.startsWith('Unable to find')
+
+const assertValidMaxTries = (maxTries: number): void => {
+	assert(Number.isInteger(maxTries) && maxTries > 0, 'retryTo maxTries must be a positive integer')
+}
+
+const retryAfterFailure = async <T>(
+	error: unknown,
+	callback: (tryNumber: number) => MaybePromise<T>,
+	maxTries: number,
+	pollInterval: number,
+	tryNumber: number,
+): Promise<T> => {
+	if (tryNumber >= maxTries) throw toError(error)
+	await sleep(pollInterval)
+	return attemptRetry(callback, maxTries, pollInterval, tryNumber + 1)
+}
+
+const attemptRetry = async <T>(
+	callback: (tryNumber: number) => MaybePromise<T>,
+	maxTries: number,
+	pollInterval: number,
+	tryNumber: number,
+): Promise<T> => {
+	try {
+		return await callback(tryNumber)
+	} catch (error) {
+		return retryAfterFailure(error, callback, maxTries, pollInterval, tryNumber)
+	}
+}
+
 // Inspired by codecept.js
 function createBase(ctx: () => StoryContext): BaseActor {
 	const scopeStack: HTMLElement[] = []
+	const softErrors: Error[] = []
 
 	function rootCanvas(): Canvas {
 		return withinElement(ctx().canvasElement.ownerDocument.body)
@@ -58,10 +106,31 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		return await locator(await canvasFor(locator, resolvingScopes))
 	}
 
-	const click = async (locator: DefiniteLocator): Promise<void> => {
+	const elementFrom = async (
+		locator: DefiniteLocator,
+		message = 'Expected locator to resolve to an HTMLElement',
+	): Promise<HTMLElement> => {
 		const el = await resolveLocator(locator)
-		assert(el instanceof HTMLElement, 'Expected locator to resolve to an HTMLElement')
-		await ctx().userEvent.click(el)
+		assert(el instanceof HTMLElement, message)
+		return el
+	}
+
+	const elementsFrom = async (
+		locator: AnyLocator,
+		options?: { missingAsEmpty?: boolean },
+	): Promise<HTMLElement[]> => {
+		try {
+			const result = await resolveLocator(locator)
+			if (Array.isArray(result)) return result
+			return result ? [result] : []
+		} catch (error) {
+			if (options?.missingAsEmpty === true && isMissingElementError(error)) return []
+			throw error
+		}
+	}
+
+	const click = async (locator: DefiniteLocator): Promise<void> => {
+		await ctx().userEvent.click(await elementFrom(locator))
 	}
 
 	const editInput = async (
@@ -70,7 +139,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		action: (el: HTMLInputElement, userEvent: StoryContext['userEvent']) => Promise<void>,
 	): Promise<StoryContext['userEvent']> => {
 		const { userEvent } = ctx()
-		const el = await resolveLocator(locator)
+		const el = await elementFrom(locator, 'Expected locator to resolve to an HTMLInputElement')
 		assert(el instanceof HTMLInputElement, 'Expected locator to resolve to an HTMLInputElement')
 		await userEvent.click(el)
 		await action(el, userEvent)
@@ -78,11 +147,59 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		return userEvent
 	}
 
+	const scope = async <T>(
+		locator: DefiniteLocator,
+		callback: () => MaybePromise<T>,
+	): Promise<T> => {
+		const element = await elementFrom(
+			locator,
+			'Expected scope locator to resolve to an HTMLElement',
+		)
+		scopeStack.push(element)
+		try {
+			return await callback()
+		} finally {
+			scopeStack.pop()
+		}
+	}
+
+	const retryTo = async <T>(
+		callback: (tryNumber: number) => MaybePromise<T>,
+		maxTries: number,
+		pollInterval = 200,
+	): Promise<T> => {
+		assertValidMaxTries(maxTries)
+		return attemptRetry(callback, maxTries, pollInterval, 1)
+	}
+
+	const hopeThat = Object.assign(
+		async (callback: () => MaybePromise<unknown>): Promise<boolean> => {
+			try {
+				await callback()
+				return true
+			} catch (error) {
+				softErrors.push(toError(error))
+				return false
+			}
+		},
+		{
+			noErrors: (): void => {
+				if (softErrors.length === 0) return
+				const errors = softErrors.splice(0)
+				throw new AggregateError(
+					errors,
+					`${errors.length} soft assertion(s) failed:\n${errors
+						.map((error, index) => `${index + 1}) ${error.message}`)
+						.join('\n')}`,
+				)
+			},
+		},
+	) satisfies HopeThat
+
 	return {
 		resolveLocator,
 		see: async (locator: AnyLocator): Promise<HTMLElement> => {
-			const result = await resolveLocator(locator)
-			const el = Array.isArray(result) ? result[0] : result
+			const [el] = await elementsFrom(locator)
 			expect(el).toBeInTheDocument()
 			assert(el instanceof HTMLElement, 'Expected locator to resolve to an HTMLElement')
 			return el
@@ -94,9 +211,22 @@ function createBase(ctx: () => StoryContext): BaseActor {
 			await waitFor(async () => void expect(await resolveLocator(locator.maybe())).toBeNull())
 		},
 		seeInField: async (locator: DefiniteLocator, value: string | number): Promise<void> => {
-			const el = await resolveLocator(locator)
-			assert(el instanceof HTMLElement, 'Expected locator to resolve to an HTMLElement')
-			expect(el).toHaveValue(value)
+			expect(await elementFrom(locator)).toHaveValue(value)
+		},
+		dontSeeInField: async (locator: DefiniteLocator, value: string | number): Promise<void> => {
+			expect(await elementFrom(locator)).not.toHaveValue(value)
+		},
+		seeNumberOfElements: async (locator: AnyLocator, count: number): Promise<void> => {
+			expect(await elementsFrom(locator, { missingAsEmpty: count === 0 })).toHaveLength(count)
+		},
+		grabTextFrom: async (locator: DefiniteLocator): Promise<string> =>
+			(await elementFrom(locator)).textContent ?? '',
+		grabTextFromAll: async (locator: ArrayLocator): Promise<string[]> =>
+			(await elementsFrom(locator)).map((el) => el.textContent ?? ''),
+		grabValueFrom: async (locator: DefiniteLocator): Promise<string> => {
+			const el = await elementFrom(locator)
+			assert('value' in el, 'Expected locator to resolve to a value-bearing element')
+			return String(el.value)
 		},
 		click,
 		fill: async (locator: DefiniteLocator, value: string): Promise<void> => {
@@ -119,16 +249,21 @@ function createBase(ctx: () => StoryContext): BaseActor {
 				await userEvent.clear(el)
 			})
 		},
-		scope: async (locator: DefiniteLocator, callback: () => Promise<void>): Promise<void> => {
-			const element = await resolveLocator(locator)
-			assert(element instanceof HTMLElement, 'Expected scope locator to resolve to an HTMLElement')
-			scopeStack.push(element)
+		scope,
+		within: scope,
+		say: async (message: string): Promise<void> => {
+			console.info(message)
+		},
+		tryTo: async (callback: () => MaybePromise<unknown>): Promise<boolean> => {
 			try {
 				await callback()
-			} finally {
-				scopeStack.pop()
+				return true
+			} catch {
+				return false
 			}
 		},
+		retryTo,
+		hopeThat,
 	}
 }
 
@@ -138,11 +273,25 @@ export interface BaseActor {
 	dontSee(locator: FluentLocator): Promise<void>
 	waitExit(locator: FluentLocator): Promise<void>
 	seeInField(locator: DefiniteLocator, value: string | number): Promise<void>
+	dontSeeInField(locator: DefiniteLocator, value: string | number): Promise<void>
+	seeNumberOfElements(locator: AnyLocator, count: number): Promise<void>
+	grabTextFrom(locator: DefiniteLocator): Promise<string>
+	grabTextFromAll(locator: ArrayLocator): Promise<string[]>
+	grabValueFrom(locator: DefiniteLocator): Promise<string>
 	click(locator: DefiniteLocator): Promise<void>
 	fill(locator: DefiniteLocator, value: string): Promise<void>
 	selectOption(locator: DefiniteLocator, value: string | RegExp): Promise<void>
 	clear(locator: DefiniteLocator): Promise<void>
-	scope(locator: DefiniteLocator, callback: () => Promise<void>): Promise<void>
+	scope<T>(locator: DefiniteLocator, callback: () => MaybePromise<T>): Promise<T>
+	within<T>(locator: DefiniteLocator, callback: () => MaybePromise<T>): Promise<T>
+	say(message: string): Promise<void>
+	tryTo(callback: () => MaybePromise<unknown>): Promise<boolean>
+	retryTo<T>(
+		callback: (tryNumber: number) => MaybePromise<T>,
+		maxTries: number,
+		pollInterval?: number,
+	): Promise<T>
+	hopeThat: HopeThat
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
