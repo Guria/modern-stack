@@ -35,6 +35,18 @@ Default.test('shows message thread when conversation is clicked', async () => {
 	})
 })
 
+export const DirectUrlNotFound = meta.story({
+	name: 'Direct URL to Missing Conversation',
+	parameters: { initialPath: 'chat/missing-42' },
+	play: () => I.waitExit(role('status')),
+})
+
+DirectUrlNotFound.test('shows not-found state for missing conversation URL', async () => {
+	await I.scope(role('main'), async () => {
+		await I.seeConversationNotFound('missing-42')
+	})
+})
+
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
@@ -73,6 +85,31 @@ export const HandlesChatLoadServerError = meta.story({
 
 HandlesChatLoadServerError.test('shows error state when conversations request fails', async () => {
 	await I.seeError()
+})
+
+HandlesChatLoadServerError.test('keeps error state when retry also fails', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.seeError()
+})
+
+export const RecoversAfterChatLoadRetry = meta.story({
+	name: 'Conversations Load Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { conversationList: conversationList.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterChatLoadRetry.test('loads conversations after retry succeeds', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.see(role('list', 'Chat').wait())
+	await I.seeConversationList()
 })
 
 export const HandlesChatLoadServerErrorMobile = meta.story({
@@ -136,6 +173,46 @@ HandlesConversationDetailServerError.test(
 
 		await I.scope(role('main'), async () => {
 			await I.seeDetailError()
+		})
+	},
+)
+
+HandlesConversationDetailServerError.test(
+	'keeps detail error state when retry also fails',
+	async () => {
+		await I.click(link(/Engineering/))
+		await I.waitExit(role('status'))
+
+		await I.scope(role('main'), async () => {
+			await I.seeDetailError()
+			await I.retry()
+			await I.waitExit(role('status'))
+			await I.seeDetailError()
+		})
+	},
+)
+
+export const RecoversAfterConversationDetailRetry = meta.story({
+	name: 'Conversation Detail Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { conversationDetail: conversationDetail.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterConversationDetailRetry.test(
+	'loads conversation detail after retry succeeds',
+	async () => {
+		await I.click(link(/Engineering/))
+		await I.waitExit(role('status'))
+
+		await I.scope(role('main'), async () => {
+			await I.seeDetailError()
+			await I.retry()
+			await I.waitExit(role('status'))
+			await I.see(text('Has anyone looked at the failing CI on main?').wait())
 		})
 	},
 )

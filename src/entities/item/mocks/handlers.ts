@@ -4,7 +4,7 @@ import { HttpResponse, delay, http } from 'msw'
 import { itemsMockData } from '#entities/item/mocks/data'
 import { composeApiUrl } from '#shared/api'
 import { Error404 } from '#shared/mocks'
-import { neverResolve, to500 } from '#shared/mocks/utils'
+import { Error500, neverResolve, to500 } from '#shared/mocks/utils'
 
 import { ITEMS_API_PATH } from '../api/itemsApi'
 
@@ -18,6 +18,14 @@ export const itemList = {
 		return HttpResponse.json(itemsMockData)
 	}),
 	error: http.get(listUrl, () => to500()),
+	retrySucceeds: () => {
+		let errorCount = 0
+		return http.get(listUrl, async () => {
+			assert(errorCount++ >= 2, 'Simulated server error', Error500)
+			await delay()
+			return HttpResponse.json(itemsMockData)
+		})
+	},
 	loading: http.get(listUrl, neverResolve),
 }
 
@@ -31,6 +39,20 @@ export const itemDetail = {
 
 		return HttpResponse.json(item)
 	}),
+	error: http.get(detailUrl, () => to500()),
+	retrySucceeds: () => {
+		let errorCount = 0
+		return http.get(detailUrl, async ({ params }) => {
+			assert(errorCount++ >= 2, 'Simulated server error', Error500)
+
+			await delay()
+			const itemId = params['itemId']
+			const item = itemsMockData.find((item) => item.id === itemId)
+			assert(item, `Item with id ${itemId} not found in mock data`, Error404)
+			return HttpResponse.json(item)
+		})
+	},
+	loading: http.get(detailUrl, neverResolve),
 }
 
 export const itemHandlers = [itemList.default, itemDetail.default]

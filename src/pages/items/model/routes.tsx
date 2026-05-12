@@ -61,8 +61,8 @@ export const itemDetailRoute = itemsRoute.reatomRoute(
 			if (error && !(isApiError(error) && error.status === 404)) {
 				return (
 					<PageError
-						title={m.items_error_title()}
-						description={m.items_error_description()}
+						title={m.item_detail_error_title()}
+						description={m.item_detail_error_description()}
 						onRetry={wrap(() => retryComputed(self.loader))}
 					/>
 				)

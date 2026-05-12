@@ -63,6 +63,18 @@ Default.test('can select different connections', async () => {
 	await I.see(heading('Analytics DB'))
 })
 
+export const DirectUrlNotFound = meta.story({
+	name: 'Direct URL to Missing Connection',
+	parameters: { initialPath: 'connections/missing-42' },
+	play: () => I.waitExit(role('status')),
+})
+
+DirectUrlNotFound.test('shows not-found state for missing connection URL', async () => {
+	await I.scope(role('main'), async () => {
+		await I.seeConnectionNotFound('missing-42')
+	})
+})
+
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
@@ -134,6 +146,31 @@ HandlesConnectionsLoadServerError.test(
 	},
 )
 
+HandlesConnectionsLoadServerError.test('keeps error state when retry also fails', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.seeError()
+})
+
+export const RecoversAfterConnectionsLoadRetry = meta.story({
+	name: 'Connections Load Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { connectionList: connectionList.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterConnectionsLoadRetry.test('loads connection list after retry succeeds', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.see(role('list', 'Connections').wait())
+	await I.seeConnectionList()
+})
+
 export const HandlesConnectionsLoadServerErrorMobile = meta.story({
 	name: 'Connections Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
@@ -195,8 +232,47 @@ HandlesConnectionDetailServerError.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Could not load connection'))
-			await I.see(text("We couldn't load this connection. Try again in a moment."))
+			await I.seeDetailError()
+		})
+	},
+)
+
+HandlesConnectionDetailServerError.test(
+	'keeps detail error state when retry also fails',
+	async () => {
+		await I.click(link(/Stripe API/i))
+		await I.waitExit(role('status'))
+
+		await I.scope(role('main'), async () => {
+			await I.seeDetailError()
+			await I.retry()
+			await I.waitExit(role('status'))
+			await I.seeDetailError()
+		})
+	},
+)
+
+export const RecoversAfterConnectionDetailRetry = meta.story({
+	name: 'Connection Detail Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { connectionDetail: connectionDetail.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterConnectionDetailRetry.test(
+	'loads connection detail after retry succeeds',
+	async () => {
+		await I.click(link(/Stripe API/i))
+		await I.waitExit(role('status'))
+
+		await I.scope(role('main'), async () => {
+			await I.seeDetailError()
+			await I.retry()
+			await I.waitExit(role('status'))
+			await I.see(heading('Stripe API').wait())
 		})
 	},
 )
@@ -215,8 +291,7 @@ HandlesConnectionDetailServerErrorMobile.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Could not load connection'))
-			await I.see(text("We couldn't load this connection. Try again in a moment."))
+			await I.seeDetailError()
 		})
 	},
 )

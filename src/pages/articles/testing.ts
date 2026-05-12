@@ -15,6 +15,12 @@ export const articlesActor = createActor().extend((I) => ({
 		await I.see(role('alert'))
 		await I.see(button('Try again'))
 	},
+	seeDetailError: async () => {
+		await I.see(heading('Could not load article'))
+		await I.see(text("We couldn't load this article. Try again in a moment."))
+		await I.see(role('alert'))
+		await I.see(button('Try again'))
+	},
 	seeLoading: async () => {
 		await I.see(role('status', 'Loading articles page'))
 		await I.dontSee(role('alert'))
@@ -42,6 +48,10 @@ export const articlesActor = createActor().extend((I) => ({
 	seeArticleDetail: async (title: string) => {
 		await I.see(heading(title))
 		await I.see(button('Edit'))
+	},
+	seeArticleNotFound: async (articleId: string) => {
+		await I.see(heading('Article not found'))
+		await I.see(text(`No article exists for id "${articleId}".`))
 	},
 	seeArticleDescription: async (pattern: RegExp) => {
 		await I.see(text(pattern))

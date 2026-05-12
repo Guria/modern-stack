@@ -96,6 +96,18 @@ DirectUrlNavigation.test('loads article detail directly from URL', async () => {
 	})
 })
 
+export const DirectUrlNotFound = meta.story({
+	name: 'Direct URL to Missing Article',
+	parameters: { initialPath: 'articles/missing-42' },
+	play: () => I.waitExit(role('status')),
+})
+
+DirectUrlNotFound.test('shows not-found state for missing article URL', async () => {
+	await I.scope(role('main'), async () => {
+		await I.seeArticleNotFound('missing-42')
+	})
+})
+
 export const DirectUrlNavigationMobile = meta.story({
 	name: 'Direct URL to Article (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
@@ -172,6 +184,31 @@ HandlesArticlesLoadServerError.test('shows error state when articles request fai
 	await I.see(text("We couldn't load the article list. Try again in a moment."))
 })
 
+HandlesArticlesLoadServerError.test('keeps error state when retry also fails', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.seeError()
+})
+
+export const RecoversAfterArticlesLoadRetry = meta.story({
+	name: 'Articles Load Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { articleList: articleList.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterArticlesLoadRetry.test('loads article list after retry succeeds', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.see(role('list', 'Articles').wait())
+	await I.seeArticleList()
+})
+
 export const HandlesArticlesLoadServerErrorMobile = meta.story({
 	name: 'Articles Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
@@ -233,11 +270,45 @@ HandlesArticleDetailServerError.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Could not load article'))
-			await I.see(text("We couldn't load this article. Try again in a moment."))
+			await I.seeDetailError()
 		})
 	},
 )
+
+HandlesArticleDetailServerError.test('keeps detail error state when retry also fails', async () => {
+	await I.click(link(/Quarterly report/i))
+	await I.waitExit(role('status'))
+
+	await I.scope(role('main'), async () => {
+		await I.seeDetailError()
+		await I.retry()
+		await I.waitExit(role('status'))
+		await I.seeDetailError()
+	})
+})
+
+export const RecoversAfterArticleDetailRetry = meta.story({
+	name: 'Article Detail Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { articleDetail: articleDetail.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterArticleDetailRetry.test('loads article detail after retry succeeds', async () => {
+	await I.click(link(/Quarterly report/i))
+	await I.waitExit(role('status'))
+
+	await I.scope(role('main'), async () => {
+		await I.seeDetailError()
+		await I.retry()
+		await I.waitExit(role('status'))
+		await I.see(heading('Quarterly report').wait())
+		await I.seeArticleDetail('Quarterly report')
+	})
+})
 
 export const HandlesArticleDetailServerErrorMobile = meta.story({
 	name: 'Article Detail Server Error (Mobile)',
@@ -253,8 +324,7 @@ HandlesArticleDetailServerErrorMobile.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Could not load article'))
-			await I.see(text("We couldn't load this article. Try again in a moment."))
+			await I.seeDetailError()
 		})
 	},
 )

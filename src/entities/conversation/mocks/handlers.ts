@@ -3,7 +3,7 @@ import { HttpResponse, delay, http } from 'msw'
 
 import { conversationsMockData } from '#entities/conversation/mocks/data'
 import { composeApiUrl } from '#shared/api'
-import { Error404 } from '#shared/mocks'
+import { Error404, Error500 } from '#shared/mocks'
 import { neverResolve, to500 } from '#shared/mocks/utils'
 
 import {
@@ -22,6 +22,15 @@ export const conversationList = {
 		return HttpResponse.json(conversationsMockData.map(({ messages: _, ...rest }) => rest))
 	}),
 	error: http.get(listUrl, () => to500()),
+	retrySucceeds: () => {
+		let errorCount = 0
+		return http.get(listUrl, async () => {
+			assert(errorCount++ >= 2, 'Simulated server error', Error500)
+
+			await delay()
+			return HttpResponse.json(conversationsMockData.map(({ messages: _, ...rest }) => rest))
+		})
+	},
 	loading: http.get(listUrl, neverResolve),
 }
 
@@ -51,6 +60,24 @@ export const conversationDetail = {
 		return HttpResponse.json(conversation)
 	}),
 	error: http.get(detailUrl, () => to500()),
+	retrySucceeds: () => {
+		let errorCount = 0
+		return http.get(detailUrl, async ({ params }) => {
+			assert(errorCount++ >= 2, 'Simulated server error', Error500)
+
+			await delay()
+			const conversationId = params['conversationId']
+			const conversation = conversationsMockData.find(
+				(conversation) => conversation.id === conversationId,
+			)
+			assert(
+				conversation,
+				`Conversation with id ${conversationId} not found in mock data`,
+				Error404,
+			)
+			return HttpResponse.json(conversation)
+		})
+	},
 	loading: http.get(detailUrl, neverResolve),
 }
 

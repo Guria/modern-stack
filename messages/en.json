@@ -118,6 +118,8 @@
 	"item_not_found": "Item not found",
 	"item_not_found_description": "Item \"{itemId}\" was not found.",
 	"item_loading_detail": "Loading item detail",
+	"item_detail_error_title": "Could not load item",
+	"item_detail_error_description": "We couldn't load this item. Try again in a moment.",
 	"items_error_title": "Could not load items",
 	"items_error_description": "We couldn't load the items. Try again in a moment.",
 	"items_loading_page": "Loading items page",

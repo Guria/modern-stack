@@ -24,12 +24,19 @@ export const chatActor = createActor().extend((I) => ({
 		await I.see(role('alert'))
 		await I.see(button('Try again'))
 	},
+	retry: async () => {
+		await I.click(button('Try again'))
+	},
 	seeLoading: async () => {
 		await I.see(role('status', 'Loading conversations page'))
 		await I.dontSee(role('alert'))
 	},
 	goBack: async () => {
 		await I.click((canvas) => canvas.findByLabelText('Back to conversations'))
+	},
+	seeConversationNotFound: async (conversationId: string) => {
+		await I.see(chatLoc.conversationNotFoundHeading)
+		await I.see(text(`No conversation exists for id "${conversationId}".`))
 	},
 	seeConversationList: async () => {
 		await I.scope(role('list', 'Chat'), async () => {

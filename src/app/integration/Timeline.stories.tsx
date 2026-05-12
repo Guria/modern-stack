@@ -55,6 +55,31 @@ HandlesTimelineLoadServerError.test('shows error state when timeline request fai
 	await I.see(text("We couldn't load the timeline data. Try again in a moment."))
 })
 
+HandlesTimelineLoadServerError.test('keeps error state when retry also fails', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.seeError()
+})
+
+export const RecoversAfterTimelineLoadRetry = meta.story({
+	name: 'Timeline Load Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { timelineEventList: timelineEventList.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterTimelineLoadRetry.test('loads timeline after retry succeeds', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.see(text('Deployed v2.4.1 to production').wait())
+	await I.seeTimelineEvents()
+})
+
 export const HandlesTimelineLoadServerErrorMobile = meta.story({
 	name: 'Timeline Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },

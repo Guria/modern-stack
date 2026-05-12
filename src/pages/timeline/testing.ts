@@ -6,6 +6,9 @@ export const timelineActor = createActor().extend((I) => ({
 		await I.see(role('alert'))
 		await I.see(button('Try again'))
 	},
+	retry: async () => {
+		await I.click(button('Try again'))
+	},
 	seeLoading: async () => {
 		await I.see(role('status', 'Loading timeline page'))
 		await I.dontSee(role('alert'))

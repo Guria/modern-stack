@@ -118,6 +118,8 @@
 	"item_not_found": "Elemento no encontrado",
 	"item_not_found_description": "El elemento \"{itemId}\" no fue encontrado.",
 	"item_loading_detail": "Cargando detalle del elemento",
+	"item_detail_error_title": "No se pudo cargar el elemento",
+	"item_detail_error_description": "No pudimos cargar este elemento. Intenta de nuevo en un momento.",
 	"items_error_title": "No se pudieron cargar los elementos",
 	"items_error_description": "No pudimos cargar los elementos. Intenta de nuevo en un momento.",
 	"items_loading_page": "Cargando página de elementos",

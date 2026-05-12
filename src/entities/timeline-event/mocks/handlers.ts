@@ -3,7 +3,7 @@ import { HttpResponse, delay, http } from 'msw'
 
 import { timelineEventsMockData } from '#entities/timeline-event/mocks/data'
 import { composeApiUrl } from '#shared/api'
-import { Error404 } from '#shared/mocks'
+import { Error404, Error500 } from '#shared/mocks'
 import { neverResolve, to500 } from '#shared/mocks/utils'
 
 import { TIMELINE_EVENTS_API_PATH } from '../api/timelineEventsApi'
@@ -18,6 +18,15 @@ export const timelineEventList = {
 		return HttpResponse.json(timelineEventsMockData.map(({ description: _, ...rest }) => rest))
 	}),
 	error: http.get(listUrl, () => to500()),
+	retrySucceeds: () => {
+		let errorCount = 0
+		return http.get(listUrl, async () => {
+			assert(errorCount++ >= 2, 'Simulated server error', Error500)
+
+			await delay()
+			return HttpResponse.json(timelineEventsMockData.map(({ description: _, ...rest }) => rest))
+		})
+	},
 	loading: http.get(listUrl, neverResolve),
 }
 

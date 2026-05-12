@@ -57,6 +57,31 @@ HandlesDashboardLoadServerError.test('shows error state when dashboard request f
 	await I.see(text("We couldn't load the dashboard data. Try again in a moment."))
 })
 
+HandlesDashboardLoadServerError.test('keeps error state when retry also fails', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.seeError()
+})
+
+export const RecoversAfterDashboardLoadRetry = meta.story({
+	name: 'Dashboard Load Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { dashboardStats: dashboardStats.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterDashboardLoadRetry.test('loads dashboard data after retry succeeds', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.see(loc.heading.wait())
+	await I.seeDashboardContent()
+})
+
 export const HandlesDashboardLoadServerErrorMobile = meta.story({
 	name: 'Dashboard Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },

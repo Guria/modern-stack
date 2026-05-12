@@ -49,7 +49,7 @@ Use these files as the primary documentation.
 | `src/app/integration/Dashboard.stories.tsx`   | Simple page with success/error/loading variants                                       |
 | `src/pages/articles/testing.ts`               | Page actor style for master-detail pages                                              |
 | `src/pages/dashboard/testing.ts`              | Page actor style for simple pages                                                     |
-| `src/entities/article/mocks/handlers.ts`      | `default` / `error` / `loading` handler variants                                      |
+| `src/entities/item/mocks/handlers.ts`         | All handler variants including `retrySucceeds` assert pattern                         |
 | `src/app/mocks/handlers.ts`                   | Central default MSW handler registry                                                  |
 | `src/shared/mocks/utils.ts`                   | Shared mock helpers (`to500`, `neverResolve`, etc.)                                   |
 
@@ -95,6 +95,9 @@ List/page load failures and detail load failures are different user states. Test
 
 - list request failure: page/list error title and description, plus retry affordance
 - detail request failure: detail-specific error title and description, scoped to `role('main')` on master-detail pages
+- retry success: use a retry-specific MSW handler that fails first and then succeeds, click `Try again`, and assert the loaded content appears
+- retry failure: persistent error handlers should keep the user in the same error state after `Try again`
+- 404 detail responses: render a specific not-found state, not a generic server-error state
 - persistent loading: loading status remains visible and unrelated terminal states are absent
 
 If a test exposes that the UI copy is misleading, fix the product copy and update messages/mocks accordingly instead of weakening the assertion to match the old behavior.
@@ -149,6 +152,14 @@ Each entity exposes handlers in `src/entities/<entity>/mocks/handlers.ts`:
 
 Default handlers are aggregated in `src/app/mocks/handlers.ts` and used by Storybook preview. Story-level overrides replace only specific keys.
 
+### Stateful handler factories
+
+Handlers like `.retrySucceeds` are factory functions (`()`) that close over mutable state (e.g. an error counter). The factory is required so each story gets its own isolated state.
+
+The canonical pattern uses `assert` with a stateful condition and `Error500` to produce error responses concisely. See `src/entities/item/mocks/handlers.ts` for the reference implementation.
+
+Key details about `Error500` and other error classes are in `src/shared/mocks/utils.ts` — they extend `Error` but return an `HttpResponse` via `assign`, so throwing them inside an MSW handler produces the corresponding HTTP error response.
+
 ## Responsive Testing
 
 Mobile stories use Storybook viewport globals:
@@ -181,7 +192,7 @@ Excluded from coverage:
 ## Adding a New Page Test
 
 1. Create typed mock data in `src/entities/<entity>/mocks/data.ts`.
-2. Add `default` / `error` / `loading` handlers in `src/entities/<entity>/mocks/handlers.ts`.
+2. Add `default` / `error` / `loading` / `retrySucceeds` handlers in `src/entities/<entity>/mocks/handlers.ts` (see `src/entities/item/mocks/handlers.ts` for reference).
 3. Register defaults in `src/app/mocks/handlers.ts`.
 4. Create `src/pages/<page>/testing.ts` with page actor methods for reusable content, loading, error, and navigation expectations.
 5. Add `src/app/integration/<Page>.stories.tsx` with `Default`, `Default (Mobile)`, error, and loading variants.

@@ -1,5 +1,2 @@
-// fallow-ignore-next-line unused-type
-export { createActor, type BaseActor } from './actor'
+export { createActor } from './actor'
 export { button, heading, link, role, text } from './loc'
-// fallow-ignore-next-line unused-type
-export type { ArrayLocator, AnyLocator, DefiniteLocator, FluentLocator, Locator } from './loc'

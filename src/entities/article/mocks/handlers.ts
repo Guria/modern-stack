@@ -3,7 +3,7 @@ import { HttpResponse, delay, http } from 'msw'
 
 import { articlesMockData } from '#entities/article/mocks/data'
 import { composeApiUrl } from '#shared/api'
-import { Error404 } from '#shared/mocks'
+import { Error404, Error500 } from '#shared/mocks'
 import { neverResolve, to500 } from '#shared/mocks/utils'
 
 import { ARTICLES_API_PATH } from '../api/articlesApi'
@@ -20,6 +20,17 @@ export const articleList = {
 		)
 	}),
 	error: http.get(listUrl, () => to500()),
+	retrySucceeds: () => {
+		let errorCount = 0
+		return http.get(listUrl, async () => {
+			assert(errorCount++ >= 2, 'Simulated server error', Error500)
+
+			await delay()
+			return HttpResponse.json(
+				articlesMockData.map(({ content, ...rest }) => ({ ...rest, content: [content[0]] })),
+			)
+		})
+	},
 	loading: http.get(listUrl, neverResolve),
 }
 
@@ -34,6 +45,18 @@ export const articleDetail = {
 		return HttpResponse.json(article)
 	}),
 	error: http.get(detailUrl, () => to500()),
+	retrySucceeds: () => {
+		let errorCount = 0
+		return http.get(detailUrl, async ({ params }) => {
+			assert(errorCount++ >= 2, 'Simulated server error', Error500)
+
+			await delay()
+			const articleId = params['articleId']
+			const article = articlesMockData.find((article) => article.id === articleId)
+			assert(article, `Article with id ${articleId} not found in mock data`, Error404)
+			return HttpResponse.json(article)
+		})
+	},
 	loading: http.get(detailUrl, neverResolve),
 }
 
