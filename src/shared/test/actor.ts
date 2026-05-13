@@ -115,10 +115,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		return el
 	}
 
-	const elementsFrom = async (
-		locator: AnyLocator,
-		options?: { missingAsEmpty?: boolean },
-	): Promise<HTMLElement[]> => {
+	const elementsFrom = async (locator: AnyLocator, options?: { missingAsEmpty?: boolean }) => {
 		try {
 			const result = await resolveLocator(locator)
 			if (Array.isArray(result)) return result
