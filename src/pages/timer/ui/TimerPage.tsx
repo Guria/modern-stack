@@ -5,15 +5,7 @@ import { m } from '#paraglide/messages.js'
 import { Button, Input, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
-import {
-	formatTime,
-	pauseTimer,
-	resetTimer,
-	setDuration,
-	startTimer,
-	timerRemainingAtom,
-	timerRunningAtom,
-} from '../model/atoms'
+import { timer } from '../model/model'
 
 const PRESETS = [
 	{ label: '10s', seconds: 10 },
@@ -23,24 +15,11 @@ const PRESETS = [
 	{ label: '25m', seconds: 1500 },
 ] as const
 
-function parseCustomDuration(input: string): number | null {
-	const [rawMinutes = '0', rawSeconds = '0'] = input.split(':')
-	const minutes = Number.parseInt(rawMinutes, 10)
-	const seconds = Number.parseInt(rawSeconds, 10)
-	const duration = minutes * 60 + seconds
-
-	if (Number.isNaN(minutes) || Number.isNaN(seconds) || duration <= 0) {
-		return null
-	}
-	return duration
-}
-
 export const TimerPage = reatomComponent(() => {
 	const [customInput, setCustomInput] = useAtom('')
 
 	const handleCustomTimeCommit = wrap(() => {
-		const duration = parseCustomDuration(customInput)
-		if (duration !== null) setDuration(duration)
+		timer.commitCustomDuration(customInput)
 		setCustomInput('')
 	})
 
@@ -61,7 +40,7 @@ export const TimerPage = reatomComponent(() => {
 					fontVariantNumeric="tabular-nums"
 					lineHeight="1"
 				>
-					{formatTime(timerRemainingAtom())}
+					{timer.formatted()}
 				</styled.div>
 
 				<styled.div display="flex" gap="2">
@@ -70,8 +49,8 @@ export const TimerPage = reatomComponent(() => {
 							key={label}
 							variant="outline"
 							size="sm"
-							disabled={timerRunningAtom()}
-							onClick={wrap(() => setDuration(seconds))}
+							disabled={timer.running()}
+							onClick={wrap(() => timer.setDuration(seconds))}
 						>
 							{label}
 						</Button>
@@ -83,7 +62,7 @@ export const TimerPage = reatomComponent(() => {
 					size="sm"
 					w="20"
 					value={customInput}
-					disabled={timerRunningAtom()}
+					disabled={timer.running()}
 					onChange={(e) => setCustomInput(e.target.value)}
 					onKeyDown={(e) => {
 						if (e.key === 'Enter') handleCustomTimeCommit()
@@ -92,16 +71,16 @@ export const TimerPage = reatomComponent(() => {
 				/>
 
 				<styled.div display="flex" gap="2">
-					{timerRunningAtom() ? (
-						<Button variant="outline" onClick={wrap(() => pauseTimer())}>
+					{timer.running() ? (
+						<Button variant="outline" onClick={wrap(() => timer.running.setFalse())}>
 							{m.timer_pause()}
 						</Button>
 					) : (
-						<Button onClick={wrap(() => startTimer())} disabled={timerRemainingAtom() <= 0}>
+						<Button onClick={wrap(() => timer.running.setTrue())} disabled={timer.remaining() <= 0}>
 							{m.timer_start()}
 						</Button>
 					)}
-					<Button variant="outline" onClick={wrap(() => resetTimer())}>
+					<Button variant="outline" onClick={wrap(() => timer.reset())}>
 						{m.timer_reset()}
 					</Button>
 				</styled.div>

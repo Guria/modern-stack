@@ -3,16 +3,16 @@ import { reatomComponent } from '@reatom/react'
 import { m } from '#paraglide/messages.js'
 import { SideNavButton, SideNavItemContent } from '#widgets/side-nav'
 
-import { formatTime, timerRemainingAtom, timerRunningAtom } from '../model/atoms'
+import { timer } from '../model/model'
 import { timerRoute } from '../model/routes'
 import { TimerRing } from './TimerRing'
 
 const TimerTrailing = reatomComponent(() => {
-	const running = timerRunningAtom()
+	const running = timer.running()
 	if (!running) return null
 	return (
 		<span style={{ fontSize: '0.75rem', fontVariantNumeric: 'tabular-nums' }}>
-			{formatTime(timerRemainingAtom())}
+			{timer.formatted()}
 		</span>
 	)
 }, 'TimerTrailing')
