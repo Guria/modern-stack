@@ -37,7 +37,7 @@ mise run validate # full pipeline: prepare, format/lint fixes, coverage, typeche
 `.config/hk.pkl` intentionally has two step groups:
 
 - `hygieneSteps`: hk safety builtins for large files, case conflicts, merge conflicts, symlinks, and private keys
-- `fastSteps`: `hygieneSteps` plus format, lint, typecheck
+- `fastSteps`: `hygieneSteps` plus format (vp_fmt), lint (vp_lint), typecheck
 - `checkSteps`: `fastSteps` plus Fallow
 
 Current mapping:
@@ -67,16 +67,8 @@ Do not “fix” the coverage warning by changing `@vitest/coverage-v8` to `0.1.
 
 ## hk Builtin Notes
 
-The hk docs may mention builtins that exist on hk `main` before they are available in the latest released hk package.
-
-Current local state:
-
-- The hk version used by mise may lag behind hk documentation generated from `main`.
-- `Builtins.vp_check`, `Builtins.vp_fmt`, and `Builtins.vp_lint` may be documented before they are exposed by the released hk package used locally.
-- `Builtins.ox_lint` and `Builtins.tsc` are available and used where practical.
-- `.config/hk.pkl` keeps small local wrappers only where released hk lacks the desired Vite+ builtin or where project-specific commands are needed.
-
-When hk is upgraded, revisit `.config/hk.pkl` and prefer the Vite+ builtins directly if they are available.
+- `.config/hk.pkl` uses `Builtins.vp_fmt` and `Builtins.vp_lint` with `workspace_indicator = null`. The null override is needed because `scripts/steiger/` has its own `package.json` and the builtin default would split by workspace, failing on the sub-workspace with 0 lintable files.
+- The typecheck step uses `Builtins.tsc` with a custom `check = "mise run typecheck"` override.
 
 ## Fallow Notes
 

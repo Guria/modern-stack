@@ -1,14 +1,12 @@
-amends "package://github.com/jdx/hk/releases/download/v1.45.0/hk@1.45.0#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.45.0/hk@1.45.0#/Builtins.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Builtins.pkl"
 
-local format = new Step {
-  check = "vp fmt --check {{ files }}"
-  fix = "vp fmt {{ files }}"
+local format = (Builtins.vp_fmt) {
+  workspace_indicator = null
 }
 
-local lint = (Builtins.ox_lint) {
-  check = "vp lint --deny-warnings {{ files }}"
-  fix = "vp lint --deny-warnings --fix {{ files }}"
+local lint = (Builtins.vp_lint) {
+  workspace_indicator = null
 }
 
 local typecheck = (Builtins.tsc) {

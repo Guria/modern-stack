@@ -20,7 +20,7 @@ Docs should avoid duplicating large code blocks that are already clear in source
 
 ## Project Tooling
 
-See `docs/tooling.md` for the current Vite+ / mise / hk split, known Vite+ alias warnings, hk builtin release mismatch notes, and Fallow integration details.
+See `docs/tooling.md` for the current Vite+ / mise / hk split, known Vite+ alias warnings, hk builtin usage, and Fallow integration details.
 
 ## Standard Structure
 
@@ -39,6 +39,7 @@ Use this structure for new docs and refactors:
 - If a snippet exceeds ~10 lines, replace it with source references.
 - Use exact paths so contributors can open files quickly.
 - Keep guidance actionable and tied to existing project conventions.
+- Docs reflect current state only. No version history, migration narratives, "not yet wired in," or speculative "could replace…" remarks. If code changed, rewrite the doc to match — don't annotate the delta.
 
 ## Update Policy
 
