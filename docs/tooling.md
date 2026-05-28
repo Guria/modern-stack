@@ -6,20 +6,23 @@ This doc follows the source-first approach in `docs/README.md`.
 
 The project uses Vite+ for frontend tooling, mise for project workflows, and hk for git-hook/file-scoped quality orchestration.
 
+For anything related to format, lint, test execution, or Vite+ behavior, start with `vite.config.ts`. In this repo, that file is the primary source of truth for those tool settings and is meant to be easy for any agent harness to discover.
+
 ## Read Source First
 
-| File                                     | Why read it                                          |
-| ---------------------------------------- | ---------------------------------------------------- |
-| `vite.config.ts`                         | Vite+, build, format, lint, and test configuration   |
-| `.config/mise/conf.d/_config.toml`       | Tool versions, shared environment, mise defaults     |
-| `.config/mise/conf.d/tasks-quality.toml` | Quality task wrappers and full validation pipeline   |
-| `.config/mise/conf.d/tasks-prepare.toml` | Code generation and local setup tasks                |
-| `.config/hk.pkl`                         | hk hook/check/fix orchestration                      |
-| `package.json`                           | Package-manager scripts and Vite+ dependency aliases |
+| File                                     | Why read it                                                                    |
+| ---------------------------------------- | ------------------------------------------------------------------------------ |
+| `vite.config.ts`                         | Primary source of truth for Vite+, build, format, lint, and test configuration |
+| `.config/mise/conf.d/_config.toml`       | Tool versions, shared environment, mise defaults                               |
+| `.config/mise/conf.d/tasks-quality.toml` | Quality task wrappers and full validation pipeline                             |
+| `.config/mise/conf.d/tasks-prepare.toml` | Code generation and local setup tasks                                          |
+| `.config/hk.pkl`                         | hk hook/check/fix orchestration                                                |
+| `package.json`                           | Package-manager scripts and Vite+ dependency aliases                           |
 
 ## Responsibility Split
 
 - `vp` owns frontend tool execution: dev server, build, preview, format, lint, check, and test.
+- `vite.config.ts` is the first place to inspect when you need formatter rules, lint rules, plugin wiring, or Vite+ testing behavior.
 - `mise` owns named project workflows: prepare/codegen, tests, builds, Fallow, architecture checks, and full validation.
 - `hk` owns file-scoped quality orchestration for hooks and fast local validation.
 
