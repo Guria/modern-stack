@@ -1,5 +1,5 @@
 import { urlAtom, reatomForm } from '@reatom/core'
-import { Fragment } from 'react/jsx-runtime'
+import { Fragment } from 'react'
 
 import { isAuthenticatedAtom, loginAction } from '#entities/auth'
 import { createAppPath, rootRoute } from '#shared/router'
