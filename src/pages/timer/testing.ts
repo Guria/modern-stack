@@ -46,8 +46,10 @@ export const timerActor = createActor().extend((I) => ({
 	},
 	enterCustomDurationByBlur: async (value: string) => {
 		await I.fill(timerLoc.customInput, value)
+		await I.blur(timerLoc.customInput)
 	},
 	enterCustomDurationByEnter: async (value: string) => {
+		await I.clear(timerLoc.customInput)
 		await I.click(timerLoc.customInput)
 		await I.press(value)
 		await I.press('[Enter]')

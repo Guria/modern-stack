@@ -271,15 +271,15 @@ FilteredToEmpty.test('shows empty state message', async () => {
 	await I.see(text('No items match the current filters.'))
 })
 
-FilteredToEmpty.test('verifies multiple items across filter states', async () => {
-	expect(await I.hopeThat(() => I.seeItem('Wireless Headphones'))).toBe(true)
-	expect(await I.hopeThat(() => I.seeItem('Standing Desk'))).toBe(true)
-	I.hopeThat.noErrors()
+FilteredToEmpty.test('updates visible items across filter states', async () => {
+	await I.seeItem('Wireless Headphones')
+	await I.seeItem('Standing Desk')
 
 	await I.applyCategoryFilter('Electronics')
 	await I.applyStockFilter('Out of Stock')
+
 	expect(await I.hopeThat(() => I.seeItem('Wireless Headphones'))).toBe(false)
-	expect(() => I.hopeThat.noErrors()).toThrow(/soft assertion/)
+	await I.see(text('No items match the current filters.'))
 })
 
 export const SortedByPrice = meta.story({
