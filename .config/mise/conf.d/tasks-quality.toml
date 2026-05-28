@@ -52,7 +52,8 @@ run = "fallow dupes --config .config/fallow.toml --fail-on-issues"
 
 [tasks."lint:fallow:health"]
 description = "Check for new complexity findings against the Fallow baseline"
-run = "fallow health --config .config/fallow.toml --complexity --fail-on-issues"
+depends = ["test:coverage"]
+run = "fallow health --config .config/fallow.toml --complexity --coverage .var/coverage --fail-on-issues"
 
 [tasks."lint:fallow:fix:preview"]
 description = "Preview Fallow's unused-export and dependency autofixes"
