@@ -20,6 +20,7 @@ export default defineConfig({
 		globals: true,
 		coverage: {
 			provider: 'v8',
+			reportsDirectory: '.var/coverage',
 			include: ['src/**/*.{ts,tsx}'],
 			exclude: [
 				'src/**/*.stories.tsx',
