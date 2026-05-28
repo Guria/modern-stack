@@ -25,4 +25,4 @@ run = "vp preview"
 
 [tasks.clean]
 description = "Clean build artifacts and caches"
-run = ["rm -rf .var", "rm -rf node_modules/.vite", "rm -rf coverage"]
+run = ["rm -rf .var", "rm -rf node_modules/.vite"]

@@ -67,16 +67,16 @@ jobs:
         if: success()
         with:
           name: coverage-reports
-          path: coverage/
+          path: .var/coverage/
           retention-days: 30
 
       - name: Generate coverage summary
         if: success()
         run: |
-          if [ -f coverage/coverage-summary.json ]; then
+          if [ -f .var/coverage/coverage-summary.json ]; then
             echo "## Coverage Summary" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
-            jq --arg cwd "$PWD/" 'walk(if type == "string" then gsub($cwd; "") else . end)' coverage/coverage-summary.json >> "$GITHUB_STEP_SUMMARY"
+            jq --arg cwd "$PWD/" 'walk(if type == "string" then gsub($cwd; "") else . end)' .var/coverage/coverage-summary.json >> "$GITHUB_STEP_SUMMARY"
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           fi
