@@ -11,6 +11,7 @@ COVERAGE_THRESHOLD_LINES = "{{ vars.coverage_threshold_lines }}"
 COVERAGE_THRESHOLD_FUNCTIONS = "{{ vars.coverage_threshold_functions }}"
 COVERAGE_THRESHOLD_BRANCHES = "{{ vars.coverage_threshold_branches }}"
 COVERAGE_THRESHOLD_STATEMENTS = "{{ vars.coverage_threshold_statements }}"
+VITE_CONNECT_LOGGER = "false"
 
 [tasks.test]
 description = "Run tests in watch mode"

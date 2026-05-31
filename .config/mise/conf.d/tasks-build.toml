@@ -49,7 +49,7 @@ run = [{ task = "build:webapp" }, { task = "build:storybook" }]
 
 [tasks."build:gh-pages"]
 description = "Prepare deployment artifacts (combine builds for GitHub Pages)"
-env = { VITE_ENABLE_MSW = "true" }
+env = { VITE_ENABLE_MSW = "true", VITE_CONNECT_LOGGER = "true" }
 run = [
 	"mise run build:webapp:base {{ vars.gh_pages_out_dir }} /modern-stack/",
 	"mise run build:storybook:base {{ vars.gh_pages_out_dir }}/storybook /modern-stack/storybook/",
