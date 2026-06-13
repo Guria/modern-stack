@@ -5,7 +5,10 @@ import { usageActor as I, usageLoc as loc } from '#pages/usage/testing'
 const meta = preview.meta({
 	title: 'Integration/Usage',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'usage' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'usage',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

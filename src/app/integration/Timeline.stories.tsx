@@ -7,7 +7,10 @@ import { role, text } from '#shared/test'
 const meta = preview.meta({
 	title: 'Integration/Timeline',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'timeline' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'timeline',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

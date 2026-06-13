@@ -63,6 +63,7 @@ export const TimerPage = reatomComponent(() => {
 				</styled.div>
 
 				<Input
+					aria-label="Custom duration"
 					placeholder="MM:SS"
 					size="sm"
 					w="20"

@@ -5,7 +5,10 @@ import { calculatorActor as I, calculatorLoc as loc } from '#pages/calculator/te
 const meta = preview.meta({
 	title: 'Integration/Calculator',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'calculator' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'calculator',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

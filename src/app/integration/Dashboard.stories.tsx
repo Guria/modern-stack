@@ -7,7 +7,10 @@ import { button, role, text } from '#shared/test'
 const meta = preview.meta({
 	title: 'Integration/Dashboard',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'dashboard' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'dashboard',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

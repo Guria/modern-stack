@@ -9,10 +9,12 @@ import { SideNavButton, SideNavItemContent } from '#widgets/side-nav'
 import { chatRoute } from '../model/routes'
 
 export const ChatNavItem = reatomComponent(() => {
-	const routeUnreadCount =
-		chatRoute.loader
-			.data()
-			?.reduce((totalUnread, conversation) => totalUnread + conversation.unread, 0) ?? null
+	const isChatMatched = chatRoute.match()
+	const routeUnreadCount = isChatMatched
+		? (chatRoute.loader
+				.data()
+				?.reduce((totalUnread, conversation) => totalUnread + conversation.unread, 0) ?? null)
+		: null
 	const unreadCount = routeUnreadCount ?? conversationUnreadCountAtom.data() ?? 0
 	const unreadBadge =
 		unreadCount > 0 ? (
