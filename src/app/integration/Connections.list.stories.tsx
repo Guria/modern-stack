@@ -1,0 +1,116 @@
+import { assertNoRouteLoaderAbortErrors } from '#.storybook/abortErrorGuard'
+import preview from '#.storybook/preview'
+import { App } from '#app/App'
+import { connectionsActor as I } from '#pages/connections/testing'
+import { heading, link, role, text } from '#shared/test'
+
+const meta = preview.meta({
+	title: 'Integration/Connections/List',
+	component: App,
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'connections',
+	},
+	loaders: [(ctx) => I.init(ctx)],
+})
+
+export default meta
+
+const assertExpectedDetailTeardown = async () => {
+	await assertNoRouteLoaderAbortErrors('connectionDetail')
+}
+
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
+
+Default.test('renders connection list with all connections', async () => {
+	await I.seeConnectionList()
+})
+
+Default.test('shows no-selection message when no connection selected', async () => {
+	await I.see(text('No connection selected'))
+})
+
+Default.test('shows connection detail when connection is clicked', async () => {
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Stripe API'))
+	await I.goBack()
+	await I.see(role('list', 'Connections').wait())
+	await assertExpectedDetailTeardown()
+})
+
+Default.test('shows all detail paragraphs in connection detail', async () => {
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+
+	await I.scope(role('main'), async () => {
+		await I.see(heading(/Stripe API/i))
+		await I.see(text(/Connected to Stripe API v2023-10-16/))
+		await I.see(text(/Webhook endpoint configured/))
+		await I.see(text(/Average response latency/))
+		await I.see(text(/Rate limit headroom/))
+	})
+
+	await I.goBack()
+	await I.see(role('list', 'Connections').wait())
+	await assertExpectedDetailTeardown()
+})
+
+Default.test('displays correct status badges for all statuses', async () => {
+	await I.seeStatusBadges()
+})
+
+Default.test('displays correct type badges for all types', async () => {
+	await I.seeTypeBadges()
+})
+
+export const DefaultMobile = meta.story({
+	name: 'Default (Mobile)',
+	globals: { viewport: { value: 'sm', isRotated: false } },
+	play: () => I.waitExit(role('status')),
+})
+
+DefaultMobile.test('[mobile] renders connection list with all connections', async () => {
+	await I.seeConnectionList()
+})
+
+DefaultMobile.test('[mobile] shows connection list when no connection is selected', async () => {
+	await I.seeConnectionList()
+})
+
+DefaultMobile.test('[mobile] shows connection detail when connection is clicked', async () => {
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+	await I.see(heading('Stripe API'))
+	await I.goBack()
+	await I.see(role('list', 'Connections').wait())
+	await assertExpectedDetailTeardown()
+})
+
+DefaultMobile.test('[mobile] shows all detail paragraphs in connection detail', async () => {
+	await I.click(link(/Stripe API/i))
+	await I.waitExit(role('status'))
+
+	await I.scope(role('main'), async () => {
+		await I.see(heading(/Stripe API/i))
+		await I.see(text(/Connected to Stripe API v2023-10-16/))
+		await I.see(text(/Webhook endpoint configured/))
+		await I.see(text(/Average response latency/))
+		await I.see(text(/Rate limit headroom/))
+	})
+
+	await I.goBack()
+	await I.see(role('list', 'Connections').wait())
+	await assertExpectedDetailTeardown()
+})
+
+DefaultMobile.test('[mobile] displays correct status badges for all statuses', async () => {
+	await I.seeStatusBadges()
+})
+
+DefaultMobile.test('[mobile] displays correct type badges for all types', async () => {
+	await I.seeTypeBadges()
+})

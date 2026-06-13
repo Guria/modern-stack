@@ -6,7 +6,10 @@ import { button, link, role, text } from '#shared/test'
 const meta = preview.meta({
 	title: 'Integration/Timer',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'timer' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'timer',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

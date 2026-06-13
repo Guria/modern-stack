@@ -3,7 +3,7 @@ import { button, createActor, heading, role, text } from '#shared/test'
 export const timerLoc = {
 	heading: heading('Timer'),
 	display: (value: string | RegExp) => text(value),
-	customInput: role('textbox'),
+	customInput: role('textbox', 'Custom duration'),
 	startButton: button('Start'),
 	pauseButton: button('Pause'),
 	resetButton: button('Reset'),
@@ -46,7 +46,6 @@ export const timerActor = createActor().extend((I) => ({
 	},
 	enterCustomDurationByBlur: async (value: string) => {
 		await I.fill(timerLoc.customInput, value)
-		await I.blur(timerLoc.customInput)
 	},
 	enterCustomDurationByEnter: async (value: string) => {
 		await I.clear(timerLoc.customInput)

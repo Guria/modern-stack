@@ -6,8 +6,10 @@ import { reatomContext } from '@reatom/react'
 import addonA11y from '@storybook/addon-a11y'
 import { definePreview } from '@storybook/react-vite'
 import { initialize, mswLoader } from 'msw-storybook-addon'
+
+import { clearAbortErrors, drainAbortErrors, formatAbortErrors } from './abortErrorGuard'
 // oxlint-disable-next-line no-restricted-imports
-import { useMemo, type PropsWithChildren } from 'react'
+import { useEffect, useMemo, type PropsWithChildren } from 'react'
 
 import { handlers } from '#app/mocks/handlers'
 import { setAuthenticatedForTest } from '#entities/auth'
@@ -31,10 +33,18 @@ function ReatomDecorator({
 	authenticated = true,
 }: PropsWithChildren<{ authenticated?: boolean; initialPath?: string }>) {
 	const frame = useMemo(() => {
-		const nextFrame = setupStorybookUrl(initialPath)
-		nextFrame.run(() => setAuthenticatedForTest(authenticated ? authMockSession : null))
-		return nextFrame
+		return setupStorybookUrl(initialPath, () => {
+			setAuthenticatedForTest(authenticated ? authMockSession : null)
+		})
 	}, [authenticated, initialPath])
+
+	useEffect(() => {
+		return () => {
+			clearAbortErrors()
+			queueMicrotask(clearAbortErrors)
+		}
+	}, [frame])
+
 	return <reatomContext.Provider value={frame}>{children}</reatomContext.Provider>
 }
 
@@ -62,12 +72,21 @@ const preview = definePreview({
 	},
 	// fallow-ignore-next-line complexity
 	beforeEach: async ({ globals }) => {
-		if (!import.meta.env['VITEST']) return
+		clearAbortErrors()
+		if (!(globalThis as Record<string, unknown>)['__vitest_worker__']) return
 		const { page } = await import('vite-plus/test/browser')
 		const viewportGlobal = globals['viewport'] as { value?: string } | string | undefined
 		const viewportName = typeof viewportGlobal === 'string' ? viewportGlobal : viewportGlobal?.value
 		const viewport = (viewportName ? getViewportSize(viewportName) : null) ?? FALLBACK_VIEWPORT
 		await page.viewport(viewport.width, viewport.height)
+		return () => {
+			const errors = drainAbortErrors()
+			if (errors.length > 0) {
+				throw new Error(
+					`Reatom AbortErrors detected during story test:\n${formatAbortErrors(errors)}`,
+				)
+			}
+		}
 	},
 })
 

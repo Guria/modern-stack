@@ -9,7 +9,10 @@ import { role, text } from '#shared/test'
 const meta = preview.meta({
 	title: 'Integration/Items',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'items' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'items',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 
@@ -278,7 +281,7 @@ FilteredToEmpty.test('updates visible items across filter states', async () => {
 	await I.applyCategoryFilter('Electronics')
 	await I.applyStockFilter('Out of Stock')
 
-	expect(await I.hopeThat(() => I.seeItem('Wireless Headphones'))).toBe(false)
+	expect(await I.tryTo(() => I.seeItem('Wireless Headphones'))).toBe(false)
 	await I.see(text('No items match the current filters.'))
 })
 

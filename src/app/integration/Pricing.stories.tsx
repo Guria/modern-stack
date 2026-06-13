@@ -5,7 +5,10 @@ import { pricingActor as I, pricingLoc as loc } from '#pages/pricing/testing'
 const meta = preview.meta({
 	title: 'Integration/Pricing',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'pricing' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'pricing',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

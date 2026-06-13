@@ -6,7 +6,10 @@ import { button, role, text } from '#shared/test'
 const meta = preview.meta({
 	title: 'Integration/Settings',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'settings' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'settings',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

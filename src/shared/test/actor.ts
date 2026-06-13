@@ -264,10 +264,6 @@ function createBase(ctx: () => StoryContext): BaseActor {
 				await userEvent.clear(el)
 			})
 		},
-		blur: async (locator: DefiniteLocator) => {
-			const element = await elementFrom(locator)
-			element.blur()
-		},
 		press: async (key: string) => {
 			await ctx().userEvent.keyboard(key)
 		},
@@ -310,7 +306,6 @@ export interface BaseActor {
 	fill(locator: DefiniteLocator, value: string): Promise<void>
 	selectOption(locator: DefiniteLocator, value: string | RegExp): Promise<void>
 	clear(locator: DefiniteLocator): Promise<void>
-	blur(locator: DefiniteLocator): Promise<void>
 	press(key: string): Promise<void>
 	scope<T>(locator: DefiniteLocator, callback: () => MaybePromise<T>): Promise<T>
 	within<T>(locator: DefiniteLocator, callback: () => MaybePromise<T>): Promise<T>

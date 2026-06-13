@@ -12,7 +12,11 @@ const field = (name: string) => (canvas: Canvas) => canvas.getByLabelText(name)
 const meta = preview.meta({
 	title: 'Integration/Auth',
 	component: App,
-	parameters: { layout: 'fullscreen', authenticated: false, initialPath: 'login' },
+	parameters: {
+		layout: 'fullscreen',
+		authenticated: false,
+		initialPath: 'login',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

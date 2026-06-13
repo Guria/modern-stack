@@ -10,7 +10,10 @@ const I = createActor()
 const meta = preview.meta({
 	title: 'Integration/Sidebar Footer',
 	component: App,
-	parameters: { layout: 'fullscreen', initialPath: 'dashboard' },
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'dashboard',
+	},
 	loaders: [(ctx) => I.init(ctx)],
 })
 

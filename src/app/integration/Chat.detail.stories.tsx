@@ -1,0 +1,117 @@
+import preview from '#.storybook/preview'
+import { App } from '#app/App'
+import { conversationDetail } from '#entities/conversation/mocks/handlers'
+import { chatActor as I, chatLoc as loc } from '#pages/chat/testing'
+import { role, text } from '#shared/test'
+
+const meta = preview.meta({
+	title: 'Integration/Chat/Detail',
+	component: App,
+	parameters: {
+		layout: 'fullscreen',
+		initialPath: 'chat/1',
+	},
+	loaders: [(ctx) => I.init(ctx)],
+})
+
+export default meta
+
+export const HandlesConversationDetailServerError = meta.story({
+	name: 'Conversation Detail Server Error',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { conversationDetail: conversationDetail.error },
+		},
+	},
+})
+
+HandlesConversationDetailServerError.test(
+	'shows error state when conversation detail request fails',
+	async () => {
+		await I.scope(role('main'), async () => {
+			await I.seeDetailError()
+		})
+	},
+)
+
+HandlesConversationDetailServerError.test(
+	'keeps detail error state when retry also fails',
+	async () => {
+		await I.scope(role('main'), async () => {
+			await I.seeDetailError()
+			await I.retry()
+			await I.waitExit(role('status'))
+			await I.seeDetailError()
+		})
+	},
+)
+
+export const RecoversAfterConversationDetailRetry = meta.story({
+	name: 'Conversation Detail Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { conversationDetail: conversationDetail.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterConversationDetailRetry.test(
+	'loads conversation detail after retry succeeds',
+	async () => {
+		await I.scope(role('main'), async () => {
+			await I.seeDetailError()
+			await I.retry()
+			await I.waitExit(role('status'))
+			await I.see(text('Has anyone looked at the failing CI on main?').wait())
+		})
+	},
+)
+
+export const HandlesConversationDetailServerErrorMobile = meta.story({
+	name: 'Conversation Detail Server Error (Mobile)',
+	globals: { viewport: { value: 'sm', isRotated: false } },
+	parameters: HandlesConversationDetailServerError.input.parameters,
+	play: () => I.waitExit(role('status')),
+})
+
+HandlesConversationDetailServerErrorMobile.test(
+	'[mobile] shows error state when conversation detail request fails',
+	async () => {
+		await I.scope(role('main'), async () => {
+			await I.seeDetailError()
+		})
+	},
+)
+
+export const KeepsLoadingWhenConversationDetailNeverResolves = meta.story({
+	name: 'Conversation Detail Loading State',
+	parameters: {
+		msw: {
+			handlers: { conversationDetail: conversationDetail.loading },
+		},
+	},
+})
+
+KeepsLoadingWhenConversationDetailNeverResolves.test(
+	'shows message thread loading state while conversation detail is pending',
+	async () => {
+		await I.see(loc.messageThreadLoading)
+		await I.dontSee(loc.conversationNotFoundHeading)
+	},
+)
+
+export const KeepsLoadingWhenConversationDetailNeverResolvesMobile = meta.story({
+	name: 'Conversation Detail Loading State (Mobile)',
+	globals: { viewport: { value: 'sm', isRotated: false } },
+	parameters: KeepsLoadingWhenConversationDetailNeverResolves.input.parameters,
+})
+
+KeepsLoadingWhenConversationDetailNeverResolvesMobile.test(
+	'[mobile] shows message thread loading state while conversation detail is pending',
+	async () => {
+		await I.see(loc.messageThreadLoading)
+		await I.dontSee(loc.conversationNotFoundHeading)
+	},
+)

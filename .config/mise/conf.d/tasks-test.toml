@@ -17,13 +17,16 @@ VITE_CONNECT_LOGGER = "false"
 description = "Run tests in watch mode"
 alias = "t"
 run = "vp test"
+env = { VITE_CONNECT_LOGGER = "false" }
 
 [tasks."test:run"]
 description = "Run tests once"
 alias = "tr"
 run = "vp test run"
+env = { VITE_CONNECT_LOGGER = "false" }
 
 [tasks."test:coverage"]
 description = "Run tests with coverage"
 alias = "tcov"
 run = "vp test run --coverage"
+env = { VITE_CONNECT_LOGGER = "false" }
