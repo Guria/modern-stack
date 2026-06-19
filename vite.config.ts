@@ -137,4 +137,4 @@ export default defineConfig({
 		paraglideVitePlugin({ project: './project.inlang', outdir: './src/paraglide' }),
 	],
 	base,
-})
+} as never)

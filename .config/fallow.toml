@@ -1,4 +1,5 @@
 entry = ["scripts/**/*.ts"]
+ignoreDependencies = ["typescript-7"]
 
 # Park UI and generated assets are committed vendor/generated code; keep them out of findings.
 ignorePatterns = [
