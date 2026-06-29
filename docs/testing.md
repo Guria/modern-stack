@@ -281,6 +281,14 @@ Some branches are intentionally left uncovered because they cannot be exercised 
 - `src/widgets/app-shell/ui/sidebar.tsx` line 17: the `SidebarToggleButton` click handler. This mobile-only button uses the same responsive CSS pattern and is not found in the accessibility tree at the `sm` viewport in headless tests.
 - `src/pages/settings/ui/SettingsPage.tsx` lines 130, 252: the notifications form dirty save button and the language select `onValueChange`. The save button shares text with the profile form's save button, making it ambiguous to target. The language select callback (`localeAtom.set`) is a one-line delegation already exercised by the settings Theme/Density select tests which use the same `CollectionSelect` + `onValueChange` pattern.
 
+**Shared infrastructure guards (corrupt-storage, environment, and non-JSON defenses):**
+
+- `src/shared/model/locale.ts` lines 40–45: the `isLocale(value) ? value : baseLocale` coercion in `withParams` and `fromSnapshot`. These run only when `localStorage` holds a value that is not a configured locale, so normal UI flows never reach the `baseLocale` fallback. Defensive against corrupted persisted state, like the timer `remaining() <= 0` guard above.
+- `src/shared/model/theme.ts` lines 7, 18–20: `reatomMediaQuery('(prefers-color-scheme: dark)')` and the `system` branch of `resolved` that reads it. The resolved value depends on the host `prefers-color-scheme` media query, which is not deterministic in headless Chromium; the `coerceThemePreference` invalid-value fallback is the same corrupt-storage defense as the locale coercion.
+- `src/shared/router.ts` line 11: `createAppPath`'s `if (!basePath)` branch. `basePath` is derived from `BASE_URL`, which is truthy in every deployed/test environment (it is `'modern-stack'` for GitHub Pages). The empty-`BASE_URL` path is the localhost/dev case and cannot be reached without reconfiguring the environment.
+- `src/shared/api/index.ts` line 5 (and the line 4 `if`) and line 40 (and the line 36 nullish branch): `composeApiUrl`'s empty/root-path early return and `parseResponsePayload`'s `response.text()` fallback. Every caller passes a non-empty path starting with `/`, and every MSW handler returns JSON or a `204`; the text-content and empty-path paths are defenses against malformed responses/inputs.
+- `src/pages/usage/ui/UsagePage.tsx` line 44 and `src/pages/usage/ui/UsageCard.tsx` line 36: the storage-bar color ternary `percentage >= 90 ? 'red.9' : percentage >= 70 ? 'orange.9' : 'blue.9'`. `percentage` is computed from static constants in `src/pages/usage/model/data.ts` (currently `42`), and the Usage feature has no MSW handler to vary it, so only the `blue.9` branch is reachable. The bar color is a presentational detail rather than user-observable accessible state.
+
 ## Adding a New Page Test
 
 1. Create typed mock data in `src/entities/<entity>/mocks/data.ts`.
