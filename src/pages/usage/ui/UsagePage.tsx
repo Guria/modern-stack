@@ -4,6 +4,8 @@ import { m } from '#paraglide/messages.js'
 import { Button, Heading, Text, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
+import { UsageBar } from './UsageBar'
+
 function BreakdownRow({ label, gb, total }: { label: string; gb: number; total: number }) {
 	const pct = Math.round((gb / total) * 100)
 	return (
@@ -14,8 +16,8 @@ function BreakdownRow({ label, gb, total }: { label: string; gb: number; total: 
 			<styled.div fontSize="sm" color="muted" w="16" textAlign="right">
 				{gb} GB
 			</styled.div>
-			<styled.div w="24" h="1.5" bg="gray.4" borderRadius="full" overflow="hidden">
-				<styled.div h="full" bg="blue.9" borderRadius="full" style={{ width: `${pct}%` }} />
+			<styled.div w="24">
+				<UsageBar percentage={pct} color="blue.9" />
 			</styled.div>
 		</styled.div>
 	)
@@ -40,13 +42,8 @@ export function UsagePage({ data }: { data: UsageData }) {
 						</Button>
 					</styled.div>
 				</styled.div>
-				<styled.div w="full" h="3" bg="gray.4" borderRadius="full" overflow="hidden" mb="1">
-					<styled.div
-						h="full"
-						bg={percentage >= 90 ? 'red.9' : percentage >= 70 ? 'orange.9' : 'blue.9'}
-						borderRadius="full"
-						style={{ width: `${percentage}%` }}
-					/>
+				<styled.div mb="1">
+					<UsageBar percentage={percentage} height="3" />
 				</styled.div>
 				<styled.div fontSize="sm" color="muted">
 					{m.usage_percentage_used({ percentage })}
