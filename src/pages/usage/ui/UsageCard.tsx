@@ -3,8 +3,11 @@ import type { UsageData } from '#entities/usage'
 import { reatomComponent } from '@reatom/react'
 
 import { usageDataAtom } from '#entities/usage'
+import { m } from '#paraglide/messages.js'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
+
+import { UsageBar } from './UsageBar'
 
 type UsageCardProps = {
 	active?: boolean
@@ -40,28 +43,15 @@ export const UsageCard = reatomComponent<UsageCardProps>(({ active, data, loadGl
 				color="muted"
 			>
 				<styled.span fontWeight="medium" color="gray.12">
-					Storage
+					{m.usage_storage()}
 				</styled.span>
 				<styled.span>
 					{usedGB !== undefined && totalGB !== undefined ? `${usedGB} GB / ${totalGB} GB` : '—'}
 				</styled.span>
 			</styled.div>
-			<styled.div w="full" h="1.5" bg="gray.4" borderRadius="full" overflow="hidden">
-				<styled.div
-					h="full"
-					bg={
-						percentage !== null && percentage >= 90
-							? 'red.9'
-							: percentage !== null && percentage >= 70
-								? 'orange.9'
-								: 'blue.9'
-					}
-					borderRadius="full"
-					style={{ width: `${percentage ?? 0}%` }}
-				/>
-			</styled.div>
+			<UsageBar percentage={percentage ?? 0} />
 			<styled.div fontSize="xs" color="muted" mt="0.5">
-				{percentage !== null ? `${percentage}% used` : '—'}
+				{percentage !== null ? m.usage_percentage_used({ percentage }) : '—'}
 			</styled.div>
 		</styled.div>
 	)
